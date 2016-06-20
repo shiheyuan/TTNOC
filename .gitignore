@@ -1,0 +1,7 @@
+# files by Latex
+*.aux
+*.dvi
+*.bbl
+*.log
+*.blg
+*.pdf
