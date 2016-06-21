@@ -385,9 +385,9 @@ Time-Triggered Network-on-Chip (TTNoC) is one of the practical applications of r
 
 
 \section{INTRODUCTION}
-Many safety-critical real-time embedded systems desire the predictable communication latency. The temporal constrains of system must be guaranteed []. Time-Triggered system is one of the real-time architectures which isolate the inherent fault and meet the temporal predictability of communication. Therefore, Time-Triggered Network-on-Chip (TTNoC) is efficient and ideal for safety-related embedded systems because it satisfies the strict timing and dependability requirements~\cite{DBLP:journals/afp/Noce16}.
+Many safety-critical real-time embedded systems desire the predictable communication latency. The temporal constrains of system must be guaranteed \cite{DBLP:conf/date/HuangBRBK12}. Time-Triggered system is one of the real-time architectures which isolate the inherent fault and meet the temporal predictability of communication. Therefore, Time-Triggered Network-on-Chip (TTNoC) is efficient and ideal for safety-related embedded systems because it satisfies the strict timing and dependability requirements~\cite{DBLP:journals/afp/Noce16}.
 
-At present, time-triggered communication comes in various fields. e.g. SAFEbus deployed in the avionic industry [], TTP and FlexRay adopted in automotive  [] and TTEthernet in the domain of railway industry []. In particular, many time-triggered Networks-on-Chip architectures have been proposed (e.g., GENESYS MPSoC, Aethereal) [].
+At present, time-triggered communication comes in various fields. e.g. SAFEbus deployed in the avionic industry [], TTP and FlexRay adopted in automotive  [] and TTEthernet in the domain of railway industry []. In particular, many time-triggered Networks-on-Chip architectures have been proposed (e.g., GENESYS MPSoC, Aethereal \cite{DBLP:conf/dac/2010}).
 
 A traditional time-triggered architecture is bus-based system where all messages are scheduled in time slots and for every time slot, there is only one message which can be transmitted. To design such systems, the designer pays attention to the time domain to guarantee that all messages are non-overlapping in time domain. Each message owns its unique offset time point. In this case, a feasible schedule is an order for messages such that no two messages can be sent at the same time. 
 
@@ -397,7 +397,7 @@ The Time-Triggered Network-on-Chip has been proposed because the current bus-bas
 	\centering
 	\includegraphics[width=2.5in]{picture/difference.pdf}
 	\caption{Difference between bus- and network-based time-triggered architecture}
-	\label{architecture difference fig}
+	\label{f:arch}
 \end{figure}
 
 Time-Triggered system resolves contention on the network and avoids dynamic arbitration of intercommunicate resources distribution by the synchronizing time of communication entities and static schedule upon the global synchronized time []. With the control of a global time imposed by the system, the local time of every node on the chip is synchronized to each other. The offset time point of each message (the injection of each messages), from any nodes on the network, is defined by a static schedule table, and the switches on the network also transmit the messages in terms of the schedule table. Therefore, all the messages are received, transmitted or sent at a deterministic time point with the correctness and predictability of real-time communication. However, synthesizing such an off-line schedule table is rather complicated which is viewed as a bin-packing problem, known as NP-complete [].
@@ -658,20 +658,20 @@ The set of possible offset $m_{i}.\Phi = \{ 0,\dots,m_{i}.\mathcal{T} - m_{i}.\m
 	\centering
 	\includegraphics[width=2.5in]{picture/scheduling_example.pdf}
 	\caption{An example of communication set on the TTNoC}
-	\label{communication on TTNOC figure}
+	\label{f:comm_on_TTNoC}
 \end{figure}
 \begin{table}[!t]
 	\renewcommand{\arraystretch}{1.3}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
 	\caption{An Example of a communication set $\mathcal{M}$}
-	\label{communication set info table}
+	\label{t:comm_info}
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making tables
 	% than the plain LaTeX2e tabular which is used here.
 	\begin{tabular}{|c||c||c||c||c|}
 		\hline
-		communication & link & period & duration & possible offset\\
+		communication & link & period & delay & possible offset\\
 		\hline
 		$m_{0}$ & $ (0,4) $ & 2 & 1 & $\{0,1\}$\\
 		\hline
@@ -700,7 +700,7 @@ A set of individual with respective chromosome composes the population. The size
 	\centering
 	\includegraphics[width=3.5in]{picture/2individual}
 	\caption{An example of population with 2 individual}
-	\label{individual fig}
+	\label{f:indi}
 \end{figure}
 
 \subsection{Pseudocode}
@@ -774,13 +774,13 @@ m_{i}.\mathcal{H} = \{ {m_{i}^{(v_{a},v_{b})}}(k) \mid k \in [0, \mathcal{M.H} /
 \end{equation}
 where $m_{i}.\mathcal{H}$ denotes the duration in hyperperiod of a communication in hyperperiod.
 We define $\mathcal{M.H}=\{ m_{i}.\mathcal{H} \mid m_{i}\in \mathcal{M} \}$, denotes the set of duration for each communication in hyperperiod. 
-Therefore, the complete duration in hyperperiod for each communication $\mathcal{M.H}$ is determined based on the set of communications $\mathcal{M}$ . e.g. Fig is the complete duration in a hyperperiod based on the offset in Fig and the period as well as duration in TABLE.
+Therefore, the complete duration in hyperperiod for each communication $\mathcal{M.H}$ is determined based on the set of communications $\mathcal{M}$ . e.g. Fig~\ref{f:duration} is the complete duration in a hyperperiod based on the offset in Fig~\ref{f:indi} and the period as well as duration in TABLE~\ref{t:comm_info}.
 
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3.5in]{picture/individual_transformation.pdf}
 	\caption{The duration in the hyperperiod based on Fig and TABLE}
-	\label{duration in hyperperiod fig}
+	\label{f:duration}
 \end{figure}
 
 The link constrains should be derived after the transformation of individual. According to the predefined routing strategy, i.e. XY routing, the network link $(v_{a},v_{b})$ of each communication $m_{i}\in\mathcal{M}$ is derived. Therefore we have the forwarding path per hop $ (v_{a},v_{b})=\{ <v_{a},v_{1}> ,\dots, <v_{i},v_{j}> ,\dots, <v_{n},v_{b}> \} $, where $m_{i}^{(a,b)}\in\mathcal{M}$. By checking the routing of each communication by formula (5) in link constrains, the set of overlapped communication for each $m_{i}\in\mathcal{M}$ is derived. We denote the overlapped set of communication $m_{i}\in \mathcal{M}$ by $O(m_i)$. And we have that
@@ -795,7 +795,7 @@ The link constrains should be derived after the transformation of individual. Ac
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
 	\caption{An Example of a routing and overlap set for $\mathcal{M}$}
-	\label{routing and conflict table}
+	\label{t:overlap}
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making TABLEs
 	% than the plain LaTeX2e tabular which is used here.
@@ -841,7 +841,7 @@ where $m_i\in\mathcal{M}$. The score is assigned to the individual after fitness
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
 	\caption{An Example of marking two individual by fitness function}
-	\label{score fig}
+	\label{f:fitness}
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making TABLEs
 	% than the plain LaTeX2e tabular which is used here.
@@ -874,32 +874,32 @@ For operation of crossover, we select two of individual among the population the
 \begin{equation}
 	possibility(indi0)=1-\frac{indi0}{indi0+indi1}
 \end{equation}
-to derive the possibility for each individual. e.g. Fig shows an process of crossover. The individual 2 is generated by crossover based on the two individual in Fig as parent.
+to derive the possibility for each individual. e.g. Fig~\ref{f:crossover} shows an process of crossover. The individual 2 is generated by crossover based on the two individual in Fig~\ref{f:indi} as parent.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3.5in]{picture/crossover.pdf}
 	\caption{crossover}
-	\label{crossover}
+	\label{f:crossover}
 \end{figure}
 
-The operation of mutation random select an offset of communication. Then selecting a new location of its offset randomly. The probability of mutation for each individual in our implement is 50\%.
+The operation of mutation random select an offset of communication. Then selecting a new location of its offset randomly. Fig~\ref{f:mutation} is an example of mutation. The probability of mutation for each individual in our implement is 50\%.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3.5in]{picture/mutation.pdf}
 	\caption{mutation}
-	\label{mutation}
+	\label{f:mutation}
 \end{figure}
 
 \subsection{Local search strategy}
 
 In the step of local search, for each individual, the communication $m_i$ with the maximum value of $C(m_i).value$ is selected as local search element. If there is two or more individual with the maximum conflict times, the element to be searched is select stochastically among them. After determining the element for local searching, the offset of selected $m_i$ is reallocated in its possible offset interval, to minimum the score of the individual.
 
-Fig shows an example of local search for individual 1 in Fig. According to the $C(\mathcal{M})$ of individual 0 in TABLE III, we random select $m_0$ as the element. Since the possible offset of $m_0$ is 0 and 1 shown in TABLE I, we locate the $m_0$ on gene 0 and gene 1 respectively. After marking two of individual with different offset of $m_0$, we select the individual which score is 2 as the individual 0 because the score of individual 0' is minimum among the individual which just reallocate the offset of $m_0$.
+Fig~\ref{f:local} shows an example of local search for $individual 0$ in Fig~\ref{f:indi}. According to the $C(\mathcal{M})$ of individual 0 in Fig~\ref{f:fitness}, we random select $m_0$ as the element. Since the possible offset of $m_0$ is 0 and 1 shown in TABLE I, we locate the $m_0$ on gene 0 and gene 1 respectively. After marking two of individual with different offset of $m_0$, we select the individual which score is 2 as the individual 0 because the score of individual 0' is minimum among the individual which just reallocate the offset of $m_0$.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3.5in]{picture/local.pdf}
 	\caption{Local search fig}
-	\label{Local search fig}
+	\label{f:local}
 \end{figure}
 
 In our implement, we naively traverse all the possible offset. However for improving efficiency, many other algorithm in local search can be applied, i.e. tabu search, simulated annealing. And different local search strategy may increase the performance of the memetic algorithm.
@@ -922,7 +922,7 @@ And it is clear that the failed communication rate decreases when the scale of T
 	\centering
 	\includegraphics[width=3.5in]{picture/rate}
 	\caption{fail rate}
-	\label{fail rate}
+	\label{f:fail}
 \end{figure}
 
 \subsection{Feasible Case}
@@ -932,7 +932,7 @@ We consider the number of feasible  case in each experiment type. For each test 
 	\centering
 	\includegraphics[width=3.5in]{picture/feasible}
 	\caption{feasible case}
-	\label{feasible case}
+	\label{f:feasible}
 \end{figure}
 
 \section{FUTURE WORK}
