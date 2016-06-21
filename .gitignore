@@ -1,3 +1,10 @@
+# files generated automatically by Mac
+.DS_Store
+.DS_Store?
+
+# files by emacs
+*.*~
+
 # files by Latex
 *.aux
 *.dvi

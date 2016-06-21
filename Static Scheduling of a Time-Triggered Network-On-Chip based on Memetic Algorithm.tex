@@ -65,6 +65,7 @@
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{multirow}
 % Some very useful LaTeX packages include:
 % (uncomment the ones you want to load)
 
@@ -384,7 +385,7 @@ Time-Triggered Network-on-Chip (TTNoC) is one of the practical applications of r
 
 
 \section{INTRODUCTION}
-Many safety-critical real-time embedded systems desire the predictable communication latency. The temporal constrains of system must be guaranteed []. Time-Triggered system is one of the real-time architectures which isolate the inherent fault and meet the temporal predictability of communication. Therefore, Time-Triggered Network-on-Chip (TTNoC) is efficient and ideal for safety-related embedded systems because it satisfies the strict timing and dependability requirements [].
+Many safety-critical real-time embedded systems desire the predictable communication latency. The temporal constrains of system must be guaranteed []. Time-Triggered system is one of the real-time architectures which isolate the inherent fault and meet the temporal predictability of communication. Therefore, Time-Triggered Network-on-Chip (TTNoC) is efficient and ideal for safety-related embedded systems because it satisfies the strict timing and dependability requirements~\cite{DBLP:journals/afp/Noce16}.
 
 At present, time-triggered communication comes in various fields. e.g. SAFEbus deployed in the avionic industry [], TTP and FlexRay adopted in automotive  [] and TTEthernet in the domain of railway industry []. In particular, many time-triggered Networks-on-Chip architectures have been proposed (e.g., GENESYS MPSoC, Aethereal) [].
 
@@ -515,7 +516,7 @@ The system model is formulated by a direct graph $\mathcal{G}=(\mathcal{V},\math
 The physical links are full-duplex, allowing thus communication in both directions. Therefore we have that $\forall v_{a},v_{b}\in\mathcal{V}, (v_{a},v_{b}) \in \mathcal{L} \Rightarrow (v_{b},v_{a})\in \mathcal{L}$, where $(v_{a},v_{b})$ is an ordered tuple denotes a directed logical link connecting from a source node $v_{a}\in \mathcal{V}$ to a sink node $v_{b}\in \mathcal{V}$. A network link $(v_{a},v_{b})$, between the source node $v_{a}$ and the sink node $v_{b}$, is defined by the tuple $\langle (v_{a},v_{b}).w, (v_{a},v_{b}).sd,(v_{a},v_{b}).pd,(v_{a},v_{b}).mt, (v_{a},v_{b}).h\rangle$, where $(v_{a},v_{b}).w$ is the width of physical links, $(v_{a},v_{b}).sd$ is the switching delay in the switches on network link, $(v_{a},v_{b}).pd$ is the link delay per hop which means propagation cost between adjacent nodes, $(v_{a},v_{b}).mt$ is the macrotick of network denotes the time-line granularity of the physical link and $(v_{a},v_{b}).h$ is the number of hops from $v_{a}$ to $v_{b}$ on the link $(v_{a},v_{b})$.
 
 For a communication node $ \mathit{v}_{i}\in\mathcal{V} $, it offer $\mathit{d}$ input links and $\mathit{d}$ output links, $\mathit{d}$ is the switch degree. Therefore a switch is able to connected with at most $ \mathit{d} $ port in full-duplex connection. The adjoint switches $v_{i}\in\mathcal{V}$ and $v_{j}\in\mathcal{V}$ which connect with each other through physical link rather than the forwarding by other switches, is defined by the sequence $ <v_{i},v_{j}> $. Therefore the network link $(v_{a},v_{b})$ can be split in several connection among the adjoint switches  $v_{i}\in\mathcal{V}$, and we have that 
-$ (v_{a},v_{b})=\{ <v_{a},v_{1}> ,\dots, <v_{i},v_{j}> ,\dots, <v_{n},v_{b}> \} $.
+$ (v_{a},v_{b})=\{ \langle v_{a},v_{1}> ,\dots, <v_{i},v_{j}> ,\dots, <v_{n},v_{b}> \} $.
 
 \subsection{Message Model}
 
@@ -850,7 +851,9 @@ where $m_i\in\mathcal{M}$. The score is assigned to the individual after fitness
 		\hline 
 		$C(m_{0})$ & $ (m_0,m_2)\rightarrow 2$ & 4 \\
 		\hline  
-		$C(m_{2})$ & $ (m_2,m_0)\rightarrow 2$	&  \\
+		$C(m_{2})$ & $ (m_2,m_0)\rightarrow 2$ & \\
+                \hline
+                \multicolumn{3}{|l|}{score}\\
 		\hline
 			\hline
 			$C(\mathcal{M})$ of individual 1 & conflict mapping & score\\
@@ -982,15 +985,16 @@ The authors would like to thank...
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
+%% \begin{thebibliography}{1}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+%% \bibitem{IEEEhowto:kopka}
+%% H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
+%%   0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
 
-\end{thebibliography}
+%% \end{thebibliography}
 
-
+\bibliographystyle{IEEEtran}
+\bibliography{main}
 
 
 % that's all folks
