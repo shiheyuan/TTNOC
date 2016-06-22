@@ -209,7 +209,7 @@
 % http://www.ctan.org/pkg/array
 
 
-% IEEEtran contains the IEEEeqnarray family of commands that can be used to
+%% IEEEtran contains the IEEEarray family of commands that can be used to
 % generate multiline equations as well as matrices, tables, etc., of high
 % quality.
 
@@ -385,27 +385,67 @@ Time-Triggered Network-on-Chip (TTNoC) is one of the practical applications of r
 
 
 \section{INTRODUCTION}
-Many safety-critical real-time embedded systems desire the predictable communication latency. The temporal constrains of system must be guaranteed \cite{DBLP:conf/date/HuangBRBK12}. Time-Triggered system is one of the real-time architectures which isolate the inherent fault and meet the temporal predictability of communication. Therefore, Time-Triggered Network-on-Chip (TTNoC) is efficient and ideal for safety-related embedded systems because it satisfies the strict timing and dependability requirements~\cite{DBLP:journals/afp/Noce16}.
 
-At present, time-triggered communication comes in various fields. e.g. SAFEbus deployed in the avionic industry [], TTP and FlexRay adopted in automotive  [] and TTEthernet in the domain of railway industry []. In particular, many time-triggered Networks-on-Chip architectures have been proposed (e.g., GENESYS MPSoC, Aethereal \cite{DBLP:conf/dac/2010}).
+Time-triggered systems is one of the real-time systems with high throughput and temporal predictability for multiprocessor systems.
+Since isolating the inherent fault as well as satisfying the temporal predictability of communication, time-triggered systems is widely deployed in various field,
+TTEthernet integrates time-triggered concept into the general Ethernet~\cite{DBLP:conf/nca/SteinerBHPV09}, which is adopted as a new standard of the avionic network~\cite{DBLP:conf/dsrt/BejiHGM14}. TTP and FlexRay adopted in aerospace industry~\cite{DBLP:journals/taes/HuLWV15}.
 
-A traditional time-triggered architecture is bus-based system where all messages are scheduled in time slots and for every time slot, there is only one message which can be transmitted. To design such systems, the designer pays attention to the time domain to guarantee that all messages are non-overlapping in time domain. Each message owns its unique offset time point. In this case, a feasible schedule is an order for messages such that no two messages can be sent at the same time. 
+TTNoC integrates the time-triggered concepts into the Network-on-Chip (NOC) for safety-critical real-time embedded systems which desire the tight and predictable communication latency.
+In practical, GENESYS as a cross-domain embedded system architecture, which influenced by the concepts of and the experience with the time-triggered architecture, has been developed~\cite{DBLP:conf/ladc/Kopetz11}.
 
-The Time-Triggered Network-on-Chip has been proposed because the current bus-based time triggered systems cannot meet the requirements of development of Multiprocessor System-on-Chip (MPSoC) []. While NoCs provide more link resources to forward messages, it is more complex to synthesize a feasible scheduling for TTNoC since the conflict-free paths through the network-on-a-chip must be considered. The TTNoC allows several message to be transmitted at the same time slot, if their routing paths are non-overlapping. It entails messages share the time slot on the TTNoC. In this case, the designer must consider the feasible scheduling of messages in both time-domain and space-domain. In other words, any two messages cannot occupy the same network link at the identical time point. If messages coexist in time slot, the forwarding path of these messages should be conflict-free. If messages are using identical link to be forwarded, the existence time of these messages cannot be overlapped.
-
+The two main architecture of time-triggered system are bus-based and network-based~\cite{DBLP:conf/date/HuangBRBK12}.
+Bus-based architecture just enable there is only one message transmitted on the system. 
+Therefore each message own its unique duration to occupy the physical link for communication.
+Unlike the bus-based architecture, The network-based architecture allows a set of message to be transmitted at the same time, on condition that the physical links the messages used are non-overlapping.
+It entails messages share the time domain to communication on the network. Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architecture. All the messages achieve temporal separation, while the set of messages is able to share the time domain if there is no spacing conflict among them.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=2.5in]{picture/difference.pdf}
 	\caption{Difference between bus- and network-based time-triggered architecture}
-	\label{f:arch}
+	\label{f:diff}
 \end{figure}
 
-Time-Triggered system resolves contention on the network and avoids dynamic arbitration of intercommunicate resources distribution by the synchronizing time of communication entities and static schedule upon the global synchronized time []. With the control of a global time imposed by the system, the local time of every node on the chip is synchronized to each other. The offset time point of each message (the injection of each messages), from any nodes on the network, is defined by a static schedule table, and the switches on the network also transmit the messages in terms of the schedule table. Therefore, all the messages are received, transmitted or sent at a deterministic time point with the correctness and predictability of real-time communication. However, synthesizing such an off-line schedule table is rather complicated which is viewed as a bin-packing problem, known as NP-complete [].
+The scheduling of TTNoC is to determine the duration of each message on the TTNoC. 
+
+ To design such systems, the designer pays attention to the time domain to guarantee that all messages are non-overlapping in time domain. Each message owns its unique offset time point. In this case, a feasible schedule is an order for messages such that no two messages can be sent at the same time. 
+
+The TTNoC has been proposed because the current bus-based time triggered systems cannot meet the requirements of development of Multiprocessor System-on-Chip (MPSoC) []. While NoCs provide more link resources to forward messages, it is more complex to synthesize a feasible scheduling for TTNoC since the conflict-free paths through the network-on-a-chip must be considered.
+
+Time-Triggered system resolves contention on the network and avoids dynamic arbitration of intercommunicate resources distribution by the synchronizing time of communication entities and static schedule upon the global synchronized time []. With the control of a global time imposed by the system, the local time of every node on the chip is synchronized to each other. The offset time point of each message (the injection of each messages), from any nodes on the network, is defined by a static schedule table, and the switches on the network also transmit the messages in terms of the schedule table. Therefore, all the messages are received, transmitted or sent at a deterministic time point with the correctness and predictability of real-time communication. However, synthesizing such an off-line schedule table is rather complicated which is viewed as a bin-packing problem, known as NP-complete []. Synthesizing such static schedules is known to be an NP-complete problem where the complexity is driven by the large number of constraints imposed by the network.
 
 This paper presents a static scheduling approach to solve the TTNoC scheduling problem by the Memetic Algorithm. Memetic Algorithm is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for problem search. 
 
-The rest of this paper is organized as follows. We first review the related work in the TTNoC scheduling Section II. The problem definition and the constrains about the problem (Section III). Then the memetic algorithm with stochastic ranking has been proposed to find the feasible solution (Section IV). Finally, the memetic algorithm was implemented to compare with other SMT-based static scheduling approaches, and the related discussion was also included (Section V).
+The rest of this paper is organized as follows. We first review the related work in the TTNoC scheduling Section II. The problem definition and the constrains about the problem \ref{INTRODUCTION} (Section III). Then the memetic algorithm with stochastic ranking has been proposed to find the feasible solution (Section IV). Finally, the memetic algorithm was implemented to compare with other SMT-based static scheduling approaches, and the related discussion was also included (Section V).
 
+
+\section{RELATED WORK}
+There are
+The scheduling problem of TTNoC has been
+studied firstly in \cite{DBLP:conf/date/HuangBRBK12} which is integrates SMT solver into classical heuristic algorithm. 
+
+%Moreover, our work is also closely similar with the scheduling approaches designed for other time-triggered network. 
+
+the approaches presented literature is mostly based on SMT or SAT solver. 
+\cite{DBLP:conf/sies/ScholerKMO15} introduces an optimal scheduler based on a Boolean SAT solver for a TTNoC.
+In \cite{DBLP:conf/etfa/PozoSRH15} the authors presents a decomposition approach based on SMT solver for extremely large time-triggered network.
+
+
+Lukasiewycz et al propose
+a transformation of the Flexray scheduling into a bin-packing
+problem and solve it subsequently using ILP [4]. To increase
+the effective bandwidth, the concept of switched Flexray is
+proposed in [5]. The corresponding scheduling problem is
+studied in [6], [7]. Their solutions are based on the branchand-
+price algorithm [6] and graph-based heuristics [7]. The
+scheduling problem for time-triggered multi-hop networks is
+considered in [8]. The author adopts an approach similar to
+ours. A pure SMT formulation is presented, followed by an
+incremental method to improve the scalability.
+
+ One major
+difference between [8] and our work is that the route of each
+message is assumed to be known in [8] and therefore the
+author focuses only on the time domain.
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
 % For figures, \caption should occur after the \includegraphics.
@@ -504,14 +544,15 @@ The rest of this paper is organized as follows. We first review the related work
 
 \subsection{Architecture Model}
 
-A TTNoC is a system with a set of $\mathit{m}$ real-time
-tasks/applications $ \Gamma = \{\tau_{1},\dots,\tau_{m} \}$ mapped on
+A TTNoC is a system with a set of real-time
+tasks/applications mapped on
 a multi-core interconnection platform, composed of a set of identical
 processing elements interconnected by physical links and network
 switches. The topologies of a TTNoC can be either regular or
 irregular.
 
-The system model is formulated by a direct graph $\mathcal{G}=(\mathcal{V},\mathcal{L})$. The set of vertexes $\mathcal{V}=\{ v_{1},\dots,v_{m}\}$ represents the set of $\mathit{m}$ identical communication nodes (the processing elements and switches) while the edges $\mathcal{L}\subseteq \mathcal{V} \times \mathcal{V}$ comprises the communication physical links connecting the nodes. 
+We adopt the architecture shown in~\cite{DBLP:conf/rtcsa/PaukovitsK08}.
+The architecture model is formulated by a direct graph $\mathcal{G}=(\mathcal{V},\mathcal{L})$. The set of vertexes $\mathcal{V}=\{ v_{1},\dots,v_{m}\}$ represents the set of $\mathit{m}$ identical communication nodes (the processing elements and switches) while the edges $\mathcal{L}\subseteq \mathcal{V} \times \mathcal{V}$ comprises the communication physical links connecting the nodes. 
 
 The physical links are full-duplex, allowing thus communication in both directions. Therefore we have that $\forall v_{a},v_{b}\in\mathcal{V}, (v_{a},v_{b}) \in \mathcal{L} \Rightarrow (v_{b},v_{a})\in \mathcal{L}$, where $(v_{a},v_{b})$ is an ordered tuple denotes a directed logical link connecting from a source node $v_{a}\in \mathcal{V}$ to a sink node $v_{b}\in \mathcal{V}$. A network link $(v_{a},v_{b})$, between the source node $v_{a}$ and the sink node $v_{b}$, is defined by the tuple $\langle (v_{a},v_{b}).w, (v_{a},v_{b}).sd,(v_{a},v_{b}).pd,(v_{a},v_{b}).mt, (v_{a},v_{b}).h\rangle$, where $(v_{a},v_{b}).w$ is the width of physical links, $(v_{a},v_{b}).sd$ is the switching delay in the switches on network link, $(v_{a},v_{b}).pd$ is the link delay per hop which means propagation cost between adjacent nodes, $(v_{a},v_{b}).mt$ is the macrotick of network denotes the time-line granularity of the physical link and $(v_{a},v_{b}).h$ is the number of hops from $v_{a}$ to $v_{b}$ on the link $(v_{a},v_{b})$.
 
@@ -637,7 +678,7 @@ Deriving the set of communication scheduling $\mathcal{M}$ means determine $\lan
 
 \section{MEMETIC ALGORITHM}
 
-Memetic algorithm(MA) is a population-based hybrid genetic algorithm(GA) coupled with an individual learning procedure capable of performing local refinements []. 
+Memetic algorithm(MA) is a population-based hybrid genetic algorithm(GA) coupled with an individual learning procedure capable of performing local refinements\cite{DBLP:journals/cim/OngLC10}. 
 
 Our memetic algorithm consists of two parts. We deploy the genetic algorithm as global searching for the set of communication to be scheduled. And choosing the subset of infeasible communications as the element to local search.
 
