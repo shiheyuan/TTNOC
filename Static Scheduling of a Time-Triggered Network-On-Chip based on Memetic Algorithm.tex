@@ -387,17 +387,17 @@ Time-Triggered Network-on-Chip (TTNoC) is one of the practical applications of r
 \section{INTRODUCTION}
 
 Time-triggered systems is one of the real-time systems with high throughput and temporal predictability for multiprocessor systems.
-Since isolating the inherent fault as well as satisfying the temporal predictability of communication, time-triggered systems is widely deployed in various field,
+Since isolating the inherent fault as well as satisfying the temporal predictability of communication, time-triggered systems is widely deployed in various field, e.g.
 TTEthernet integrates time-triggered concept into the general Ethernet~\cite{DBLP:conf/nca/SteinerBHPV09}, which is adopted as a new standard of the avionic network~\cite{DBLP:conf/dsrt/BejiHGM14}. TTP and FlexRay adopted in aerospace industry~\cite{DBLP:journals/taes/HuLWV15}.
 
-TTNoC integrates the time-triggered concepts into the Network-on-Chip (NOC) for safety-critical real-time embedded systems which desire the tight and predictable communication latency.
-In practical, GENESYS as a cross-domain embedded system architecture, which influenced by the concepts of and the experience with the time-triggered architecture, has been developed~\cite{DBLP:conf/ladc/Kopetz11}.
+TTNoC integrates the time-triggered concepts into the Network-on-Chip (NoC) for safety-critical real-time embedded systems which desire the tight and predictable communication latency.
+In practical, GENESYS is proposed as a cross-domain embedded system architecture, which influenced by the concepts of and the experience with the time-triggered architecture~\cite{DBLP:conf/ladc/Kopetz11}.
 
 The two main architecture of time-triggered system are bus-based and network-based~\cite{DBLP:conf/date/HuangBRBK12}.
-Bus-based architecture just enable there is only one message transmitted on the system. 
+Bus-based architecture just enable there is only one message transmitted on the system at the same time. 
 Therefore each message own its unique duration to occupy the physical link for communication.
 Unlike the bus-based architecture, The network-based architecture allows a set of message to be transmitted at the same time, on condition that the physical links the messages used are non-overlapping.
-It entails messages share the time domain to communication on the network. Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architecture. All the messages achieve temporal separation, while the set of messages is able to share the time domain if there is no spacing conflict among them.
+It entails messages sharing the time domain to communicate. Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architecture. In bus-based architecture, all the messages ($m_0$,$m_1$,$m_2$) achieve temporal separation. In network-based architecture, the set of messages ($m_0$,$m_1$,$m_2$) is able to share the time domain if there is no spacing conflict among the transmission of them.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=2.5in]{picture/difference.pdf}
@@ -405,30 +405,28 @@ It entails messages share the time domain to communication on the network. Fig.~
 	\label{f:diff}
 \end{figure}
 
-The scheduling of TTNoC is to determine the duration of each message on the TTNoC. 
+The TTNoC is network-based, therefore the scheduling of TTNoC is to determine the duration of each message on the TTNoC and ensuring there is no contention with the communication. 
+Static scheduling is adopted to synthesize the scheduling which resolves contention, avoiding dynamic arbitration of intercommunicate resources distribution. 
+So that the communication on the TTNoC is predefined while satisfying the scheduling constrains.
+However, synthesizing such a scheduling is rather complicated which is known as NP-complete~\cite{DBLP:conf/date/HuangBRBK12,DBLP:conf/rtss/Steiner10}.
 
- To design such systems, the designer pays attention to the time domain to guarantee that all messages are non-overlapping in time domain. Each message owns its unique offset time point. In this case, a feasible schedule is an order for messages such that no two messages can be sent at the same time. 
+The main contribution of this paper is presenting a static scheduling approach to resolve the TTNoC scheduling problem by the Memetic Algorithm (MA). MA is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for problem search~\cite{DBLP:journals/tec/ChenOLT11}. 
 
-The TTNoC has been proposed because the current bus-based time triggered systems cannot meet the requirements of development of Multiprocessor System-on-Chip (MPSoC) []. While NoCs provide more link resources to forward messages, it is more complex to synthesize a feasible scheduling for TTNoC since the conflict-free paths through the network-on-a-chip must be considered.
+The rest of this paper is organized as follows. We first review the related work in the TTNoC scheduling in Section~\ref{s:relate}. 
+The system model is given in Section~\ref{s:model}, followed by the schedule constrains in Section~\ref{s:constrain}.
+Next we presents the problem formulation and assumptions in Section~\ref{s:formulation}.
+Then the memetic algorithm is described in Section~\ref{s:algorithm}.
+The experiments as well as synthesis results are presented in Section~\ref{s:evalu}.
+Finally, we conclude in Section~\ref{s:conclud}.
 
-Time-Triggered system resolves contention on the network and avoids dynamic arbitration of intercommunicate resources distribution by the synchronizing time of communication entities and static schedule upon the global synchronized time []. With the control of a global time imposed by the system, the local time of every node on the chip is synchronized to each other. The offset time point of each message (the injection of each messages), from any nodes on the network, is defined by a static schedule table, and the switches on the network also transmit the messages in terms of the schedule table. Therefore, all the messages are received, transmitted or sent at a deterministic time point with the correctness and predictability of real-time communication. However, synthesizing such an off-line schedule table is rather complicated which is viewed as a bin-packing problem, known as NP-complete []. Synthesizing such static schedules is known to be an NP-complete problem where the complexity is driven by the large number of constraints imposed by the network.
-
-This paper presents a static scheduling approach to solve the TTNoC scheduling problem by the Memetic Algorithm. Memetic Algorithm is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for problem search. 
-
-The rest of this paper is organized as follows. We first review the related work in the TTNoC scheduling Section II. The problem definition and the constrains about the problem \ref{INTRODUCTION} (Section III). Then the memetic algorithm with stochastic ranking has been proposed to find the feasible solution (Section IV). Finally, the memetic algorithm was implemented to compare with other SMT-based static scheduling approaches, and the related discussion was also included (Section V).
-
-
-\section{RELATED WORK}
-There are
+\section{RELATED WORK	\label{s:relate}}
+There are sufficient literature in the scheduling of time-triggered network. \cite{DBLP:conf/rtss/Steiner10} 
+ 
 The scheduling problem of TTNoC has been
 studied firstly in \cite{DBLP:conf/date/HuangBRBK12} which is integrates SMT solver into classical heuristic algorithm. 
-
-%Moreover, our work is also closely similar with the scheduling approaches designed for other time-triggered network. 
-
-the approaches presented literature is mostly based on SMT or SAT solver. 
 \cite{DBLP:conf/sies/ScholerKMO15} introduces an optimal scheduler based on a Boolean SAT solver for a TTNoC.
 In \cite{DBLP:conf/etfa/PozoSRH15} the authors presents a decomposition approach based on SMT solver for extremely large time-triggered network.
-
+\cite{DBLP:conf/indin/MurshedOAK15} introduces a scheduling model based on Mixed Integer Linear Programming (MILP) combining both time-triggered and event-triggered messages on NoC.
 
 Lukasiewycz et al propose
 a transformation of the Flexray scheduling into a bin-packing
@@ -442,10 +440,6 @@ considered in [8]. The author adopts an approach similar to
 ours. A pure SMT formulation is presented, followed by an
 incremental method to improve the scalability.
 
- One major
-difference between [8] and our work is that the route of each
-message is assumed to be known in [8] and therefore the
-author focuses only on the time domain.
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
 % For figures, \caption should occur after the \includegraphics.
@@ -540,7 +534,7 @@ author focuses only on the time domain.
 % footnotes above bottom floats. This can be corrected via the
 % \fnbelowfloat command of the stfloats package.
 
-\section{SYSTEM MODEL}
+\section{SYSTEM MODEL	\label{s:model}}
 
 \subsection{Architecture Model}
 
@@ -593,7 +587,7 @@ To synthesize a set of communication $\mathcal{M}$, We define $\mathcal{M}.\Phi$
 
 Synthesizing the set of communication $\mathcal{M}$  is to determine the offset $m_{i}^{(v_{a},v_{b})}.\phi$ for each communication $m_{i}\in\mathcal{M}$. We define the set of offset for each communication, i.e. $\mathcal{M}.\Phi=\{ m_{i}.\phi \mid m_{i}\in \mathcal{M} \}$. Therefore the key of scheduling of TTNoC is to determine $\mathcal{M}.\Phi$ based on the given architecture model $\mathcal{G}=(\mathcal{V},\mathcal{L})$ and message model $\Gamma$ with scheduling constrains.
 
-\section{SCHEDULING CONSTRAINS}
+\section{SCHEDULING CONSTRAINS\label{s:constrain}}
 
 Scheduling each communication $m_{i}\in\mathcal{M}$ should resolve the constrains on the TTNoC. The synthesized scheduling must satisfy the separation among the set of communication in time domain or space domain, which mainly include offset constrains and link constrains.
 
@@ -645,7 +639,22 @@ Therefore for any $ {m_{i}^{(v_{a},v_{b})}}\in\mathcal{M}, {m_{j}^{(v_{c},v_{d})
 \end{equation}
 where $p,q\geq 0$, $p,q\in\mathcal{Z}$.
 
-\section{ASSUMPTION}
+\section{PROBLEM FORMULATION\label{s:formulation}}
+The problem we are addressing in this paper can be formulated as follow. Given 
+
+(1) the architecture of  network $\mathcal{G}=(\mathcal{V},\mathcal{L})$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ (v_{a},v_{b}) \mid  v_{a},v_{b}\in \mathcal{V}\}$.
+
+(2) the mapping of message to communication node $\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
+
+(3) the routing strategy.
+
+(4) the set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with  $\langle \tau_{i}.s, \tau_{i}.t, \tau_{i}.d\rangle$ for $\tau_{i}\in \Gamma$.
+
+we aim to find a set of communication scheduling $\mathcal{M} = \{m_{1},\dots,m_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
+
+Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle m_{i}^{(v_{a},v_{b})}.\phi, m_{i}^{(v_{a},v_{b})}.\mathcal{T}, m_{i}^{(v_{a},v_{b})}.\mathcal{D},m_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $m_{i}\in \mathcal{M}$. The $m_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$m_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $m_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constrains. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
+
+\subsection{Assumption}
 
 Our assumptions are given as follows. 
 
@@ -661,22 +670,7 @@ The latency of forwarding in switch as well as the propagation latency on links 
 
 In our experiment, for simplicity, the relative deadline is equal to the period for each message. The 2-ary mesh network is used and we randomly generate the mapping on the network. The X-Y routing is adopted as the routing strategy. And the relative deadline for each message equal its period. However the algorithm we introduced can be extended to resolve the scheduling problem with the general topology and arbitrary deterministic routing.
 
-\section{PROBLEM FORMULATION}
-The problem we are addressing in this paper can be formulated as follow. Given 
-
-(1) the architecture of  network $\mathcal{G}=(\mathcal{V},\mathcal{L})$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ (v_{a},v_{b}) \mid  v_{a},v_{b}\in \mathcal{V}\}$.
-
-(2) the mapping of message to communication node $\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
-
-(3) the routing strategy.
-
-(4) the set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with  $\langle \tau_{i}.s, \tau_{i}.t, \tau_{i}.d\rangle$ for $\tau_{i}\in \Gamma$.
-
-we aim to find a set of communication scheduling $\mathcal{M} = \{m_{1},\dots,m_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
-
-Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle m_{i}^{(v_{a},v_{b})}.\phi, m_{i}^{(v_{a},v_{b})}.\mathcal{T}, m_{i}^{(v_{a},v_{b})}.\mathcal{D},m_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $m_{i}\in \mathcal{M}$. The $m_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$m_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $m_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constrains. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
-
-\section{MEMETIC ALGORITHM}
+\section{MEMETIC ALGORITHM\label{s:algorithm}}
 
 Memetic algorithm(MA) is a population-based hybrid genetic algorithm(GA) coupled with an individual learning procedure capable of performing local refinements\cite{DBLP:journals/cim/OngLC10}. 
 
@@ -945,7 +939,7 @@ Fig~\ref{f:local} shows an example of local search for $individual 0$ in Fig~\re
 
 In our implement, we naively traverse all the possible offset. However for improving efficiency, many other algorithm in local search can be applied, i.e. tabu search, simulated annealing. And different local search strategy may increase the performance of the memetic algorithm.
 
-\section{EVALUATION}
+\section{EVALUATION\label{s:evalu}}
 
 \subsection{Experiments Configuration}
 
@@ -976,13 +970,13 @@ We consider the number of feasible  case in each experiment type. For each test 
 	\label{f:feasible}
 \end{figure}
 
-\section{FUTURE WORK}
+\subsection{Discussions}
 
 Synthesizing a feasible scheduling depends on the number of communication and the scale of TTNoC. It is hard for memetic algorithm to synthesize a feasible scheduling when the set of communication is large and/or the TTNoC architecture is small. However, except of two reason above, the mapping between a message and a communication node and routing strategy of communications also affect generating a feasible solution. Therefore the designer can manually change the map allocation or the routing strategy to the failed messages, and even design a larger network architecture if needed, and after these change, the feasible scheduling can be generated by the memetic algorithm iteratively. 
 
 Therefore the mapping between messages and nodes and routing strategy can be integrated to the TTNoC scheduling in our future work. And the different TTNoC architecture, i.e. torus, hypercube, and different local search strategy may be also considered in our experiment.
 
-\section{CONCLUSION}
+\section{CONCLUSION\label{s:conclud}}
 
 This paper introduces a memetic algorithm to resolve the message scheduling problem on the TTNoC for the real-time communication. We test our memetic algorithm with different scales of TTNoC and various messages. The experiment results shows that our memetic algorithm is efficient to synthesize a scheduling with low fail communication percentage.
 
