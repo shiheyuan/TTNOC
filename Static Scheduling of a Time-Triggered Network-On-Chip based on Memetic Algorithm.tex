@@ -400,7 +400,7 @@ Time-Triggered Network-on-Chip (TTNoC) is one of the practical applications of r
 
 
 
-\section{INTRODUCTION}
+\section{Introduction}
 
 Time-triggered systems is one of the real-time systems with high throughput and temporal predictability for multiprocessor systems.
 Since isolating the inherent fault as well as satisfying the temporal predictability of communication, time-triggered systems is widely deployed in various field, e.g.
@@ -413,10 +413,12 @@ The two main architecture of time-triggered system are bus-based and network-bas
 Bus-based architecture just enable there is only one message transmitted on the system at the same time. 
 Therefore each message own its unique duration to occupy the physical link for communication.
 Unlike the bus-based architecture, The network-based architecture allows a set of message to be transmitted at the same time, on condition that the physical links the messages used are non-overlapping.
-It entails messages sharing the time domain to communicate. Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architecture. In bus-based architecture, all the messages ($m_0$,$m_1$,$m_2$) achieve temporal separation. In network-based architecture, the set of messages ($m_0$,$m_1$,$m_2$) is able to share the time domain if there is no spacing conflict among the transmission of them.
+It entails messages sharing the time domain to communicate. Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architecture.
+In bus-based architecture, all the messages ($m_0$,$m_1$,$m_2$) achieve temporal separation. 
+In network-based architecture, the set of messages ($m_0$,$m_1$,$m_2$) is able to share the time domain if there is no spacing conflict among the transmission of them.
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=2.5in]{picture/difference.pdf}
+	\includegraphics[width=3.5in]{picture/difference.pdf}
 	\caption{Difference between bus- and network-based time-triggered architecture}
 	\label{f:diff}
 \end{figure}
@@ -426,7 +428,7 @@ Static scheduling is adopted to synthesize the scheduling which resolves content
 So that the communication on the TTNoC is predefined while satisfying the scheduling constrains.
 However, synthesizing such a scheduling is rather complicated which is known as NP-complete~\cite{DBLP:conf/date/HuangBRBK12,DBLP:conf/rtss/Steiner10}.
 
-The main contribution of this paper is presenting a static scheduling approach to resolve the TTNoC scheduling problem by the Memetic Algorithm (MA). MA is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for problem search~\cite{DBLP:journals/tec/ChenOLT11}. 
+The main contribution of this paper is presenting a static scheduling approach to resolve the TTNoC scheduling problem by the Memetic Algorithm (MA). MA is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for solution search~\cite{DBLP:journals/tec/ChenOLT11}. 
 
 The rest of this paper is organized as follows. We first review the related work in the TTNoC scheduling in Section~\ref{s:relate}. 
 The system model is given in Section~\ref{s:model}, followed by the schedule constrains in Section~\ref{s:constrain}.
@@ -435,8 +437,12 @@ Then the memetic algorithm is described in Section~\ref{s:algorithm}.
 The experiments as well as synthesis results are presented in Section~\ref{s:evalu}.
 Finally, we conclude in Section~\ref{s:conclud}.
 
-\section{RELATED WORK	\label{s:relate}}
-There are sufficient literature in the scheduling of time-triggered network. \cite{DBLP:conf/rtss/Steiner10} 
+\section{Related Work	\label{s:relate}}
+There are sufficient literatures about the scheduling of time-triggered network, which is similar to the scheduling of TTNoC. 
+\cite{DBLP:conf/rtss/Steiner10} consider the scheduling problem for time-triggered multi-hop networks. 
+A pure satisfiability modulo theories (SMT) formulation is presented, followed by an incremental method to improve the scalability.
+\cite{DBLP:journals/rts/CraciunasO16,DBLP:conf/rtns/CraciunasO14} formulate the schedule problem using first-order logical constraints and present alternative methods to find a solution based on SMT and mixed integer programming (MIP) solvers.
+
  
 The scheduling problem of TTNoC has been
 studied firstly in \cite{DBLP:conf/date/HuangBRBK12} which is integrates SMT solver into classical heuristic algorithm. 
@@ -444,17 +450,6 @@ studied firstly in \cite{DBLP:conf/date/HuangBRBK12} which is integrates SMT sol
 In \cite{DBLP:conf/etfa/PozoSRH15} the authors presents a decomposition approach based on SMT solver for extremely large time-triggered network.
 \cite{DBLP:conf/indin/MurshedOAK15} introduces a scheduling model based on Mixed Integer Linear Programming (MILP) combining both time-triggered and event-triggered messages on NoC.
 
-Lukasiewycz et al propose
-a transformation of the Flexray scheduling into a bin-packing
-problem and solve it subsequently using ILP [4]. To increase
-the effective bandwidth, the concept of switched Flexray is
-proposed in [5]. The corresponding scheduling problem is
-studied in [6], [7]. Their solutions are based on the branchand-
-price algorithm [6] and graph-based heuristics [7]. The
-scheduling problem for time-triggered multi-hop networks is
-considered in [8]. The author adopts an approach similar to
-ours. A pure SMT formulation is presented, followed by an
-incremental method to improve the scalability.
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
