@@ -60,12 +60,6 @@
 % \documentclass[conference]{../sty/IEEEtran}
 
 
-
-\usepackage{algorithm}
-\usepackage{algorithmic}
-\usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{multirow}
 % Some very useful LaTeX packages include:
 % (uncomment the ones you want to load)
 
@@ -304,6 +298,28 @@
 % (Unless specifically asked to do so by the journal or conference you plan
 % to submit to, of course. )
 
+% *** packages included here ***
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{multirow}
+
+% *** Let's defined our own macros here ***
+\newcommand{\calG}{\mathcal{G}}
+\newcommand{\calV}{\mathcal{V}}
+\newcommand{\calL}{\mathcal{L}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calR}{\mathcal{R}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calT}{\mathcal{T}}
+\newcommand{\width}{\mathit{W}_\calG}
+\newcommand{\SD}{\mathit{SD}_\calG}
+\newcommand{\HD}{\mathit{HD}_\calG}
+\newcommand{\MT}{\mathit{MT}_\calG}
+\newcommand{\route}[3]{#1^{\langle #2,#3\rangle}}
+
+
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -534,58 +550,160 @@ In \cite{DBLP:conf/etfa/PozoSRH15} the authors presents a decomposition approach
 % footnotes above bottom floats. This can be corrected via the
 % \fnbelowfloat command of the stfloats package.
 
-\section{SYSTEM MODEL	\label{s:model}}
+\section{System Model}
+\label{s:model}
 
 \subsection{Architecture Model}
-
-A TTNoC is a system with a set of real-time
-tasks/applications mapped on
-a multi-core interconnection platform, composed of a set of identical
-processing elements interconnected by physical links and network
-switches. The topologies of a TTNoC can be either regular or
+A TTNoC is a system with a set of real-time tasks/applications mapped
+on a multi-core interconnection platform, composed of a set of
+identical processing elements interconnected by physical links and
+network switches. The topologies of a TTNoC can be either regular or
 irregular.
 
-We adopt the architecture shown in~\cite{DBLP:conf/rtcsa/PaukovitsK08}.
-The architecture model is formulated by a direct graph $\mathcal{G}=(\mathcal{V},\mathcal{L})$. The set of vertexes $\mathcal{V}=\{ v_{1},\dots,v_{m}\}$ represents the set of $\mathit{m}$ identical communication nodes (the processing elements and switches) while the edges $\mathcal{L}\subseteq \mathcal{V} \times \mathcal{V}$ comprises the communication physical links connecting the nodes. 
+We adopt the architecture shown
+in~\cite{DBLP:conf/rtcsa/PaukovitsK08}. The architecture of a TTNoC is
+modeled by a directed graph $\calG=(\calV,\calL)$. The set of vertexes
+$\mathcal{V}=\{ v_{1},\dots,v_{m}\}$ represents the set of $m$
+\emph{identical} communication nodes (the processing elements and
+switches) while the edges $\mathcal{L}\subseteq \mathcal{V} \times
+\mathcal{V}$ comprises the communication physical links
+\emph{directly} connecting the nodes.  The physical links are
+full-duplex, allowing thus communication in both
+directions. Therefore, given $v_i,v_j\in\calV$, $\langle
+v_i,v_j\rangle \in\calL$ implies $\langle v_j,v_i\rangle\in\calL$,
+where $\langle v_i,v_j\rangle$ is a pair denoting a directed physical
+link connecting from a source node $v_i$ to a sink node $v_j$.
 
-The physical links are full-duplex, allowing thus communication in both directions. Therefore we have that $\forall v_{a},v_{b}\in\mathcal{V}, (v_{a},v_{b}) \in \mathcal{L} \Rightarrow (v_{b},v_{a})\in \mathcal{L}$, where $(v_{a},v_{b})$ is an ordered tuple denotes a directed logical link connecting from a source node $v_{a}\in \mathcal{V}$ to a sink node $v_{b}\in \mathcal{V}$. A network link $(v_{a},v_{b})$, between the source node $v_{a}$ and the sink node $v_{b}$, is defined by the tuple $\langle (v_{a},v_{b}).w, (v_{a},v_{b}).sd,(v_{a},v_{b}).pd,(v_{a},v_{b}).mt, (v_{a},v_{b}).h\rangle$, where $(v_{a},v_{b}).w$ is the width of physical links, $(v_{a},v_{b}).sd$ is the switching delay in the switches on network link, $(v_{a},v_{b}).pd$ is the link delay per hop which means propagation cost between adjacent nodes, $(v_{a},v_{b}).mt$ is the macrotick of network denotes the time-line granularity of the physical link and $(v_{a},v_{b}).h$ is the number of hops from $v_{a}$ to $v_{b}$ on the link $(v_{a},v_{b})$.
+A TTNoC $\calG$ is equipped with a set of properties. We use $\width$
+to denote the width of physical links in the TTNoC, $\SD$ for the
+switching delay in the switches, $\HD$ for the link delay per hop
+which means propagation cost between adjacent nodes, and $\MT$ for the
+macrotick of network representing the time-line granularity of the
+physical link.
 
-For a communication node $ \mathit{v}_{i}\in\mathcal{V} $, it offer $\mathit{d}$ input links and $\mathit{d}$ output links, $\mathit{d}$ is the switch degree. Therefore a switch is able to connected with at most $ \mathit{d} $ port in full-duplex connection. The adjoint switches $v_{i}\in\mathcal{V}$ and $v_{j}\in\mathcal{V}$ which connect with each other through physical link rather than the forwarding by other switches, is defined by the sequence $ <v_{i},v_{j}> $. Therefore the network link $(v_{a},v_{b})$ can be split in several connection among the adjoint switches  $v_{i}\in\mathcal{V}$, and we have that 
-$ (v_{a},v_{b})=\{ \langle v_{a},v_{1}> ,\dots, <v_{i},v_{j}> ,\dots, <v_{n},v_{b}> \} $.
+%% A network link $(v_{a},v_{b})$, between the source node
+%% $v_{a}$ and the sink node $v_{b}$, is defined by the tuple $\langle
+%% (v_{a},v_{b}).w, (v_{a},v_{b}).sd,(v_{a},v_{b}).pd,(v_{a},v_{b}).mt,
+%% (v_{a},v_{b}).h\rangle$, where $(v_{a},v_{b}).w$ is the width of
+%% physical links, $(v_{a},v_{b}).sd$ is the switching delay in the
+%% switches on network link, $(v_{a},v_{b}).pd$ is the link delay per hop
+%% which means propagation cost between adjacent nodes,
+%% $(v_{a},v_{b}).mt$ is the macrotick of network denotes the time-line
+%% granularity of the physical link and $(v_{a},v_{b}).h$ is the number
+%% of hops from $v_{a}$ to $v_{b}$ on the link $(v_{a},v_{b})$.
+
+Given two nodes $v,v'\in\calV$, a \emph{route} from $v$ to $v'$,
+denoted by $\route{r}{v}{v'}$, is defined as a sequence of the form
+$\langle v_{k_0},v_{k_1}\rangle\langle
+v_{k_1},v_{k_2}\rangle\ldots\langle v_{k_{i-1}},v_{k_i}\rangle\langle
+v_{k_i},v_{k_{i+1}}\rangle\ldots \langle v_{k_{n-1}},v_{k_n}\rangle$
+satisfying $v_{k_0}=v$, $v_{k_n}=v'$ and $(\forall i\in [1,n])\langle
+v_{k_{i-1}},v_{k_i}\rangle \in\calL$. The length $n$ of the route is
+written as $|\route{r}{v}{v'}|$. A route $\route{r}{v_i}{v_j}$
+represents a \emph{possibly undirect} physical link from $v_i$ to
+$v_j$ in the TTNoC, hence its length $|\route{r}{v_i}{v_j}|$ is the
+number of hops along this link.
+
+%% For a communication node $ \mathit{v}_{i}\in\mathcal{V} $, it offer
+%% $\mathit{d}$ input links and $\mathit{d}$ output links, $\mathit{d}$
+%% is the switch degree. Therefore a switch is able to connected with at
+%% most $ \mathit{d} $ port in full-duplex connection. The adjoint
+%% switches $v_{i}\in\mathcal{V}$ and $v_{j}\in\mathcal{V}$ which connect
+%% with each other through physical link rather than the forwarding by
+%% other switches, is defined by the sequence $ <v_{i},v_{j}>
+%% $. Therefore the network link $(v_{a},v_{b})$ can be split in several
+%% connection among the adjoint switches $v_{i}\in\mathcal{V}$, and we
+%% have that $ (v_{a},v_{b})=\{ \langle v_{a},v_{1}> ,\dots,
+%% <v_{i},v_{j}> ,\dots, <v_{n},v_{b}> \} $.  
+
 
 \subsection{Message Model}
+The application on the TTNoC consists of tasks, which are transmitted by
+messages. Only periodic messages are discussed in this paper because
+it is the typical case in real-time embedded systems. But in practice,
+the fixed time slot can be preserved in terms of the route and
+deadline periodically for sporadic messages. According to the timing
+specification of TTNoC, the period must be a positive power of two in
+terms of macrotick, i.e. the messages are harmonic [].
 
-The application on the TTNoC consists of tasks, which transmitted by messages. Only periodic messages are discussed in this paper because it is the typical case in real-time embedded systems. But in practice, the fixed time slot can be preserved in terms of the route and deadline periodically for sporadic messages. According to the timing specification of TTNoC, the period must be a positive power of two in terms of macrotick, i.e. the messages are harmonic [].
-
-We denote the set of $ \mathit{m} $ time-triggered messages on the TTNoC by $\Gamma = \{\tau_{1},\dots,\tau_{m} \}$. Each message $\tau_{i}$ is defined by the tuple $\langle \tau_{i}.s, \tau_{i}.t, \tau_{i}.d\rangle$, where $\tau_{i}.s$ denotes the size of message in byte, $\tau_{i}.t$ denotes the period of message and $\tau_{i}.d$ is the relative deadline of message.
+We denote the set of $n$ time-triggered messages on the TTNoC by
+$\Gamma = \{\tau_{1},\dots,\tau_{n}\}$. Each message $\tau_{i}$ is
+modeled by the tuple $\langle \tau_{i}.S, \tau_{i}.T,
+\tau_{i}.D\rangle$, where $\tau_{i}.S$ denotes the size of the message
+in byte, $\tau_{i}.T$ and $\tau_{i}.D$ are the period and the relative
+deadline of the message, respectively.
 
 \subsection{Communication Model}
+When a communication happens on the TTNoC, i.e. a source node $v_i\in
+\calV$ sends a message $\tau_{k}$ to a sink node $v_j\in \calV$ on the
+TTNoC, the message $\tau_k$ is transmitted on some route
+$\route{r}{v_i}{v_j}$.  And the communication nodes along the route
+$\route{r}{v_i}{v_j}$ forward the message.
 
-When a communication happened on the TTNoC, i.e. the communication source node $v_{a}\in \mathcal{V}$ send a message $\tau_{i}$ to the communication sink node $v_{b}\in \mathcal{V}$ on the TTNoC, the message $\tau_{i}$ is transmitted on the network link $(v_{a},v_{b})$ from the source node $v_{a}$ to the sink node $v_{b}$. And the communication nodes on the link $(v_{a},v_{b})$ forward the message.
+Based on the architecture and message model, we can model the message
+communication as a set $\calS=\{s_1,\ldots,s_n\}$, in which each
+$s_{i}$ denotes the communication scheduling of the message
+$\tau_{i}\in\Gamma$. Each communication $s_{i}\in\calS$ is defined
+using a tuple $\langle s_i.R, s_i.\phi, s_i.T, s_i.D, s_i.L\rangle$,
+where $s_i.R$ is the route along which the message $\tau_i$ is
+forwarded, $s_i.\phi$ is the offset of the communication, $s_i.T$ and
+$s_i.D$ denote, respectively, the period and the relative deadline of
+the communication, and $s_i.L$ is the duration of the communication.
+For the whole set $\calS$, the sets of the route, the period, the
+relative deadline and the delay of each $s_i\in\calS$ are defined as
+expected, denoted by $\calS.\calR$, $\calS.\Phi$, $\calS.\calT$,
+$\calS.\calD$ and $\calS.\calL$, respectively.
 
-Based on the architecture and message model, we can model the set of message communication $\mathcal{M}=\{ m_{1},\dots,m_{i}\}$, where $m_{i}\in\mathcal{M}$ denotes the communication scheduling of a message $\tau_{i}\in\Gamma$. For each message $\tau_{i}\in\Gamma$ on the link $(v_{a},v_{b}) $ where $v_{a},v_{b}\in\mathcal{V}$, we model the communication $m_{i}\in\mathcal{M}$ as a tuple  $\langle m_{i}^{(v_{a},v_{b})}.\phi, m_{i}^{(v_{a},v_{b})}.\mathcal{T}, m_{i}^{(v_{a},v_{b})}.\mathcal{D},m_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$, where $ m_{i}^{(v_{a},v_{b})}.\phi$ is the offset of communication, $ m_{i}^{(v_{a},v_{b})}.\mathcal{T} $ is the period of communication, $m_{i}^{(v_{a},v_{b})}.\mathcal{D}$ is the relative deadline of communication, $m_{i}^{(v_{a},v_{b})}.\mathcal{L}$ is the duration of communication and $(v_{a},v_{b})$ in the tuple is the network link for communication.
+%% Based on the architecture and message model, we can model the set of
+%% message communication $\mathcal{M}=\{ m_{1},\dots,m_{i}\}$, where
+%% $m_{i}\in\mathcal{M}$ denotes the communication scheduling of a
+%% message $\tau_{i}\in\Gamma$. For each message $\tau_{i}\in\Gamma$ on
+%% the link $(v_{a},v_{b}) $ where $v_{a},v_{b}\in\mathcal{V}$, we model
+%% the communication $m_{i}\in\mathcal{M}$ as a tuple $\langle
+%% m_{i}^{(v_{a},v_{b})}.\phi, m_{i}^{(v_{a},v_{b})}.\mathcal{T},
+%% m_{i}^{(v_{a},v_{b})}.\mathcal{D},m_{i}^{(v_{a},v_{b})}.\mathcal{L}
+%% \rangle$, where $ m_{i}^{(v_{a},v_{b})}.\phi$ is the offset of
+%% communication, $ m_{i}^{(v_{a},v_{b})}.\mathcal{T} $ is the period of
+%% communication, $m_{i}^{(v_{a},v_{b})}.\mathcal{D}$ is the relative
+%% deadline of communication, $m_{i}^{(v_{a},v_{b})}.\mathcal{L}$ is the
+%% duration of communication and $(v_{a},v_{b})$ in the tuple is the
+%% network link for communication.
 
-The granularity of communication is macrotick, for a communication $m_{i}$, we have that
+The granularity of communication is macrotick, for each communication
+$s_{i}$, we have the following formulas:
 \begin{equation}
-	m_{i}^{(v_{a},v_{b})}.\mathcal{T} =\lceil\frac{\tau_{i}.period}{ (v_{a},v_{b}).mt} \rceil
+\label{e:eqn1}
+  s_i.T = \lceil\frac{\tau_{i}.T}{\MT} \rceil
 \end{equation}
 \begin{equation}
-m_{i}^{(v_{a},v_{b})}.\mathcal{D}=\lceil\frac{\tau_{i}.deadline}{(v_{a},v_{b}).mt}\rceil
+\label{e:eqn2}
+  s_i.D = \lceil\frac{\tau_{i}.D}{\MT}\rceil
 \end{equation}
 \begin{equation}
-m_{i}^{(v_{a},v_{b})}.\mathcal{L}=
-\lceil\frac{(v_{a},v_{b}).h\times(v_{a},v_{b}).d\times\lceil\frac{\tau_{i}.s+(v_{a},v_{b}).w}{(v_{a},v_{b}).w}\rceil}{(v_{a},v_{b}).mt}\rceil
+\label{e:eqn3}
+  s_i.L = \lceil\frac{|s_i.R| \times (\SD+\HD) \times
+    \lceil\frac{\tau_{i}.S + \width}{\width}\rceil}{\MT}\rceil
 %\lceil\frac{\tau_{i}.s\times (v_{a},v_{b}).sc+(v_{a},v_{b}).delay}{ (v_{a},v_{b}).mt}\rceil 
 \end{equation}
-where $(v_{a},v_{b}).d = (v_{a},v_{b}).sd+(v_{a},v_{b}).pd $ denotes the delay of propagating and switching delay per hop.
+%% where $(v_{a},v_{b}).d = (v_{a},v_{b}).sd+(v_{a},v_{b}).pd $ denotes
+%% the delay of propagating and switching delay per hop.
 
-For $m_{i}\in \mathcal{M}$, The $m_{i}^{(v_{a},v_{b})}.\mathcal{T}$, $m_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $m_{i}^{(v_{a},v_{b})}.\mathcal{L}$ is derived by formula (1), (2) and (3). Formula (1) and (2) denote the period and deadline of the communication model in macrotick. (3) is the delay denotes the time cost in macrotick, from the first byte sent by source node to the last byte received by sink node. And according to store-and-forward(SAF) switching [].
+Given an $s_{i}\in\calS$ and its route $s_i.R$, $s_i.T$, $s_i.D$ and
+$s_i.L$ can be derived by formulas~\ref{e:eqn1},\ref{e:eqn2}
+and~\ref{e:eqn3}.  Formulas~\ref{e:eqn1} and~\ref{e:eqn2} denote,
+respectively, the period and the deadline of the communication $s_i$
+in macrotick. Formula~\ref{e:eqn3} computes the time cost in
+macrotick, from the first byte sent by the source node to the last
+byte received by the sink node, according to store-and-forward (SAF)
+switching []. 
 
+As a result, to synthesize the set of communication $\calS$ is to
+calculate the offset $s_i.\phi$ for each communication
+$s_i\in\calS$. Therefore, the key to scheduling of TTNoC is to derive
+$\calS.\Phi = \{s_i.\phi\mid s_i\in\calS\}$ based on the given
+architecture model $\calG$ and the message model $\Gamma$ with
+\emph{scheduling constrains}.
 
-
-To synthesize a set of communication $\mathcal{M}$, We define $\mathcal{M}.\Phi$ $\mathcal{M.T}$, $\mathcal{M.D}$ and $\mathcal{M.L}$ as the set of offset, period, relative deadline and delay of each communication $m_{i}\in \mathcal{M}$.
-
-Synthesizing the set of communication $\mathcal{M}$  is to determine the offset $m_{i}^{(v_{a},v_{b})}.\phi$ for each communication $m_{i}\in\mathcal{M}$. We define the set of offset for each communication, i.e. $\mathcal{M}.\Phi=\{ m_{i}.\phi \mid m_{i}\in \mathcal{M} \}$. Therefore the key of scheduling of TTNoC is to determine $\mathcal{M}.\Phi$ based on the given architecture model $\mathcal{G}=(\mathcal{V},\mathcal{L})$ and message model $\Gamma$ with scheduling constrains.
 
 \section{SCHEDULING CONSTRAINS\label{s:constrain}}
 
