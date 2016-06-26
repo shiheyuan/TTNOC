@@ -590,7 +590,7 @@ full-duplex, allowing thus communication in both
 directions. Therefore, given $v_i,v_j\in\calV$, $\langle
 v_i,v_j\rangle \in\calL$ implies $\langle v_j,v_i\rangle\in\calL$,
 where $\langle v_i,v_j\rangle$ is a pair denoting a directed physical
-link connecting from a source node $v_i$ to a sink node $v_j$.
+link connecting two adjacent nodes, from a source node $v_i$ to a sink node $v_j$.
 
  
 The TTNoC composed of a set of identical process elements and physical links.
@@ -732,7 +732,7 @@ the period and the deadline of the communication $s_i$ in macrotick.
 Formula~\ref{e:eqn3} computes the time cost in macrotick,
  from the first flit sent by the source node to the last flit received by the sink node, 
  according to store-and-forward (SAF) switching scheme~\cite{DBLP:books/daglib/0087651}. 
-Moreover, other scheme of switching on the NoC can be also deployed in the TTNoC according to the requirements.
+Moreover, other scheme of switching on the NoC can be also deployed in the TTNoC according to the requirements. In this case, the delay formula \ref{e:eqn3} may be changed according to the given switching scheme.
 
 As a result, to synthesize the set of communication $\calS$ is to
 calculate the offset $s_i.\phi$ for each communication
@@ -744,7 +744,7 @@ architecture model $\calG$ and the messages model $\Gamma$ with
 
 \section{SCHEDULING CONSTRAINS\label{s:constrain}}
 
-The scheduling constrains for time-triggered multi-hop network is presented in ~\cite{DBLP:conf/rtss/Steiner10}. 
+The scheduling constrains for general time-triggered multi-hop network is presented in ~\cite{DBLP:conf/rtss/Steiner10}. 
 The scheduling constrains on TTNoC is similar with general time-triggered network, 
 while some differences existing in terms of our model.
 
@@ -793,70 +793,68 @@ overlap(s_i,s_j)=
 \end{cases}
 \end{equation}
 
-The duration of communication $m_{i}$ in $\mathit{k}$th period is defined by $v_i(k)$, which equals
+The duration of communication $m_{i}$ in its $\mathit{k}$th period is defined by $s_i(k)$, which equals
 \begin{equation}
-	v_i(k)
+	s_i(k)
 	=
 	[
-	k\times v_i.T
+	k\times s_i.T+s_i.\phi
 	,
-	k\times v_i.T+v_i.\phi+v_i.L
+	k\times s_i.T+s_i.\phi+s_i.L
 	%{m_{i}^{(v_{a},v_{b})}}.\mathcal{T}+{m_{i}^{(v_{a},v_{b})}}.\phi+{m_{i}^{(v_{a},v_{b})}}.\mathcal{L}			
 	]
 \end{equation}
 
-Therefore for any $ {m_{i}^{(v_{a},v_{b})}}\in\mathcal{M}, {m_{j}^{(v_{c},v_{d})}}\in\mathcal{M}$, we have that
+Therefore for any 
+$	s_i,s_j \in \calS, s_i \neq s_j	$,
+%$ {m_{i}^{(v_{a},v_{b})}}\in\mathcal{M}, {m_{j}^{(v_{c},v_{d})}}\in\mathcal{M}$,
+we have that
 \begin{equation}
-	(v_{a},v_{b})
-	\cap
-	(c_{c},v_{d})
-	\neq
-	\emptyset
+	s_i.R \cap s_j.R \neq \emptyset
 	\Longrightarrow
-	{m_{i}^{(v_{a},v_{b})}}(p)
-	\cap
-	{m_{j}^{(v_{c},v_{d})}}(q)
-	=
-	\emptyset	
+	s_i(p) \cap s_j(p) = \emptyset
 \end{equation}
+%\begin{equation}
+%	(v_{a},v_{b})
+%	\cap
+%	(c_{c},v_{d})
+%	\neq
+%	\emptyset
+%	\Longrightarrow
+%	{m_{i}^{(v_{a},v_{b})}}(p)
+%	\cap
+%	{m_{j}^{(v_{c},v_{d})}}(q)
+%	=
+%	\emptyset	
+%\end{equation}
 where $p,q\geq 0$, $p,q\in\mathcal{Z}$.
 
 \section{PROBLEM FORMULATION\label{s:formulation}}
 The problem we are addressing in this paper can be formulated as follow. Given 
-
-(1) the architecture of  network $\mathcal{G}=(\mathcal{V},\mathcal{L})$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ (v_{a},v_{b}) \mid  v_{a},v_{b}\in \mathcal{V}\}$.
-
-(2) the mapping of message to communication node $\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
-
-(3) the routing strategy.
-
-(4) the set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with  $\langle \tau_{i}.s, \tau_{i}.t, \tau_{i}.d\rangle$ for $\tau_{i}\in \Gamma$.
-
-we aim to find a set of communication scheduling $\mathcal{M} = \{m_{1},\dots,m_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
-
-Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle m_{i}^{(v_{a},v_{b})}.\phi, m_{i}^{(v_{a},v_{b})}.\mathcal{T}, m_{i}^{(v_{a},v_{b})}.\mathcal{D},m_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $m_{i}\in \mathcal{M}$. The $m_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$m_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $m_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constrains. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
-
-\subsection{Assumption}
-
-
 \begin{itemize}
-\item haha
-\item haha
+	\item the architecture of TTNoC $\calG=(\calV,\calL)$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ \langle v_i,v_j  \rangle \mid  v_i,v_j \in \calV\}$.
+	\item the mapping of message to communication node
+		$\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
+		Each message $\tau_{i}\in\Gamma$ is allocated to a specific process element(communication node) $v_{i}\in\mathcal{V}$, 
+		thus the source node $v_{a}$ and sink node $v_{b}$ for each $\tau \in\Gamma$ are determined.
+	\item the set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with 
+	$\langle \tau_{i}.H,\tau_{i}.S, \tau_{i}.T,	\tau_{i}.D\rangle$ for each $\tau \in \Gamma$.
+	\item the route $s_i.R$ for each scheduling $s_i \in \calS$ of message $\tau \in \Gamma$.
 \end{itemize}
+%(1) the architecture of  network $\mathcal{G}=(\mathcal{V},\mathcal{L})$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ (v_{a},v_{b}) \mid  v_{a},v_{b}\in \mathcal{V}\}$.
+%(2) the mapping of message to communication node $\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
+%(3) the routing strategy.
+%(4) the set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with  $\langle \tau_{i}.s, \tau_{i}.t, \tau_{i}.d\rangle$ for $\tau_{i}\in \Gamma$.
+We aim to find the offset $\calS.\Phi$ for messages $\Gamma$ on TTNoC $\calG=(\calV,\calL)$ which satisfy the scheduling constrains. 
 
-Our assumptions are given as follows. 
+We introduce the memetic algorithm to synthesize the set of offset $\calS.\Phi$ such that satisfies the scheduling constrains. 
+If it is impossible to synthesize a set of scheduled communication, 
+then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
+% $\mathcal{M} = \{m_{1},\dots,m_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
 
-The topology of TTNoC $\mathcal{G}=(\mathcal{V},\mathcal{L})$ is given.
+%Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle m_{i}^{(v_{a},v_{b})}.\phi, m_{i}^{(v_{a},v_{b})}.\mathcal{T}, m_{i}^{(v_{a},v_{b})}.\mathcal{D},m_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $m_{i}\in \mathcal{M}$. The $m_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$m_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $m_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constrains. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
 
-The mapping between a message and a communication node $\{ <\tau_{i} , v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V} \}$ is given. Each message $\tau_{i}\in\Gamma$ is allocated to a specific process element(communication node) $v_{i}\in\mathcal{V}$, thus the source node $v_{a}$ and sink node $v_{b}$ in $(v_{a},v_{b})\in \mathcal{L}$ are determined.
 
-The routing strategy of each message is given. Therefore the link $(v_{a},v_{b})$ and the set of switches for forwarding the message is deterministic.To transmit a message $ \tau_{i}\in\Gamma $, the forwarding path is split in terms of hops by specific routing, i.e. $(v_{a},v_{b})=\{(v_{a},v_{m}),(v_{m},v_{n}),\dots,(v_{p},v_{q}),(v_{q},v_{b})\}$. 
-
-The switching technique is store-and-forward.
-
-The latency of forwarding in switch as well as the propagation latency on links is constant.
-
-In our experiment, for simplicity, the relative deadline is equal to the period for each message. The 2-ary mesh network is used and we randomly generate the mapping on the network. The X-Y routing is adopted as the routing strategy. And the relative deadline for each message equal its period. However the algorithm we introduced can be extended to resolve the scheduling problem with the general topology and arbitrary deterministic routing.
 
 \section{MEMETIC ALGORITHM\label{s:algorithm}}
 
@@ -1135,6 +1133,16 @@ In our implement, we naively traverse all the possible offset. However for impro
 \section{EVALUATION\label{s:evalu}}
 
 \subsection{Experiments Configuration}
+%The mapping between a message and a communication node $\{ <\tau_{i} , v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V} \}$ is given. Each message $\tau_{i}\in\Gamma$ is allocated to a specific process element(communication node) $v_{i}\in\mathcal{V}$, thus the source node $v_{a}$ and sink node $v_{b}$ in $(v_{a},v_{b})\in \mathcal{L}$ are determined.
+
+%The routing strategy of each message is given. Therefore the link $(v_{a},v_{b})$ and the set of switches for forwarding the message is deterministic.To transmit a message $ \tau_{i}\in\Gamma $, the forwarding path is split in terms of hops by specific routing, i.e. $(v_{a},v_{b})=\{(v_{a},v_{m}),(v_{m},v_{n}),\dots,(v_{p},v_{q}),(v_{q},v_{b})\}$. 
+
+%The switching technique is store-and-forward.
+
+%The latency of forwarding in switch as well as the propagation latency on links is constant.
+
+%In our experiment, for simplicity, the relative deadline is equal to the period for each message. The 2-ary mesh network is used and we randomly generate the mapping on the network. The X-Y routing is adopted as the routing strategy. And the relative deadline for each message equal its period. However the algorithm we introduced can be extended to resolve the scheduling problem with the general topology and arbitrary deterministic routing.
+
 
 The network architecture we used is 2D mesh network which scale is $3\times 3$, $5\times 5$ and $7\times 7$, with 9, 25 and 49 switching nodes respectively. the program of our algorithm is implement in JAVA and is running on a Windows machine with 4GHz CPU and 12GB memory. We compare the memetic algorithm with general genetic algorithm without local search. 
 
