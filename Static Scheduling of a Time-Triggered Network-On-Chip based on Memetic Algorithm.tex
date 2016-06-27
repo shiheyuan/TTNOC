@@ -342,13 +342,20 @@
 % use a multiple column layout for up to three different
 % affiliations
 
-\author{\IEEEauthorblockN{Heyuan Shi\IEEEauthorrefmark{1},
-		Jiaxiang Liu\IEEEauthorrefmark{2}}
+
+
+\author{
+	\IEEEauthorblockN{
+		Heyuan Shi\\
+		}
 	\IEEEauthorblockA{
 		School of Software\\
-		Tsinghua University,
-		Beijing, China 30332--0250\\ Email: hey.shi@foxmail.com}
+		Tsinghua University\\
+		Beijing, China\\
+		Email: shy15@tsinghua.edu.cn}
 }
+
+
 
 %\author{
 %	\IEEEauthorblockN{Heyuan Shi}
@@ -403,7 +410,7 @@ Time-Triggered Network-on-Chip (TTNoC) is a time-triggered system deployed on th
 To guarantee the real-time requirements, each message for communication is transmitted by a predefined schedule. 
 However, synthesizing the scheduling is a challenging problem because both path contention and the temporal constrains should be considered. 
 This paper introduces a memetic algorithm (MA) integrating local search into the genetic algorithm, to solve this problem. 
-The experimental results show that the better performance of our memetic algorithm in compare with genetic algorithm.
+The experimental results show that the better performance of our memetic algorithm in compare with the general genetic algorithm.
 \end{abstract}
 % no keywords
 
@@ -1154,7 +1161,7 @@ e.g. The the score of two individual in Fig~\ref{f:indi} is shown in TABLE~\ref{
 	% than the plain LaTeX2e tabular which is used here.
 	\begin{tabular}{|c||c||c||c|}
 		\hline
-		\textbf{Individual} & \textbf{Conflict Set} &\textbf{Conflict Times} &Score\\
+		\textbf{Individual} & \textbf{Conflict} &\textbf{Conflict Times} &\textbf{Score}\\
 		\hline 
 		individual 0 &$s_0,s_2$ & $times(s_0)=2,times(2)=2$ &4\\
 		\hline
@@ -1260,14 +1267,13 @@ The memetic algorithm will finish if there is a feasible scheduling,
  otherwise the algorithm will execute until the iterate 100 times.
 The case which executes exceeds an hour will be regarded as \emph{overtime}.
 
-\subsection{Failed Scheduling Percentage}
-To compare the performance of the general genetic algorithm and memetic algorithm,
- we define the failed scheduling of messages as the minimum number of messages.
+\subsection{Failed Scheduling Rate}
+We define the failed scheduling of messages as the minimum number of messages.
 The messages which failed to scheduling block the scheduling of other messages.
 If the set of failed communication is removed from the given communication set on the TTNoC,
  the remaining messages will be scheduled.
 
-Fig~\ref{f:fail} shows the percentage of failed messages in the set of communication for variable type of test case. 
+Fig~\ref{f:fail} shows the rate of failed messages in the set of communication for variable type of test case. 
 As can be seen,
  though the general algorithm spends quite a few time,
   the rate of failed scheduled messages is much more than the memetic algorithm, especially when the scale of communication set is relatively large.
@@ -1280,15 +1286,47 @@ The reason of this result is that the link resource increases with the growth of
  resulting of decreasing the possibility of contention among the messages transmission on the TTNoC.
 It also presents that the failed communication rate increases when the number of messages on the TTNoC increasing.
 It is because that the limited link resources have to transmit more messages when there is more communication on the TTNoC.
+
+To compare the performance of the general genetic algorithm and memetic algorithm,
+ we define $MA/GA$ to represent the failed scheduling decreasing comparing MA and GA.
+TABLE~\ref{t:performance} depicts the failed scheduling decrease of MA compared with GA.
+As we can see, The rate of failed scheduling by MA is about 30\% of the rate by GA.
+
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=3in]{picture/rate}
-	\caption{The percentage of failed scheduling}
+	\includegraphics[width=3in]{picture/33TTNOC}
+		\includegraphics[width=3in]{picture/55TTNOC}
+			\includegraphics[width=3in]{picture/77TTNOC}
+	\caption{The rate of failed scheduling}
 	\label{f:fail}
 \end{figure}
 
-\subsection{Feasible Case}
-
+\subsection{Feasible Cases}
+\begin{table}[!t]
+	\renewcommand{\arraystretch}{1.3}
+	%if using array.sty, it might be a good idea to tweak the value of
+	% \extrarowheight as needed to properly center the text within the cells
+	\caption{The average rate of failed scheduling in different architecture }
+	\label{t:performance}
+	\centering
+	% Some packages, such as MDW tools, offer better commands for making TABLEs
+	% than the plain LaTeX2e tabular which is used here.
+	\begin{tabular}{|c||c||c||c|}
+		\hline
+		\textbf{Architecture} & \textbf{MA} &\textbf{GA} & \textbf{MA/GA}\\
+		\hline 
+		$3\times 3$ TTNoC&0.0557& 0.1232&	0.4521		
+		\\
+		\hline
+		$5\times 5$ TTNoC& 0.0154	& 0.0685&0.2248\\
+		\hline
+		$7\times 7$ TTNoC& 0.010& 	0.0465&	0.2165\\
+		\hline		
+		\hline
+		\textbf{Average }& 	0.0271 &0.0794&0.2978\\
+		\hline
+	\end{tabular}	
+\end{table}
 We consider the number of feasible case in each experiment type.
 The case is successful if all the communication are scheduled in feasible location without link contention,
  otherwise we consider the case is infeasible case.
@@ -1298,7 +1336,7 @@ For simple test cases with less than 15 communication,
 But for complexed test cases more than 30 messages, it is hard for the algorithms to find a feasible scheduling.
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=3in]{picture/feasible}
+	\includegraphics[width=3in]{picture/feasible_case}
 	\caption{The number of feasible cases in different test cases}
 	\label{f:feasible}
 \end{figure}
@@ -1311,8 +1349,8 @@ However,
  except of two reason above,
   the mapping between a message and a communication node and routing strategy of communications also affect generating a feasible solution.
 Therefore the designer can manually change the map allocation or the routing strategy to the failed scheduling,
- and even design a larger network architecture if needed,
-  and after these change,
+ and even design a larger network architecture if needed.
+After these change,
    the feasible scheduling can be generated by the memetic algorithm iteratively. 
 
 \section{CONCLUSION\label{s:conclud}}
@@ -1322,10 +1360,10 @@ We verify our memetic algorithm with on various random generated messages on dif
 The experiment results shows that our memetic algorithm is efficient to synthesize a scheduling with high percentage of scheduled messages.
 
 In our future work,
-the mapping between messages and nodes and routing strategy can be integrated to the TTNoC scheduling.
+the mapping between messages and nodes and routing strategy may be integrated to the TTNoC scheduling.
 And the different TTNoC architecture,
 i.e. torus, hypercube,
-and different local search strategy may be also considered in our experiment.
+and different local search strategy can be also considered in our experiment.
 
 
 
