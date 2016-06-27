@@ -314,6 +314,7 @@
 \newcommand{\calR}{\mathcal{R}}
 \newcommand{\calD}{\mathcal{D}}
 \newcommand{\calT}{\mathcal{T}}
+\newcommand{\calH}{\mathcal{H}}
 \newcommand{\width}{\mathit{W}_\calG}
 \newcommand{\SD}{\mathit{SD}_\calG}
 \newcommand{\HD}{\mathit{HD}_\calG}
@@ -686,17 +687,17 @@ expected, denoted by $\calS.\calR$, $\calS.\Phi$, $\calS.\calT$,
 $\calS.\calD$ and $\calS.\calL$, respectively.
 
 %% Based on the architecture and message model, we can model the set of
-%% message communication $\mathcal{M}=\{ m_{1},\dots,m_{i}\}$, where
-%% $m_{i}\in\mathcal{M}$ denotes the communication scheduling of a
+%% message communication $\mathcal{M}=\{ s_{1},\dots,s_{i}\}$, where
+%% $s_{i}\in\mathcal{M}$ denotes the communication scheduling of a
 %% message $\tau_{i}\in\Gamma$. For each message $\tau_{i}\in\Gamma$ on
 %% the link $(v_{a},v_{b}) $ where $v_{a},v_{b}\in\mathcal{V}$, we model
-%% the communication $m_{i}\in\mathcal{M}$ as a tuple $\langle
-%% m_{i}^{(v_{a},v_{b})}.\phi, m_{i}^{(v_{a},v_{b})}.\mathcal{T},
-%% m_{i}^{(v_{a},v_{b})}.\mathcal{D},m_{i}^{(v_{a},v_{b})}.\mathcal{L}
-%% \rangle$, where $ m_{i}^{(v_{a},v_{b})}.\phi$ is the offset of
-%% communication, $ m_{i}^{(v_{a},v_{b})}.\mathcal{T} $ is the period of
-%% communication, $m_{i}^{(v_{a},v_{b})}.\mathcal{D}$ is the relative
-%% deadline of communication, $m_{i}^{(v_{a},v_{b})}.\mathcal{L}$ is the
+%% the communication $s_{i}\in\mathcal{M}$ as a tuple $\langle
+%% s_{i}^{(v_{a},v_{b})}.\phi, s_{i}^{(v_{a},v_{b})}.\mathcal{T},
+%% s_{i}^{(v_{a},v_{b})}.\mathcal{D},s_{i}^{(v_{a},v_{b})}.\mathcal{L}
+%% \rangle$, where $ s_{i}^{(v_{a},v_{b})}.\phi$ is the offset of
+%% communication, $ s_{i}^{(v_{a},v_{b})}.\mathcal{T} $ is the period of
+%% communication, $s_{i}^{(v_{a},v_{b})}.\mathcal{D}$ is the relative
+%% deadline of communication, $s_{i}^{(v_{a},v_{b})}.\mathcal{L}$ is the
 %% duration of communication and $(v_{a},v_{b})$ in the tuple is the
 %% network link for communication.
 
@@ -759,7 +760,7 @@ Moreover for the simplicity of evaluation, the constraints of simultaneous relay
 
 \subsection{Message Offset Constrains}
 
-For a scheduled communication $s_{i}\in\calS$ , the offset $s_i.\phi$  must be positive values and should guarantee that the message transmission is completed before the deadline of the communication. Therefore we have that
+For a scheduling of message $s_{i}\in\calS$ , the offset $s_i.\phi$  must be positive values and should guarantee that the message transmission is completed before the deadline of the communication. Therefore we have that
 \begin{equation}
 	(s_i.\phi
 	\geq 0)
@@ -772,20 +773,21 @@ For a scheduled communication $s_{i}\in\calS$ , the offset $s_i.\phi$  must be p
 \subsection{Link Contention Constrains}
 
 For each communication, the message occupies the link in terms of routing strategy without contention, 
-until all the message is received by sink node. The scheduling $\calS$ should guarantee that no two messages that are transmitted on the same time at any time. 
+until all the message is received by sink node.
+The scheduling $\calS$ should guarantee that no two messages that are both transmitted on the identical link time at any time. 
 The synthesized scheduling must guarantee that the links on TTNoC is contention-free.
-It means the message can be transmitted on the link when the previous message is received.
 
 Therefore for any two of the scheduling of message 
 $s_i,s_j\in\calS,s_i\neq s_j$,
-%$m_{i},m_{j}\in\mathcal{M}, m_{i}\neq m_{j}$, 
+%$s_{i},s_{j}\in\mathcal{M}, s_{i}\neq s_{j}$, 
 we define 
-%$ overlap(m_{i},m_{j}) $,
+%$ overlap(s_{i},s_{j}) $,
 $ overlap(s_i,s_j)$
  denotes whether there is common routing link between $s_i$ and $s_j$ or not. 
 $ overlap(s_i,s_j)$ equals 1 if two communications sharing routing link for at least one hop. 
 Therefore we have that
 \begin{equation}
+\label{e:overlap}
 overlap(s_i,s_j)= 
 	\begin{cases}
 	0 \quad s_i.R \cap s_j.R = \emptyset\\
@@ -793,26 +795,27 @@ overlap(s_i,s_j)=
 \end{cases}
 \end{equation}
 
-The duration of communication $m_{i}$ in its $\mathit{k}$th period is defined by $s_i(k)$, which equals
+The duration of scheduling $s_i$ for message $\tau_i$ in its $\mathit{k}$th period is defined by $s_i(k)$, which equals
 \begin{equation}
+\label{e:duration}
 	s_i(k)
 	=
 	[
 	k\times s_i.T+s_i.\phi
 	,
 	k\times s_i.T+s_i.\phi+s_i.L
-	%{m_{i}^{(v_{a},v_{b})}}.\mathcal{T}+{m_{i}^{(v_{a},v_{b})}}.\phi+{m_{i}^{(v_{a},v_{b})}}.\mathcal{L}			
+	%{s_{i}^{(v_{a},v_{b})}}.\mathcal{T}+{s_{i}^{(v_{a},v_{b})}}.\phi+{s_{i}^{(v_{a},v_{b})}}.\mathcal{L}			
 	]
 \end{equation}
 
 Therefore for any 
 $	s_i,s_j \in \calS, s_i \neq s_j	$,
-%$ {m_{i}^{(v_{a},v_{b})}}\in\mathcal{M}, {m_{j}^{(v_{c},v_{d})}}\in\mathcal{M}$,
+%$ {s_{i}^{(v_{a},v_{b})}}\in\mathcal{M}, {s_{j}^{(v_{c},v_{d})}}\in\mathcal{M}$,
 we have that
 \begin{equation}
 	s_i.R \cap s_j.R \neq \emptyset
 	\Longrightarrow
-	s_i(p) \cap s_j(p) = \emptyset
+	s_i(p) \cap s_j(q) = \emptyset
 \end{equation}
 %\begin{equation}
 %	(v_{a},v_{b})
@@ -821,9 +824,9 @@ we have that
 %	\neq
 %	\emptyset
 %	\Longrightarrow
-%	{m_{i}^{(v_{a},v_{b})}}(p)
+%	{s_{i}^{(v_{a},v_{b})}}(p)
 %	\cap
-%	{m_{j}^{(v_{c},v_{d})}}(q)
+%	{s_{j}^{(v_{c},v_{d})}}(q)
 %	=
 %	\emptyset	
 %\end{equation}
@@ -850,9 +853,9 @@ We aim to find the offset $\calS.\Phi$ for messages $\Gamma$ on TTNoC $\calG=(\c
 We introduce the memetic algorithm to synthesize the set of offset $\calS.\Phi$ such that satisfies the scheduling constrains. 
 If it is impossible to synthesize a set of scheduled communication, 
 then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
-% $\mathcal{M} = \{m_{1},\dots,m_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
+% $\mathcal{M} = \{s_{1},\dots,s_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
 
-%Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle m_{i}^{(v_{a},v_{b})}.\phi, m_{i}^{(v_{a},v_{b})}.\mathcal{T}, m_{i}^{(v_{a},v_{b})}.\mathcal{D},m_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $m_{i}\in \mathcal{M}$. The $m_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$m_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $m_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constrains. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
+%Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle s_{i}^{(v_{a},v_{b})}.\phi, s_{i}^{(v_{a},v_{b})}.\mathcal{T}, s_{i}^{(v_{a},v_{b})}.\mathcal{D},s_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $s_{i}\in \mathcal{M}$. The $s_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$s_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $s_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constrains. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
 
 
 
@@ -863,63 +866,87 @@ Memetic algorithm(MA) is a population-based hybrid genetic algorithm(GA) coupled
 Our memetic algorithm consists of two parts. We deploy the genetic algorithm as global searching for the set of communication to be scheduled. And choosing the subset of infeasible communications as the element to local search.
 
 The MA requires genetic representation, fitness function as well as evolution strategy, i.e. crossover, mutation and local search. We firstly give an example of communication scheduling to explain the genetic representation. Next the pseudocode is shown. And then the detail will be discussed.
-
 \subsection{An Example of Scheduling on TTNoC}
 
-To show our memetic algorithm, we firstly give an example of a communication set $\mathcal{M}$ on a $3\times 3$ mesh NoC, shown in figure II. There are a set of communication $\mathcal{M} = \{m_{0},m_{1},m_{2},m_{3},m_{4}\}$ to be scheduled. Each communication $m_{i}\in\mathcal{M}$ own its period, duration as well as link in terms of the given routing strategy, shown in TABLE I. 
+To show our memetic algorithm,
+ we firstly give an example of scheduling $\calS$ of messages $\Gamma$ on a $3\times 3$ mesh NoC,
+ shown in Fig~\ref{f:comm_on_TTNoC}. 
+There are a set of message to be scheduled on the TTNoC,
+ we derive the scheduling model employing the architecture and message model,
+ shown in TABLE~\ref{t:comm_info}.
+%$\mathcal{\calS = \{s_{0},s_{1},s_{2},s_{3},s_{4}\}$ to be scheduled. 
+Each scheduling $s_i\in\calS$ own its period, duration as well as link in terms of the given route.
 It is noted that the period must be a positive power of two in terms of macrotick according to the timing specification of TTNoC~\cite{DBLP:conf/date/HuangBRBK12}.
- 
-Since the relative deadline is equal to period for each message, the possible offset $m_{i}^{(v_{a},v_{b})}.\phi$ of a communication is derived in terms of offset constrains. Therefore we have that
-$	
-0 
-\leq 
-m_{i}.\phi 
-\leq
-m_{i}.\mathcal{D} - m_{i}.\mathcal{L} 
-$.
-The set of possible offset $m_{i}.\Phi = \{ 0,\dots,m_{i}.\mathcal{T} - m_{i}.\mathcal{L}\}$ of each communication is also shown in TABLE I.
+
+We assume that the relative deadline is equal to period for each message for simplicity.
+The set of possible offset is denoted as $s_i.\Phi$ for $s_i\in\calS$.
+$s_i.\Phi$ is derived by $ 0 \leq s_{i}.\phi \leq s_{i}.T - s_{i}.L $ according to the message offset constrains.
+The $s_i.\phi$ is generated among the $s_i.\Phi$.
+The set of possible offset $s_i.\Phi$ for the messages on Fig~\ref{f:comm_on_TTNoC} is also shown in TABLE~\ref{t:comm_info}.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=2.5in]{picture/scheduling_example.pdf}
-	\caption{An example of communication set on the TTNoC}
+	\caption{An example of communication on the TTNoC}
 	\label{f:comm_on_TTNoC}
 \end{figure}
 \begin{table}[!t]
 	\renewcommand{\arraystretch}{1.3}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
-	\caption{An Example of a communication set $\mathcal{M}$}
+	\caption{An Example of scheduling of messages on the TTNoC}
 	\label{t:comm_info}
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making tables
 	% than the plain LaTeX2e tabular which is used here.
 	\begin{tabular}{|c||c||c||c||c|}
 		\hline
-		\textbf{Communication} & \textbf{Link} & \textbf{Period} & \textbf{Delay} & \textbf{Possible Offset}\\
+			\textbf{Scheduling } & 
+			\textbf{Route } & 
+			\textbf{Period} & 
+			\textbf{Delay } & 
+			\textbf{Possible Offset}\\
 		\hline
-		$m_{0}$ & $ (0,4) $ & 2 & 1 & $\{0,1\}$\\
+		$s_{0}$ & $ r^{(0,4)} $ & 2 & 1 & $\{0,1\}$\\
 		\hline
-		$m_{1}$ & $ (3,8) $ & 4 & 1 & $\{0,1,2,3\}$\\
+		$s_{1}$ & $ r^{(3,8)} $ & 4 & 1 & $\{0,1,2,3\}$\\
 		\hline
-		$m_{2}$ & $ (2,7) $ & 4 & 1 & $\{0,1,2,3\}$\\
+		$s_{2}$ & $ r^{(2,7) }$ & 4 & 1 & $\{0,1,2,3\}$\\
 		\hline		
-		$m_{3}$ & $ (5,6) $ & 8 & 2 & $\{0,1,2,3,4,5,6\}$\\
+		$s_{3}$ & $ r^{(5,6) }$ & 8 & 2 & $\{0,1,2,3,4,5,6\}$\\
 		\hline
-		$m_{4}$ & $ (1,5) $ & 8 & 1 & $\{0,1,2,3,4,5,6,7\}$\\
+		$s_{4}$ & $ r^{(1,5) }$ & 8 & 1 & $\{0,1,2,3,4,5,6,7\}$\\
 		\hline		
 	\end{tabular}
 \end{table}
-
 \subsection{Genetic Representation}
 
-The genetic algorithm deployed as global search consists of gene, chromosome, individual and population. The population consists of a set of individual and each contains a chromosome which represents a solution to the given question. A chromosome composes of several gene, which as the unit of chromosome [wiki]. We will define them on the field of scheduling on TTNoC.
+The genetic algorithm employs global search consists of gene, chromosome,
+ individual and population. 
+The population consists of a set of individual and each contains a chromosome which represents a solution to the given question. 
+A chromosome composes of several gene,
+ which is the unit of chromosome.
+We define them on the scheduling on the TTNoC.
 
-In our memetic algorithm, we adopt hyperperiod  $\mathcal{H(M)} = LCM\{\mathcal{M.T}\}$, which is the least common multiple among the set of period of communication set, as the chromosome definition. And the macrotick which is the unit of hyperperiod, is the gene. The length of chromosome equals $\mathcal{H(M)}$, e.g. the hyperperiod is 8 for the given example in TABLE. 
+In our memetic algorithm,
+ we adopt hyperperiod  $H(\calS) = LCM\{\calS.\calT\}$
+ as the chromosome definition.
+Hyperperiod is the least common multiple of the offset among scheduling for messages. 
+And the macrotick is defined as the unit of hyperperiod which is called gene.
+The length of chromosome equals $\mathcal{H(M)}$,
+ e.g. the hyperperiod is 8 for the scheduling set on TABLE~\ref{t:comm_info}. 
 
-The location of a gene on the chromosome denotes the offset $ m_{i}^{(v_{a},v_{b})}.\phi $ of a communication scheduling $ {m_{i}^{(v_{a},v_{b})}\in\mathcal{M}} $. The offset of each communication is distributed on a gene. Therefore a chromosome represents a possible allocation of the offset set of the communication set $\mathcal{M}.\Phi$ It should be noted that a single gene may consists multiple offset of communication, since several communication is able to offset at same time based on the TTNoC architecture.
+The location of a gene on the chromosome denotes the offset $ s_i.\phi $ of a message $\tau_i\in\Gamma$.
+The offset of scheduling is distributed on a gene.
+Therefore each chromosome on different individual represents a possible allocation of the offset set $\calS.\Phi$.
+It should be noted that a single gene may consists multiple offset of messages,
+ since several communication is able to offset at same time based on the TTNoC architecture if the TTNoC is out of contention.
 
-A set of individual with respective chromosome composes the population. The size of population equals the number of individual. An example of population with two individual, based on TABLE, is shown in Fig.
-
+A set of individual with respective chromosome composes the population.
+The size of population equals the number of individual.
+An example of population with two individual,
+ based on TABLE~\ref{t:comm_info},
+  is shown in Fig~\ref{f:indi}.
+And the example of chromosome and gene is also depicted.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3 in]{picture/2individual}
@@ -927,17 +954,34 @@ A set of individual with respective chromosome composes the population. The size
 	\label{f:indi}
 \end{figure}
 
-\subsection{Pseudocode}
+\subsection{Algorithm Description}
 
 According to the genetic representation, we formal give the algorithm process. The pseudocode is given as follow.
 
-The memetic algorithm begins with an initial population. The size of population as well as the maximum iterations is predefined. For a communication $m_{i}\in\mathcal{M}$, the offset of each communication $m_{i}.\phi$ in the initial individual is located randomly among the possible offset $m_{i}.\Phi$. Therefore the initial population satisfies the offset constrains. The algorithm is iterative executed until a feasible scheduling is found or reaching the given maximum iteration.
+The memetic algorithm begins with an initial population $Pop$. The size of population $scale$ as well as the maximum iterations $maxIteration$ is predefined.
+The initial population is synthesized randomly.
+For a scheduling $s_{i}\in\calS$,
+ the offset $s_i.\phi$ in the initial individual is located randomly among the possible offset $s_i.\Phi$.
+Therefore the initial population satisfies the offset constrains.
+The algorithm is iterative executed until a feasible scheduling is found or reaching the given maximum iteration.
 
-When the memetic algorithm get started, firstly the initial population is marked by the fitness function. The detail of fitness function is discussed in $subsection\ D$. Every time marking the population, a score is derived to evaluate each individual. And the less the number of score, the better the individual. Therefore the individual with score equals zero represent a feasible scheduling of the communication set.
+When the memetic algorithm get started, firstly the initial population is marked by the fitness function.
+The score evaluating chromosome of the individual is assigned to individual.
+The less the number of score, the better the individual.
+Therefore the individual with score equals zero represents a feasible scheduling is synthesized.
+The detail of fitness function is discussed in subsection \ref{s:fit}.
 
-Next, the operation of genetic algorithm, i.e. crossover and mutation, is deployed as global search. And after that, the local search is adopted to the population, if there are no feasible scheduling(individual with score of 0). The detail of search strategy deployed in global as well as local search, is discussed in $subsection\ E$ and $subsection\ F$, respectively.
+Next, the operation of genetic algorithm,
+ i.e. crossover and mutation,
+  is deployed as global search.
+And after that the local search is adopted to the population if there are no feasible scheduling(individual with score of 0).
+The detail of search strategy deployed in global as well as local search, is discussed in \ref{s:glo} and \ref{s:loc}, respectively.
 
-After the global and local search, each individual in the population is evaluated by fitness function again. And the new population for the next iteration is generated by selection according to the score of each individual. The individual with less score own more possibility to reserve for the next population. The selection function ensure the size of population is equal to the predefined size in each iteration.
+After the global and local search,
+ each individual in the population is evaluated by fitness function again.
+And the new population for the next iteration is generated by selection according to the score of each individual.
+The individual with less score own more possibility to reserve for the next population.
+The selection function ensure the size of population is equal to the value of $scale$ in each iteration.
 
 \begin{algorithm}[tb]
 	\caption{Memetic Algorithm}
@@ -948,21 +992,21 @@ After the global and local search, each individual in the population is evaluate
 		the size of population $scale$\\
 		maximum iterations $maxIteration$\\
 		\ENSURE~~\\
-		Best scheduling $\mathcal{S}$\\
+		Best scheduling $\calS$\\
 		\FOR {$i = 0$ to $maxIteration-1$}
 			\IF{$i=0$}
-			\STATE // mark the initial population
+			\STATE /*mark the initial population*/
 				\STATE generate the	initial population $initialPop$\\
 				\STATE mark$(initialPop)$
 				\STATE $\mathcal{S}$ = individual with least score \textbf{in} $initialPop$
 				\STATE $Pop = initialPop$
 			\ELSE
-			\STATE // global search
+			\STATE /*global search*/
 				\STATE crossover($Pop$)
 				\STATE mutation($Pop$)
 				\STATE mark$(Pop)$
 			\ENDIF
-			\STATE // choose the individual best so far after global search
+			\STATE /*choose the individual best so far after global search*/
 			\FORALL {individual $indi$ \textbf{in} $Pop$}		
 				\IF{$indi.score<\mathcal{S}.score$}
 					\STATE $\mathcal{S}=indi$
@@ -973,7 +1017,7 @@ After the global and local search, each individual in the population is evaluate
 			\ENDFOR	
 			\STATE localSearch($Pop$)
 			\STATE mark$(Pop)$
-			\STATE // choose the individual best so far after local search
+			\STATE /*choose the individual best so far after local search*/
 			\FORALL {individual $indi$ \textbf{in} $Pop$}		
 				\IF{$indi.score<\mathcal{S}.score$}
 					\STATE $\mathcal{S}=indi$
@@ -988,37 +1032,60 @@ After the global and local search, each individual in the population is evaluate
 	\end{algorithmic}
 \end{algorithm}	
 
-\subsection{Fitness function}
+\subsection{Fitness function \label{s:fit}}
 
-To adopt the fitness function to evaluate individuals, we firstly transform chromosome representing the offset of each communication, into the representation of the duration of each communication in the hyperperiod. Next we derive the link constrains among the set of communication according to the routing strategy, as the basis of our fitness function. Then the score of each individual is able to derived by fitness function.
+To adopt the fitness function to evaluate individuals,
+ we firstly transform chromosome to represent the duration of communication in a hyperperiod.
+Next we derive the link contention constrains among the scheduling according to the routing strategy,
+ as the basis of our fitness function.
+Then the score of each individual is able to employed by fitness function.
 
-For each communication $m_{i}\in \mathcal{M}$, The duration of communication $m_{i}$ in $\mathit{k}$th period ${m_{i}^{(v_{a},v_{b})}}(k)$, is defined by formula (6). And we have that
+For each scheduling $s_i \in \calS$ for the messages on the TTNoC,
+ The delay of scheduling $s_i$ in $k$th period $s_i(k)$, is defined by formula~\ref{e:duration}.
+And we have that
 \begin{equation}
-m_{i}.\mathcal{H} = \{ {m_{i}^{(v_{a},v_{b})}}(k) \mid k \in [0, \mathcal{M.H} / m_{i}.\mathcal{T} - 1] \}
+	s_i.H = \{ s_i(k) \mid k \in [ 0, H(\calS)/s_i.T - 1 ] \}
+%s_{i}.\mathcal{H} = \{ {s_{i}^{(v_{a},v_{b})}}(k) \mid k \in [0, \mathcal{M.H} / s_{i}.\mathcal{T} - 1] \}
 \end{equation}
-where $m_{i}.\mathcal{H}$ denotes the duration in hyperperiod of a communication in hyperperiod.
-We define $\mathcal{M.H}=\{ m_{i}.\mathcal{H} \mid m_{i}\in \mathcal{M} \}$, denotes the set of duration for each communication in hyperperiod. 
-Therefore, the complete duration in hyperperiod for each communication $\mathcal{M.H}$ is determined based on the set of communications $\mathcal{M}$ . e.g. Fig~\ref{f:duration} is the complete duration in a hyperperiod based on the offset in Fig~\ref{f:indi} and the period as well as duration in TABLE~\ref{t:comm_info}.
+where $s_i.H$ denotes the duration of a scheduling in hyperperiod.
+We define 
+ $ \calS.\calH = \{ s_i.H \mid s_i \in \calS \}$
+%$\mathcal{M.H}=\{ s_{i}.\mathcal{H} \mid s_{i}\in \mathcal{M} \}$,
+ denotes the set of duration for each message scheduling in hyperperiod. 
+Therefore,
+ the complete duration in hyperperiod for each scheduling $ \calS.\calH $ is determined.
+Fig~\ref{f:duration} is an example of the complete duration in a hyperperiod,
+ based on two individuals in Fig~\ref{f:indi}.
+The scheduling information is shown in TABLE~\ref{t:comm_info}.
 
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/individual_transformation.pdf}
-	\caption{The duration in the hyperperiod based on Fig and TABLE}
+	\caption{The duration of the messages in the hyperperiod}
 	\label{f:duration}
 \end{figure}
 
-The link constrains should be derived after the transformation of individual. According to the predefined routing strategy, i.e. XY routing, the network link $(v_{a},v_{b})$ of each communication $m_{i}\in\mathcal{M}$ is derived. Therefore we have the forwarding path per hop $ (v_{a},v_{b})=\{ <v_{a},v_{1}> ,\dots, <v_{i},v_{j}> ,\dots, <v_{n},v_{b}> \} $, where $m_{i}^{(a,b)}\in\mathcal{M}$. By checking the routing of each communication by formula (5) in link constrains, the set of overlapped communication for each $m_{i}\in\mathcal{M}$ is derived. We denote the overlapped set of communication $m_{i}\in \mathcal{M}$ by $O(m_i)$. And we have that
+The link contention constrains should be derived after the transformation of individual.
+According to the predefined routing strategy,
+ e.g. XY routing~\cite{DBLP:books/daglib/0087651},
+  the route $s_i.R$ of each scheduling of message $s_i\in \calS$ is derived.
+Therefore we have the forwarding path per hop.
+By checking the routing of each communication by formula~\ref{e:overlap},
+ for each $s_i$,
+ the set of scheduling which is overlapped with $s_i$ is derived.
+We denote the set of overlapped scheduling $O(s_i)$ for each $s_i$,
+and we have that
 \begin{equation}
-	O(m_i) = \{ m_j \mid overlap(m_i,m_j)=1,m_i,m_j\in\mathcal{M}  \}
+	O(s_i) = \{ s_j \mid overlap(s_i,s_j)=1,s_i,s_j\in \calS  \}
 \end{equation}
-
- i.e. the $overlap(m_{0},m_{1})=0$, $overlap(m_{0},m_{2})=1$, $overlap(m_{0},m_{3})=0$ and $overlap(m_{0},m_{4})=1$, thus overlap set $O(m_{0})$ is $\{ m_{2},m_{4} \}$. Table II shows the routing and overlapped communication for communications based on TABLE I.
+Table~\ref{t:overlap} shows the route based on XY routing and overlapped scheduling for the scheduling depicted in TABLE~\ref{t:comm_info}.
+Since the $overlap(s_{0},s_{1})=0$, $overlap(s_{0},s_{2})=1$, $overlap(s_{0},s_{3})=0$ and $overlap(s_{0},s_{4})=1$, thus overlap set $O(s_{0})$ is $\{ s_{2},s_{4} \}$. 
 
 \begin{table}[!t]
 	\renewcommand{\arraystretch}{1.3}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
-	\caption{An Example of a routing and overlap set for $\mathcal{M}$}
+	\caption{An Example of a routing and overlap set}
 	\label{t:overlap}
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making TABLEs
@@ -1027,38 +1094,54 @@ The link constrains should be derived after the transformation of individual. Ac
 		\hline
 		\textbf{Communication} & \textbf{Routing Link}& \textbf{Overlap Set}\\
 		\hline
-		$m_{0}$ & $ <0,1><1,4>$ 		& $m_{2},m_{4}$ \\
+		$s_{0}$ & $ \langle 0,1\rangle\langle 1,4\rangle$ 		& $s_{2},s_{4}$ \\
 		\hline
-		$m_{1}$ & $ <3,4><4,5><5,8>$	& $m_{4}$ \\
+		$s_{1}$ & $ \langle 3,4\rangle\langle 4,5\rangle\langle 5,8\rangle$	& $s_{4}$ \\
 		\hline
-		$m_{2}$ & $ <2,1><1,4><4,7>$ 	& $m_{0},m_{4}$ \\
+		$s_{2}$ & $ \langle 2,1\rangle\langle 1,4\rangle\langle 4,7\rangle$ 	& $s_{0},s_{4}$ \\
 		\hline		
-		$m_{3}$ & $ <5,4><4,3><3,6>$ 	& \\
+		$s_{3}$ & $ \langle 5,4\rangle\langle 4,3\rangle\langle 3,6\rangle$ 	& \\
 		\hline
-		$m_{4}$ & $ <1,4><4,5>$ 		& $m_{0},m_{1},m_{2}$ \\
+		$s_{4}$ & $ \langle 1,4\rangle\langle 4,5\rangle$ 		& $s_{0},s_{1},s_{2}$ \\
 		\hline		
 	\end{tabular}
 \end{table}
 
-To evaluate individuals, for $m_{i},m_{j}\in \mathcal{M}, m_{i}\neq m_{j}$, if two communication in the same overlap set, the conflict times between them are derived. We define the mapping $(m_{i},m_{j})\rightarrow n_{ij}$, where $(m_{i},m_{j})$ is the conflict communication and $n_{ij}$ is the number of gene which $m_{i}$ coexist with $m_{j}$ on a chromosome is $n_{ij}$, which denotes the conflict times between $m_{i}$ and $m_{j}$.
-
-For each communication $m_{i}\in\mathcal{M}$, we define $C(m_{i})$ to derive the communication which conflicted with $m_{i}$ and the conflict times. Therefore we have that
+For $s_{i},s_{j}\in \calS, s_{i}\neq s_{j}$,
+if $s_i$ and $s_j$ are overlapped,
+the conflict times between them in chromosome are derived to evaluate the individual.
+For each $s_{i}\in \calS\}$,
+ we define $C(s_{i})$ to derive the set of scheduling conflicted with $s_{i}$. Therefore we have that
 \begin{equation}
-	C(m_{i}) = 
-\{(m_{i},m_{j})\rightarrow n_{ij}\mid m_j\in O(m_{i}),m_{i},m_{j}\in \mathcal{M}\}
+	C(s_i) = \{ s_j \mid s_i.H \cap s_j.H \neq \emptyset  ,s_j\in O(s_i) \}
+%C(s_{i}) = \{(s_{i},s_{j})\rightarrow n_{ij}\mid m_j\in O(s_{i}),s_{i},s_{j}\in \mathcal{M}\}
 \end{equation}
-
-We define the total conflict times to $m_{i}$ as $C(m_i).value$. And we have that
+   
+A conflict function is defined to count the conflict times between $s_i$ and $s_j$.
+We have that
 \begin{equation}
-	C(m_i).value=\sum n_{ij}
+	conflict(s_i,s_j) = sizeof \{s_i.H \cap s_j.H\}
 \end{equation}
-If there is no conflict communication with $m_i$ on the transformation of individual , the value of $C(m_i)$ equals 0. We define $C(\mathcal{M}) = \{ C(m_i)\mid m_i\in\mathcal{M} \} $ to denote the conflict mapping set for all the communication set $\mathcal{M}$.
+%We define the mapping $(s_{i},s_{j})\rightarrow n_{ij}$, where $(s_{i},s_{j})$ is the conflict communication and $n_{ij}$ is the number of gene which $s_{i}$ coexist with $s_{j}$ on a chromosome is $n_{ij}$, which denotes the conflict times between $s_{i}$ and $s_{j}$.
 
-According to $C(m_{i})$ for each $m_{i}\in\mathcal{M}$, the conflict times among any two of communication on the chromosome is determined. The fitness function defined to give each individual a score when executing $mark(Pop)$ in line 5, 12, 24 of the memetic algorithm. The output of fitness function is the sum of $n_{ij}$ in $C(m_{i})$ for each communication $m_{i}\in\mathcal{M}$. Therefore for a individual $indi$ with $p$ communication, we have that
+We define the total conflict times to $s_{i}$ as $C(s_i).value$. And we have that
 \begin{equation}
-	fitness(indi)=\sum_{i=0}^p {C(m_i).value}
+	times(s_i)=\sum_{ s_j \in C(s_i) } conflict(s_i,s_j)
 \end{equation}
-where $m_i\in\mathcal{M}$. The score is assigned to the individual after fitness function. Since the score represents the conflict times, the less the score the better the individual. e.g. The $C(\mathcal{M})$ and the score of two individual is shown in Fig, based on the transformation in Fig and the overlap set in TABLE. 
+If there is no conflict scheduling with $s_i$ on the its duration,
+ $C(s_i)\in \emptyset$.
+We define $T(\calS) = \{ s_i \mid C(s_i) \notin \emptyset \} $ to denote the set of conflict scheduling in a chromosome.
+
+According to $T(\calS)$ the conflict times among any two of scheduling of message on the chromosome is determined.
+The fitness function defined to give each individual a score when executing $mark(Pop)$ in line 5, 12, 24 of the memetic algorithm.
+The output of fitness function is total conflict times in $T(\calS)$.
+Therefore for a individual $indi$, we have that
+\begin{equation}
+	fitness(indi)=\sum_{s_i \in T(\calS)} {times(s_i)}
+\end{equation}
+The score is assigned to the individual after fitness function.
+Since the score represents the conflict times, the less the score the better the individual.
+e.g. The the score of two individual in Fig~\ref{f:indi} is shown in TABLE~\ref{t:fitness}. 
 
 \begin{table}[!t]
 	\renewcommand{\arraystretch}{1.3}
@@ -1069,58 +1152,72 @@ where $m_i\in\mathcal{M}$. The score is assigned to the individual after fitness
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making TABLEs
 	% than the plain LaTeX2e tabular which is used here.
-	\begin{tabular}{|c||c|}
+	\begin{tabular}{|c||c||c||c|}
 		\hline
-		\textbf{individual 0} & score=4\\
-		\hline
-		\textbf{$C(\mathcal{M})$} &\textbf{Conflict Mapping} \\
+		\textbf{Individual} & \textbf{Conflict Set} &\textbf{Conflict Times} &Score\\
 		\hline 
-		$C(m_{0})$ & $ (m_0,m_2)\rightarrow 2$ \\
-		\cline{1-2}  
-		$C(m_{2})$ & $ (m_2,m_0)\rightarrow 2$ \\
+		individual 0 &$s_0,s_2$ & $times(s_0)=2,times(2)=2$ &4\\
 		\hline
-			\hline
-			\textbf{individual 1} & 2\\
- 			\hline
-			\textbf{$C(\mathcal{M})$} & \textbf{Conflict Mapping}  \\
-			\hline 
-			$C(m_{0})$ & $ (m_0,m_4)\rightarrow 1$ \\
-			\hline  
-			$C(m_{4})$ & $ (m_4,m_0)\rightarrow 1$	 \\
-			\hline	
-	\end{tabular}	
-
+		individual 1 & $s_0,s_4$& $times(s_0)=1,times(4)=1$ &2\\
+		\hline
+		\end{tabular}	
 \end{table}
 
-\subsection{Global search strategy}
+\subsection{Global search strategy \label{s:glo}}
 
-The general operation in genetic algorithm, i.e. crossover and mutation, is used in the step of global search. 
+The general operation in genetic algorithm,
+ i.e. crossover and mutation,
+  is used in the step of global search. 
 
-For operation of crossover, we select two of individual among the population the parent to join the crossover in terms of the score. The higher scores of the individual, the higher possibility to be selected as parent. the crossover generates a new individual and the chromosome of the new individual depends on the parent. The individual of parent with lower score own the higher possibility to determine the offset location on the chromosome. For the parent individual $indi0$ and $indi1$, we have the function
+For operation of crossover,
+ we employ two of individual $indi_i,indi_j\in Pop$ among the population the parent to join the crossover in terms of the score.
+The lower scores of the individual,
+ the higher possibility to be selected as parent.
+The crossover generates a new individual and its chromosome depends on the parent.
+The individual of parent with lower score own the higher possibility to determine the offset location on the chromosome.
+For the parent individual $indi_i$ and $indi_j$, we have the function
 \begin{equation}
-	possibility(indi0)=1-\frac{indi0}{indi0+indi1}
+	possibility(indi_i)=1-\frac{indi_i}{indi_i+indi_j}
 \end{equation}
-to derive the possibility for each individual. e.g. Fig~\ref{f:crossover} shows an process of crossover. The individual 2 is generated by crossover based on the two individual in Fig~\ref{f:indi} as parent.
+to derive the possibility for each individual.
+Fig~\ref{f:crossover} shows an process of crossover.
+The individual 2 is generated by crossover based on the two individuals in Fig~\ref{f:indi} as parents.
+Because the score of individual 0 is 4 and individual 1 is 2, individual 0 own 67\% while individual 1 have 33\% of possibility to decide the offset when locating each scheduling $s_i\in\calS$.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/crossover.pdf}
-	\caption{crossover}
+	\caption{An example of crossover employed individuals in Fig~\ref{f:indi} as parents}
 	\label{f:crossover}
 \end{figure}
 
-The operation of mutation random select an offset of communication. Then selecting a new location of its offset randomly. Fig~\ref{f:mutation} is an example of mutation. The probability of mutation for each individual in our implement is 50\%.
+The operation of mutation random select an offset $s_i.\phi$ of scheduling $s_i\in\calS$.
+Then selecting a new location of its offset randomly.
+Fig~\ref{f:mutation} is an example of mutation.
+It is noted that the probability of mutation for each individual in our implement is 50\%.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/mutation.pdf}
-	\caption{mutation}
+	\caption{An example of mutation}
 	\label{f:mutation}
 \end{figure}
 
-\subsection{Local search strategy}
+\subsection{Local search strategy \label{s:loc}}
 
-In the step of local search, for each individual, the communication $m_i$ with the maximum value of $C(m_i).value$ is selected as local search element. If there is two or more individual with the maximum conflict times, the element to be searched is select stochastically among them. After determining the element for local searching, the offset of selected $m_i$ is reallocated in its possible offset interval, to minimum the score of the individual.
+In the step of local search for each individual,
+ the scheduling $s_i\in\calS$ with the maximum value of $times(s_i)$ is selected as local search element.
+If there are two or more individuals with the maximum conflict times,
+ the element to be searched is select stochastically among them.
+After determining the element for local searching,
+ the offset $s_i.\phi$ of selected $s_i$ is reallocated in its possible offset $s_i.\Phi$,
+  to minimum the score of the individual.
 
-Fig~\ref{f:local} shows an example of local search for $individual 0$ in Fig~\ref{f:indi}. According to the $C(\mathcal{M})$ of individual 0 in Fig~\ref{f:fitness}, we random select $m_0$ as the element. Since the possible offset of $m_0$ is 0 and 1 shown in TABLE I, we locate the $m_0$ on gene 0 and gene 1 respectively. After marking two of individual with different offset of $m_0$, we select the individual which score is 2 as the individual 0 because the score of individual 0' is minimum among the individual which just reallocate the offset of $m_0$.
+Fig~\ref{f:local} shows an example of local search for $individual 0$ in Fig~\ref{f:indi}.
+According to the $T(\calS)$ of individual 0 in TABLE~\ref{t:fitness},
+ we random select $s_0$ as the element. 
+Since the possible offset $s_i.\Phi$ of $s_0.\phi$ is 0 and 1 shown in TABLE~\ref{t:comm_info},
+  we locate the $s_0$ on gene 0 and gene 1 respectively.
+After marking two of individual with different offset of $s_0$,
+ we select the individual which score is 2 as the individual 0 because the selected individual own minimum score among the individual which just reallocate the offset of $s_0$.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/local.pdf}
@@ -1128,14 +1225,19 @@ Fig~\ref{f:local} shows an example of local search for $individual 0$ in Fig~\re
 	\label{f:local}
 \end{figure}
 
-In our implement, we naively traverse all the possible offset. However for improving efficiency, many other algorithm in local search can be applied, i.e. tabu search, simulated annealing. And different local search strategy may increase the performance of the memetic algorithm.
+In our implement,
+ we naively traverse all the possible offset.
+However for improving efficiency,
+ many other algorithm in local search can be applied,
+  i.e. tabu search, simulated annealing.
+And different local search strategy may increase the performance of the memetic algorithm.
 
 \section{EVALUATION\label{s:evalu}}
 
 \subsection{Experiments Configuration}
 %The mapping between a message and a communication node $\{ <\tau_{i} , v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V} \}$ is given. Each message $\tau_{i}\in\Gamma$ is allocated to a specific process element(communication node) $v_{i}\in\mathcal{V}$, thus the source node $v_{a}$ and sink node $v_{b}$ in $(v_{a},v_{b})\in \mathcal{L}$ are determined.
 
-%The routing strategy of each message is given. Therefore the link $(v_{a},v_{b})$ and the set of switches for forwarding the message is deterministic.To transmit a message $ \tau_{i}\in\Gamma $, the forwarding path is split in terms of hops by specific routing, i.e. $(v_{a},v_{b})=\{(v_{a},v_{m}),(v_{m},v_{n}),\dots,(v_{p},v_{q}),(v_{q},v_{b})\}$. 
+%The routing strategy of each message is given. Therefore the link $(v_{a},v_{b})$ and the set of switches for forwarding the message is deterministic.To transmit a message $ \tau_{i}\in\Gamma $, the forwarding path is split in terms of hops by specific routing, i.e. $(v_{a},v_{b})=\{(v_{a},v_{s}),(v_{s},v_{n}),\dots,(v_{p},v_{q}),(v_{q},v_{b})\}$. 
 
 %The switching technique is store-and-forward.
 
@@ -1144,14 +1246,30 @@ In our implement, we naively traverse all the possible offset. However for impro
 %In our experiment, for simplicity, the relative deadline is equal to the period for each message. The 2-ary mesh network is used and we randomly generate the mapping on the network. The X-Y routing is adopted as the routing strategy. And the relative deadline for each message equal its period. However the algorithm we introduced can be extended to resolve the scheduling problem with the general topology and arbitrary deterministic routing.
 
 
-The network architecture we used is 2D mesh network which scale is $3\times 3$, $5\times 5$ and $7\times 7$, with 9, 25 and 49 switching nodes respectively. the program of our algorithm is implement in JAVA and is running on a Windows machine with 4GHz CPU and 12GB memory. We compare the memetic algorithm with general genetic algorithm without local search. 
+The network architecture we employed is 2D mesh network which scale is $3\times 3$, $5\times 5$ and $7\times 7$,
+ with 9, 25 and 49 switching nodes respectively.
+The program of our algorithm is implement in JAVA and is running on a Windows with 4GHz CPU and 12GB memory.
+We compare the memetic algorithm with general genetic algorithm without local search. 
 
-We generate the set communication with different scale which from 5 to 50. Each communication owns its period and delay which is random generated. The size of population is 100. Therefore there is 100 initial individual. And the maximum iterate times is 100. The memetic algorithm will finish if there is a feasible scheduling, otherwise the algorithm will execute until the iterate 100 times. The case which executes exceeds an hour will be regarded as overtime.
+We generate the set communication with different scale which from 5 to 50.
+Each scheduling of message owns its period and delay which is random generated.
+The size of population we configure is 100.
+Therefore there is 100 initial individual.
+And the maximum iterate times is 100.
+The memetic algorithm will finish if there is a feasible scheduling,
+ otherwise the algorithm will execute until the iterate 100 times.
+The case which executes exceeds an hour will be regarded as \emph{overtime}.
 
-\subsection{Failed Communication Percentage}
-To compare the performance of the genetic algorithm and memetic algorithm, we define the failed communication as the minimum number of messages, which block the scheduling of other messages. in other word, if the set of failed communication is removed from the given communication set on the TTNoC, the remaining messages will be scheduled.
+\subsection{Failed Scheduling Percentage}
+To compare the performance of the general genetic algorithm and memetic algorithm,
+ we define the failed scheduling of messages as the minimum number of messages.
+The messages which failed to scheduling block the scheduling of other messages.
+If the set of failed communication is removed from the given communication set on the TTNoC, the remaining messages will be scheduled.
 
-Fig shows the percentage of failed messages in the set of communication. For each type of case. As can be seen, though the general algorithm spends quite a few time, the rate of failed scheduled messages is much more than the memetic algorithm, especially when the scale of communication set is relatively large. i.e. for the case of 50 messages in $3\times 3$ TTNoC, the failed communication percentage is 17.3\% for genetic algorithm while 8\% for memetic algorithm. Therefore, the local search in the memetic algorithm is the key step in our algorithm and significantly improve the effect of genetic algorithm.
+Fig~\ref{f:fail} shows the percentage of failed messages in the set of communication for variable type of test case. 
+As can be seen,
+ though the general algorithm spends quite a few time,
+  the rate of failed scheduled messages is much more than the memetic algorithm, especially when the scale of communication set is relatively large. i.e. for the case of 50 messages in $3\times 3$ TTNoC, the failed communication percentage is 17.3\% for genetic algorithm while 8\% for memetic algorithm. Therefore, the local search in the memetic algorithm is the key step in our algorithm and significantly improve the effect of genetic algorithm.
 
 And it is clear that the failed communication rate decreases when the scale of TTNoC architecture is larger. The reason of this result is that the link resource increases with the growth of architecture and decrease the possibility of contention among the communication on the TTNoC. It also presents that the failed communication rate increases when the number of communication increasing. It is because that the limited link resources have to transmit more messages when there is more communication on the TTNoC.
 \begin{figure}[!t]
