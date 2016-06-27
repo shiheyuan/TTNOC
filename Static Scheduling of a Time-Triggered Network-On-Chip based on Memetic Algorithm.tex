@@ -932,7 +932,7 @@ In our memetic algorithm,
  as the chromosome definition.
 Hyperperiod is the least common multiple of the offset among scheduling for messages. 
 And the macrotick is defined as the unit of hyperperiod which is called gene.
-The length of chromosome equals $\mathcal{H(M)}$,
+The length of chromosome equals the value of $H(\calS)$,
  e.g. the hyperperiod is 8 for the scheduling set on TABLE~\ref{t:comm_info}. 
 
 The location of a gene on the chromosome denotes the offset $ s_i.\phi $ of a message $\tau_i\in\Gamma$.
@@ -1221,7 +1221,7 @@ After marking two of individual with different offset of $s_0$,
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/local.pdf}
-	\caption{Local search fig}
+	\caption{An example of local search}
 	\label{f:local}
 \end{figure}
 
@@ -1255,7 +1255,7 @@ We generate the set communication with different scale which from 5 to 50.
 Each scheduling of message owns its period and delay which is random generated.
 The size of population we configure is 100.
 Therefore there is 100 initial individual.
-And the maximum iterate times is 100.
+And the maximum iterate times we set is 100.
 The memetic algorithm will finish if there is a feasible scheduling,
  otherwise the algorithm will execute until the iterate 100 times.
 The case which executes exceeds an hour will be regarded as \emph{overtime}.
@@ -1264,42 +1264,68 @@ The case which executes exceeds an hour will be regarded as \emph{overtime}.
 To compare the performance of the general genetic algorithm and memetic algorithm,
  we define the failed scheduling of messages as the minimum number of messages.
 The messages which failed to scheduling block the scheduling of other messages.
-If the set of failed communication is removed from the given communication set on the TTNoC, the remaining messages will be scheduled.
+If the set of failed communication is removed from the given communication set on the TTNoC,
+ the remaining messages will be scheduled.
 
 Fig~\ref{f:fail} shows the percentage of failed messages in the set of communication for variable type of test case. 
 As can be seen,
  though the general algorithm spends quite a few time,
-  the rate of failed scheduled messages is much more than the memetic algorithm, especially when the scale of communication set is relatively large. i.e. for the case of 50 messages in $3\times 3$ TTNoC, the failed communication percentage is 17.3\% for genetic algorithm while 8\% for memetic algorithm. Therefore, the local search in the memetic algorithm is the key step in our algorithm and significantly improve the effect of genetic algorithm.
+  the rate of failed scheduled messages is much more than the memetic algorithm, especially when the scale of communication set is relatively large.
+E.g. for the case of 50 messages in $3\times 3$ TTNoC,
+ the failed communication percentage is 17.3\% for genetic algorithm while 8\% for memetic algorithm.
+  Therefore the local search in the memetic algorithm is the key step in memetic algorithm to significantly improve the performance of genetic algorithm.
 
-And it is clear that the failed communication rate decreases when the scale of TTNoC architecture is larger. The reason of this result is that the link resource increases with the growth of architecture and decrease the possibility of contention among the communication on the TTNoC. It also presents that the failed communication rate increases when the number of communication increasing. It is because that the limited link resources have to transmit more messages when there is more communication on the TTNoC.
+And it is clear that the failed scheduling rate decreases when the scale of TTNoC architecture is larger. 
+The reason of this result is that the link resource increases with the growth of architecture,
+ resulting of decreasing the possibility of contention among the messages transmission on the TTNoC.
+It also presents that the failed communication rate increases when the number of messages on the TTNoC increasing.
+It is because that the limited link resources have to transmit more messages when there is more communication on the TTNoC.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/rate}
-	\caption{fail rate}
+	\caption{The percentage of failed scheduling}
 	\label{f:fail}
 \end{figure}
 
 \subsection{Feasible Case}
 
-We consider the number of feasible  case in each experiment type. For each test case, we define the case is successful if all the communication are scheduled in feasible location without link contention, otherwise we consider the case is infeasible case. A case is overtime is the case which synthesis time over 90 minutes. Fig presents the result of number of feasible cases after schedule synthesis. For simple test cases with less than 15 communication, almost cases is feasible. But for complexed test cases more than 30 communication, it is hard for the algorithms to find a feasible scheduling.
+We consider the number of feasible case in each experiment type.
+The case is successful if all the communication are scheduled in feasible location without link contention,
+ otherwise we consider the case is infeasible case.
+Fig~\ref{f:feasible} presents the result of number of feasible cases after schedule synthesis.
+For simple test cases with less than 15 communication,
+ almost cases is feasible.
+But for complexed test cases more than 30 messages, it is hard for the algorithms to find a feasible scheduling.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/feasible}
-	\caption{feasible case}
+	\caption{The number of feasible cases in different test cases}
 	\label{f:feasible}
 \end{figure}
 
 \subsection{Discussions}
 
-Synthesizing a feasible scheduling depends on the number of communication and the scale of TTNoC. It is hard for memetic algorithm to synthesize a feasible scheduling when the set of communication is large and/or the TTNoC architecture is small. However, except of two reason above, the mapping between a message and a communication node and routing strategy of communications also affect generating a feasible solution. Therefore the designer can manually change the map allocation or the routing strategy to the failed messages, and even design a larger network architecture if needed, and after these change, the feasible scheduling can be generated by the memetic algorithm iteratively. 
-
-Therefore the mapping between messages and nodes and routing strategy can be integrated to the TTNoC scheduling in our future work. And the different TTNoC architecture, i.e. torus, hypercube, and different local search strategy may be also considered in our experiment.
+Synthesizing a feasible scheduling depends on the number of communication and the scale of TTNoC.
+It is hard for memetic algorithm to synthesize a feasible scheduling when the set of communication is large and/or the TTNoC architecture is small.
+However,
+ except of two reason above,
+  the mapping between a message and a communication node and routing strategy of communications also affect generating a feasible solution.
+Therefore the designer can manually change the map allocation or the routing strategy to the failed scheduling,
+ and even design a larger network architecture if needed,
+  and after these change,
+   the feasible scheduling can be generated by the memetic algorithm iteratively. 
 
 \section{CONCLUSION\label{s:conclud}}
 
-This paper introduces a memetic algorithm to resolve the message scheduling problem on the TTNoC for the real-time communication. We test our memetic algorithm with different scales of TTNoC and various messages. The experiment results shows that our memetic algorithm is efficient to synthesize a scheduling with low fail communication percentage.
+This paper introduces a memetic algorithm to resolve the message scheduling problem on the TTNoC.
+We verify our memetic algorithm with on various random generated messages on different scales of TTNoC.
+The experiment results shows that our memetic algorithm is efficient to synthesize a scheduling with high percentage of scheduled messages.
 
-
+In our future work,
+the mapping between messages and nodes and routing strategy can be integrated to the TTNoC scheduling.
+And the different TTNoC architecture,
+i.e. torus, hypercube,
+and different local search strategy may be also considered in our experiment.
 
 
 
