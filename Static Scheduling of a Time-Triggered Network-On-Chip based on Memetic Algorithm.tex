@@ -321,8 +321,6 @@
 \newcommand{\MT}{\mathit{MT}_\calG}
 \newcommand{\route}[3]{#1^{\langle #2,#3\rangle}}
 
-
-
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
@@ -840,16 +838,16 @@ we have that
 where $p,q\geq 0$, $p,q\in\mathcal{Z}$.
 
 \section{PROBLEM FORMULATION\label{s:formulation}}
-The problem we are addressing in this paper can be formulated as follow. Given 
+The problem we are addressing in this paper can be formulated as follow. Given:
 \begin{itemize}
-	\item the architecture of TTNoC $\calG=(\calV,\calL)$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ \langle v_i,v_j  \rangle \mid  v_i,v_j \in \calV\}$.
-	\item the mapping of message to communication node
+	\item The architecture of TTNoC $\calG=(\calV,\calL)$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ \langle v_i,v_j  \rangle \mid  v_i,v_j \in \calV\}$.
+	\item The mapping of message to communication node
 		$\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
 		Each message $\tau_{i}\in\Gamma$ is allocated to a specific process element(communication node) $v_{i}\in\mathcal{V}$, 
 		thus the source node $v_{a}$ and sink node $v_{b}$ for each $\tau \in\Gamma$ are determined.
-	\item the set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with 
+	\item The set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with 
 	$\langle \tau_{i}.H,\tau_{i}.S, \tau_{i}.T,	\tau_{i}.D\rangle$ for each $\tau \in \Gamma$.
-	\item the route $s_i.R$ for each scheduling $s_i \in \calS$ of message $\tau \in \Gamma$.
+	\item The route $s_i.R$ for each scheduling $s_i \in \calS$ of message $\tau \in \Gamma$.
 \end{itemize}
 %(1) the architecture of  network $\mathcal{G}=(\mathcal{V},\mathcal{L})$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ (v_{a},v_{b}) \mid  v_{a},v_{b}\in \mathcal{V}\}$.
 %(2) the mapping of message to communication node $\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
@@ -952,15 +950,41 @@ A set of individual with respective chromosome composes the population.
 The size of population equals the number of individual.
 An example of population with two individual,
  based on TABLE~\ref{t:comm_info},
-  is shown in Fig~\ref{f:indi}.
+  is shown in TABLE~\ref{t:pop}.
 And the example of chromosome and gene is also depicted.
-\begin{figure}[!t]
+%\begin{figure}[!t]
+%	\centering
+%	\includegraphics[width=3 in]{picture/2individual}
+%	\caption{An example of population with 2 individual}
+%	\label{t:pop}
+%\end{figure}
+\begin{table}[!t]
+	\renewcommand{\arraystretch}{1.3}
+	%if using array.sty, it might be a good idea to tweak the value of
+	% \extrarowheight as needed to properly center the text within the cells
+	\caption{An Example of population with 2 individual}
+	\label{t:pop}
 	\centering
-	\includegraphics[width=3 in]{picture/2individual}
-	\caption{An example of population with 2 individual}
-	\label{f:indi}
-\end{figure}
-
+	% Some packages, such as MDW tools, offer better commands for making tables
+	% than the plain LaTeX2e tabular which is used here.
+	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
+	\hline
+		\textbf{Gene}& 
+		\textbf{0} & 
+		\textbf{1} & 
+		\textbf{2} & 
+		\textbf{3} &
+		\textbf{4} & 
+		\textbf{5} & 
+		\textbf{6} & 
+		\textbf{7} \\		
+	\hline
+		$indi0$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\		
+	\hline		
+		$indi1$	&$m_0$&$m_1$&	&$m_2$&$m_3$& &$m_4$&	\\		
+	\hline
+	\end{tabular}
+\end{table}
 \subsection{Algorithm Description}
 
 According to the genetic representation, we formal give the algorithm process. The pseudocode is given as follow.
@@ -1061,16 +1085,62 @@ We define
  denotes the set of duration for each message scheduling in hyperperiod. 
 Therefore,
  the complete duration in hyperperiod for each scheduling $ \calS.\calH $ is determined.
-Fig~\ref{f:duration} is an example of the complete duration in a hyperperiod,
- based on two individuals in Fig~\ref{f:indi}.
+Fig~\ref{t:duration} is an example of the complete duration in a hyperperiod,
+ based on two individuals in TABLE~\ref{t:pop}.
 The scheduling information is shown in TABLE~\ref{t:comm_info}.
 
-\begin{figure}[!t]
+%\begin{figure}[!t]
+%	\centering
+%	\includegraphics[width=3in]{picture/individual_transformation.pdf}
+%	\caption{The duration of the messages in the hyperperiod}
+%	\label{f:duration}
+%\end{figure}
+\begin{table}[!t]
+	\renewcommand{\arraystretch}{1.3}
+	\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+	%if using array.sty, it might be a good idea to tweak the value of
+	% \extrarowheight as needed to properly center the text within the cells
+	\caption{An Example of transform of chromosome on 2 individual}
+	\label{t:duration}
 	\centering
-	\includegraphics[width=3in]{picture/individual_transformation.pdf}
-	\caption{The duration of the messages in the hyperperiod}
-	\label{f:duration}
-\end{figure}
+	% Some packages, such as MDW tools, offer better commands for making tables
+	% than the plain LaTeX2e tabular which is used here.
+	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
+		\hline
+		\textbf{macrotick}& 
+		\textbf{0} & 
+		\textbf{1} & 
+		\textbf{2} & 
+		\textbf{3} &
+		\textbf{4} & 
+		\textbf{5} & 
+		\textbf{6} & 
+		\textbf{7} \\		
+		\hline
+		\hline
+		$D(indi0)$&
+		\tabincell{c}{$m_0$\\$m_1$}&
+		&
+		\tabincell{c}{$m_0$\\$m_2$}&
+		&
+		\tabincell{c}{$m_0$\\$m_1$\\$m_3$}&
+		$m_3$&
+		\tabincell{c}{$m_0$\\$m_2$}&
+		$m_4$\\		
+		\hline	
+		\hline	
+		$D(indi1)$&
+		$m_0$&
+		$m_1$&
+		$m_0$&
+		$m_2$&
+		\tabincell{c}{$m_0$\\$m_3$}&
+		\tabincell{c}{$m_1$\\$m_3$}&
+		\tabincell{c}{$m_0$\\$m_4$}&
+		$m_2$\\
+		\hline
+	\end{tabular}
+\end{table}
 
 The link contention constrains should be derived after the transformation of individual.
 According to the predefined routing strategy,
@@ -1148,7 +1218,7 @@ Therefore for a individual $indi$, we have that
 \end{equation}
 The score is assigned to the individual after fitness function.
 Since the score represents the conflict times, the less the score the better the individual.
-e.g. The the score of two individual in Fig~\ref{f:indi} is shown in TABLE~\ref{t:fitness}. 
+e.g. The the score of two individual in Fig~\ref{t:pop} is shown in TABLE~\ref{t:fitness}. 
 
 \begin{table}[!t]
 	\renewcommand{\arraystretch}{1.3}
@@ -1187,26 +1257,109 @@ For the parent individual $indi_i$ and $indi_j$, we have the function
 	possibility(indi_i)=1-\frac{indi_i}{indi_i+indi_j}
 \end{equation}
 to derive the possibility for each individual.
-Fig~\ref{f:crossover} shows an process of crossover.
-The individual 2 is generated by crossover based on the two individuals in Fig~\ref{f:indi} as parents.
-Because the score of individual 0 is 4 and individual 1 is 2, individual 0 own 67\% while individual 1 have 33\% of possibility to decide the offset when locating each scheduling $s_i\in\calS$.
-\begin{figure}[!t]
+Table~\ref{t:crossover} shows an process of crossover.
+The $indi2$ is generated by crossover based on the two individuals in Fig~\ref{t:pop} as parents.
+Because the score of $indi0$ is 4 while $indi1$ is 2,
+ $indi0$ owns 67\% while $indi0 $have 33\% of possibility to decide the offset when locating each scheduling $s_i\in\calS$.
+The chromosome of $indi2$ consists of the offset of $m_0,m_2,m_3$ from $indi1$ and $m_1,m_4$ from $indi0$.
+%\begin{figure}[!t]
+%	\centering
+%	\includegraphics[width=3in]{picture/crossover.pdf}
+%	\caption{An example of crossover employed individuals in Fig~\ref{t:pop} as parents}
+%	\label{f:crossover}
+%\end{figure}
+\begin{table}[!t]
+	\renewcommand{\arraystretch}{1.3}
+	\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+	%if using array.sty, it might be a good idea to tweak the value of
+	% \extrarowheight as needed to properly center the text within the cells
+	\caption{An example of crossover employed individuals in Fig~\ref{t:pop} as parents}
+	\label{t:crossover}
 	\centering
-	\includegraphics[width=3in]{picture/crossover.pdf}
-	\caption{An example of crossover employed individuals in Fig~\ref{f:indi} as parents}
-	\label{f:crossover}
-\end{figure}
+	% Some packages, such as MDW tools, offer better commands for making tables
+	% than the plain LaTeX2e tabular which is used here.
+	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
+		\hline
+		\textbf{Parents}& 
+		\textbf{0} & 
+		\textbf{1} & 
+		\textbf{2} & 
+		\textbf{3} &
+		\textbf{4} & 
+		\textbf{5} & 
+		\textbf{6} & 
+		\textbf{7} \\		
+		\hline
+		$indi0$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\		
+		\hline		
+		$indi1$	&$m_0$&$m_1$&	&$m_2$&$m_3$& &$m_4$&	\\		
+		\hline
+		\hline
+			\textbf{Child}& 
+			\textbf{0} & 
+			\textbf{1} & 
+			\textbf{2} & 
+			\textbf{3} &
+			\textbf{4} & 
+			\textbf{5} & 
+			\textbf{6} & 
+			\textbf{7} \\		
+			\hline
+			$indi2$	&$m_0,m_1$&	& &$m_2$&$m_3$& & &$m_4$\\			
+		\hline
+	\end{tabular}
+\end{table}
 
 The operation of mutation random select an offset $s_i.\phi$ of scheduling $s_i\in\calS$.
 Then selecting a new location of its offset randomly.
-Fig~\ref{f:mutation} is an example of mutation.
+TABLE~\ref{t:mutation} is an example of mutation.
 It is noted that the probability of mutation for each individual in our implement is 50\%.
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=3in]{picture/mutation.pdf}
+%\begin{figure}[!t]
+%	\centering
+%	\includegraphics[width=3in]{picture/mutation.pdf}
+%	\caption{An example of mutation}
+%	\label{f:mutation}
+%\end{figure}
+\begin{table}[!t]
+	\renewcommand{\arraystretch}{1.3}
+	\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+	%if using array.sty, it might be a good idea to tweak the value of
+	% \extrarowheight as needed to properly center the text within the cells
 	\caption{An example of mutation}
-	\label{f:mutation}
-\end{figure}
+	\label{t:mutation}
+	\centering
+	% Some packages, such as MDW tools, offer better commands for making tables
+	% than the plain LaTeX2e tabular which is used here.
+	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
+		\hline
+		\textbf{Before}& 
+		\textbf{0} & 
+		\textbf{1} & 
+		\textbf{2} & 
+		\textbf{3} &
+		\textbf{4} & 
+		\textbf{5} & 
+		\textbf{6} & 
+		\textbf{7} \\		
+		\hline
+		$indi0$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\		
+		\hline
+		\hline
+		\textbf{After}& 
+		\textbf{0} & 
+		\textbf{1} & 
+		\textbf{2} & 
+		\textbf{3} &
+		\textbf{4} & 
+		\textbf{5} & 
+		\textbf{6} & 
+		\textbf{7} \\		
+		\hline
+		$indi3$	&$m_0,m_1$&$m_4$&$m_2$&	&$m_3$& & &\\			
+		\hline
+	\end{tabular}
+\end{table}
+
 
 \subsection{Local search strategy \label{s:loc}}
 
@@ -1218,20 +1371,73 @@ After determining the element for local searching,
  the offset $s_i.\phi$ of selected $s_i$ is reallocated in its possible offset $s_i.\Phi$,
   to minimum the score of the individual.
 
-Fig~\ref{f:local} shows an example of local search for $individual 0$ in Fig~\ref{f:indi}.
+TABLE~\ref{t:local} shows an example of local search for $indi0$ in Fig~\ref{t:pop}.
 According to the $T(\calS)$ of individual 0 in TABLE~\ref{t:fitness},
  we random select $s_0$ as the element. 
 Since the possible offset $s_i.\Phi$ of $s_0.\phi$ is 0 and 1 shown in TABLE~\ref{t:comm_info},
   we locate the $s_0$ on gene 0 and gene 1 respectively.
 After marking two of individual with different offset of $s_0$,
- we select the individual which score is 2 as the individual 0 because the selected individual own minimum score among the individual which just reallocate the offset of $s_0$.
-\begin{figure}[!t]
+ we select the individual which score is 2 as the updated $indi0$ because the selected individual own minimum score among the candidates which just reallocate the offset of $s_0$.
+%\begin{figure}[!t]
+%	\centering
+%	\includegraphics[width=3in]{picture/local.pdf}
+%	\caption{An example of local search}
+%	\label{f:local}
+%\end{figure}
+\begin{table}[!t]
+	\renewcommand{\arraystretch}{1.3}
+	\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+	%if using array.sty, it might be a good idea to tweak the value of
+	% \extrarowheight as needed to properly center the text within the cells
+	\caption{An example of local search of $m_0$ as element}
+	\label{t:local}
 	\centering
-	\includegraphics[width=3in]{picture/local.pdf}
-	\caption{An example of local search}
-	\label{f:local}
-\end{figure}
-
+	% Some packages, such as MDW tools, offer better commands for making tables
+	% than the plain LaTeX2e tabular which is used here.
+	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
+		\hline
+		\textbf{Before}& 
+		\textbf{0} & 
+		\textbf{1} & 
+		\textbf{2} & 
+		\textbf{3} &
+		\textbf{4} & 
+		\textbf{5} & 
+		\textbf{6} & 
+		\textbf{7} \\		
+		\hline
+		$indi0$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\		
+		\hline
+		\hline
+		\textbf{Score}& 
+		\textbf{0} & 
+		\textbf{1} & 
+		\textbf{2} & 
+		\textbf{3} &
+		\textbf{4} & 
+		\textbf{5} & 
+		\textbf{6} & 
+		\textbf{7} \\		
+		\hline
+		$4$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\
+		\hline
+		$2$	&$m_1$&$m_0$&$m_2$&	&$m_3$& & &$m_4$\\		
+		\hline
+		\hline		
+		\textbf{After}& 
+		\textbf{0} & 
+		\textbf{1} & 
+		\textbf{2} & 
+		\textbf{3} &
+		\textbf{4} & 
+		\textbf{5} & 
+		\textbf{6} & 
+		\textbf{7} \\		
+		\hline
+		$indi0$&$m_1$&$m_0$&$m_2$&	&$m_3$& & &$m_4$\\		
+		\hline
+	\end{tabular}
+\end{table}
 In our implement,
  we naively traverse all the possible offset.
 However for improving efficiency,
@@ -1258,8 +1464,9 @@ The network architecture we employed is 2D mesh network which scale is $3\times 
 The program of our algorithm is implement in JAVA and is running on a Windows with 4GHz CPU and 12GB memory.
 We compare the memetic algorithm with general genetic algorithm without local search. 
 
-We generate the set communication with different scale which from 5 to 50.
+The number of scheduling of messages in our evaluation is from 5 to 50.
 Each scheduling of message owns its period and delay which is random generated.
+We test 15 cases in each scale of architecture with different number of messages.
 The size of population we configure is 100.
 Therefore there is 100 initial individual.
 And the maximum iterate times we set is 100.
@@ -1274,6 +1481,7 @@ If the set of failed communication is removed from the given communication set o
  the remaining messages will be scheduled.
 
 Fig~\ref{f:fail} shows the rate of failed messages in the set of communication for variable type of test case. 
+It should be noted that the rate is the average rate of the 15 test cases.
 As can be seen,
  though the general algorithm spends quite a few time,
   the rate of failed scheduled messages is much more than the memetic algorithm, especially when the scale of communication set is relatively large.
@@ -1346,7 +1554,7 @@ But for complexed test cases more than 30 messages, it is hard for the algorithm
 Synthesizing a feasible scheduling depends on the number of communication and the scale of TTNoC.
 It is hard for memetic algorithm to synthesize a feasible scheduling when the set of communication is large and/or the TTNoC architecture is small.
 However,
- except of two reason above,
+ except two reason above,
   the mapping between a message and a communication node and routing strategy of communications also affect generating a feasible solution.
 Therefore the designer can manually change the map allocation or the routing strategy to the failed scheduling,
  and even design a larger network architecture if needed.
