@@ -303,9 +303,11 @@
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{multirow}
 \usepackage{balance}
 \usepackage{xspace}
+\usepackage{amssymb}
 
 % *** Let's defined our own macros here ***
 \newcommand{\calG}{\mathcal{G}}
@@ -321,6 +323,11 @@
 \newcommand{\HD}{\mathit{LD}_\calG}
 \newcommand{\MT}{\mathit{MT}_\calG}
 \newcommand{\route}[3]{#1^{\langle #2,#3\rangle}}
+
+\theoremstyle{remark}
+\newtheorem{constraint}{Constraint}
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{definition}[theorem]{Definition}
 
 % for comments
 \newcommand{\jx}[1]{\%\% \textbf{Jiaxixang: }#1 \%\%\xspace}
@@ -789,65 +796,58 @@ the simplicity of evaluation, the constraints of simultaneous relay,
 application-level, protocol-based and domain-specific are neither
 concerned.
 
-\subsection{Message Offset Constrains}
+\subsection{Message Offset Constraints}
 
-For a scheduling of message $s_{i}\in\calS$ , the offset $s_i.\phi$  must be positive values and should guarantee that the message transmission is completed before the deadline of the communication. Therefore we have that
-\begin{equation}
-	(s_i.\phi
-	\geq 0)
-	\cap
-	(s_i.\phi + s_i.L
-	\leq
-	s_i.D)
-\end{equation}
+For each scheduling of message $s_{i}\in\calS$ , the offset $s_i.\phi$
+must be non-negative values and should guarantee that the message
+transmission is completed before the deadline of the
+communication. Therefore we have that
+%\begin{equation}
+\begin{constraint}
+\label{c:offset}
+$(s_i.\phi \geq 0) \cap (s_i.\phi + s_i.L \leq s_i.D)$.
+%\end{equation}
+\end{constraint}
 
-\subsection{Link Contention Constrains}
+\subsection{Link Contention Constraints}
+For each communication, the message occupies the link in terms of
+routing strategy without contention, until the whole message is
+received by the sink node. The scheduling $\calS$ should ensure that
+two messages are never transmitted on the identical link at the same
+time. The synthesized scheduling must guarantee that the links on
+TTNoC are contention-free.
 
-For each communication, the message occupies the link in terms of routing strategy without contention, 
-until all the message is received by sink node.
-The scheduling $\calS$ should guarantee that no two messages that are both transmitted on the identical link time at any time. 
-The synthesized scheduling must guarantee that the links on TTNoC is contention-free.
-
-Therefore for any two of the scheduling of message 
-$s_i,s_j\in\calS,s_i\neq s_j$,
-%$s_{i},s_{j}\in\mathcal{M}, s_{i}\neq s_{j}$, 
-we define 
-%$ overlap(s_{i},s_{j}) $,
-$ overlap(s_i,s_j)$
- denotes whether there is common routing link between $s_i$ and $s_j$ or not. 
-$ overlap(s_i,s_j)$ equals 1 if two communications sharing routing link for at least one hop. 
-Therefore we have that
+Given two schedulings of messages $s_i,s_j\in\calS$,
+%$s_{i},s_{j}\in\mathcal{M}, s_{i}\neq s_{j}$,
+we define $overlap(s_i,s_j)$ to indicate whether there are any common
+physical links between the routes of $s_i$ and $s_j$ or not.
+$overlap(s_i,s_j)$ is $true$ if the routes of $s_i$ and $s_j$ share
+physical links for at least one hop, or $false$ otherwise:
 \begin{equation}
 \label{e:overlap}
 overlap(s_i,s_j)= 
-	\begin{cases}
-	0 \quad s_i.R \cap s_j.R = \emptyset\\
-	1 \quad s_i.R \cap s_j.R \neq \emptyset
+\begin{cases}
+  true &\mbox{if } s_i.R \cap s_j.R \neq \emptyset \; ,\\
+  false & \mbox{otherwise}\; ,
 \end{cases}
 \end{equation}
+where we treat $s_i.R$ and $s_j.R$ as sets without ambiguity.
 
-The duration of scheduling $s_i$ for message $\tau_i$ in its $\mathit{k}$th period is defined by $s_i(k)$, which equals
+The duration of scheduling $s_i$ for message $\tau_i$ in its $k$th
+period is defined by an interval $s_i(k)$:
 \begin{equation}
 \label{e:duration}
-	s_i(k)
-	=
-	[
-	k\times s_i.T+s_i.\phi
-	,
-	k\times s_i.T+s_i.\phi+s_i.L
-	%{s_{i}^{(v_{a},v_{b})}}.\mathcal{T}+{s_{i}^{(v_{a},v_{b})}}.\phi+{s_{i}^{(v_{a},v_{b})}}.\mathcal{L}			
-	]
+s_i(k) = [k\times s_i.T+s_i.\phi \; , k\times s_i.T+s_i.\phi+s_i.L)
+%{s_{i}^{(v_{a},v_{b})}}.\mathcal{T}+{s_{i}^{(v_{a},v_{b})}}.\phi+{s_{i}^{(v_{a},v_{b})}}.\mathcal{L}			
 \end{equation}
 
-Therefore for any 
-$	s_i,s_j \in \calS, s_i \neq s_j	$,
+There comes our constraint for link contention:
+\begin{constraint}
+\label{c:link}
+  Given any $p,q\in\mathbb{N}, s_i,s_j \in \calS$ such that $i\neq j$, 
+  $overlap(s_i,s_j) \implies s_i(p) \cap s_j(q) = \emptyset$.
+\end{constraint}
 %$ {s_{i}^{(v_{a},v_{b})}}\in\mathcal{M}, {s_{j}^{(v_{c},v_{d})}}\in\mathcal{M}$,
-we have that
-\begin{equation}
-	s_i.R \cap s_j.R \neq \emptyset
-	\Longrightarrow
-	s_i(p) \cap s_j(q) = \emptyset
-\end{equation}
 %\begin{equation}
 %	(v_{a},v_{b})
 %	\cap
@@ -861,7 +861,7 @@ we have that
 %	=
 %	\emptyset	
 %\end{equation}
-where $p,q\geq 0$, $p,q\in\mathcal{Z}$.
+
 
 \section{PROBLEM FORMULATION\label{s:formulation}}
 The problem we are addressing in this paper can be formulated as follow. Given:
