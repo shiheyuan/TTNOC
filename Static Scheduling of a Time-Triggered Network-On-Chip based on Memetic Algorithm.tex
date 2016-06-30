@@ -409,10 +409,12 @@
 % in the abstract
 \begin{abstract}
 	
-Time-Triggered Network-on-Chip (TTNoC) is a time-triggered system deployed on the Network-on-Chip (NoC). It ensures the reliable and safety-critical communication for modern embedded multiprocessor systems. 
-To guarantee the real-time requirements, each message for communication is transmitted by a predefined schedule. 
-However, synthesizing the scheduling is a challenging problem because both path contention and the temporal constrains should be considered. 
-This paper introduces a memetic algorithm (MA) integrating local search into the genetic algorithm, to solve this problem. 
+Time-Triggered Network-on-Chip(TTNoC) is a time-triggered system deployed on the Network-on-Chip(NoC). 
+It ensures the reliable and safety-critical communication for real-time embedded multiprocessor systems. 
+To guarantee the safe-critical requirements for communication, each message is transmitted by a predefined static schedule. 
+However,
+ synthesizing the scheduling is a challenging problem because both path contention and the temporal constrains should be considered. 
+This paper introduces a memetic algorithm(MA) integrating local search into the genetic algorithm to resolve this problem. 
 The experimental results show that the better performance of our memetic algorithm in compare with the general genetic algorithm.
 \end{abstract}
 % no keywords
@@ -432,19 +434,27 @@ The experimental results show that the better performance of our memetic algorit
 \section{Introduction}
 
 Time-triggered systems is one of the real-time systems with high throughput and temporal predictability for multiprocessor systems.
-Since isolating the inherent fault as well as satisfying the temporal predictability of communication, time-triggered systems is widely deployed in various field, e.g.
+Since isolating the inherent faults as well as satisfying the temporal predictability of communication, time-triggered systems is widely deployed in various field, e.g.
 TTEthernet integrates time-triggered concept into the general Ethernet~\cite{DBLP:conf/nca/SteinerBHPV09}, which is adopted as a new standard of the avionic network~\cite{DBLP:conf/dsrt/BejiHGM14}. TTP and FlexRay adopted in aerospace industry~\cite{DBLP:journals/taes/HuLWV15}.
 
-TTNoC integrates the time-triggered concepts into the Network-on-Chip (NoC) for safety-critical real-time embedded systems which desire the tight and predictable communication latency.
-In practical, GENESYS is proposed as a cross-domain embedded system architecture, which influenced by the concepts of and the experience with the time-triggered architecture~\cite{DBLP:conf/ladc/Kopetz11}.
+TTNoC integrates the time-triggered concepts into the Network-on-Chip (NoC) for safety-critical real-time embedded systems, which desire the tight and predictable communication latency.
+In practical,
+ GENESYS is proposed as a cross-domain embedded system architecture,
+  which influenced by the concepts of and the experience with the time-triggered architecture~\cite{DBLP:conf/ladc/Kopetz11}.
 
-There are two main architectures of time-triggered system, bus-based and network-based architecture~\cite{DBLP:conf/date/HuangBRBK12}.
-Bus-based architecture just enable there is only one message transmitted on the system at the same time. 
-Therefore each message own its unique duration to occupy the physical link for communication.
-Unlike the bus-based architecture, The network-based architecture allows a set of message to be transmitted at the same time, on condition that the physical links the messages used are non-overlapping.
-It entails messages sharing the time domain to communicate. Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architecture.
-In bus-based architecture, all the messages ($m_0$,$m_1$,$m_2$) achieve temporal separation. 
-In network-based architecture, the set of messages ($m_0$,$m_1$,$m_2$) is able to share the time domain if there is no spacing conflict among the transmission of them.
+There are two main architectures of time-triggered system,
+ bus-based and network-based architecture~\cite{DBLP:conf/date/HuangBRBK12}.
+There is only one message transmitted on the system at the same time in the Bus-based architecture. 
+Therefore each message own its unique duration to communicate through the physical link.
+Unlike the bus-based architecture,
+ The network-based architecture allows a set of messages to be transmitted at the same time,
+  on condition that the physical links for the transmission of the messages are non-overlapping.
+It entails messages sharing the time domain to communicate.
+Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architecture.
+In bus-based architecture,
+ all the messages ($m_0$,$m_1$,$m_2$) achieve temporal separation. 
+In network-based architecture,
+ the set of messages ($m_0$,$m_1$,$m_2$) is able to share the time domain if there is no spacing conflict among the transmission of them.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/difference.pdf}
@@ -452,34 +462,40 @@ In network-based architecture, the set of messages ($m_0$,$m_1$,$m_2$) is able t
 	\label{f:diff}
 \end{figure}
 
-The TTNoC is network-based, therefore the scheduling of TTNoC is to determine the duration of each message on the TTNoC and ensuring there is no contention with the communication. 
-Static scheduling is adopted to synthesize the scheduling which resolves contention, avoiding dynamic arbitration of intercommunicate resources distribution. 
+The TTNoC employs the network-based architecture,
+ therefore the scheduling of TTNoC is to determine the duration of each message with no contention on the TTNoC . 
+Static scheduling is adopted to synthesize the scheduling which resolves contention,
+ avoiding dynamic arbitration of intercommunicate resources distribution. 
 So that the communication on the TTNoC is predefined while satisfying the scheduling constrains.
-However, synthesizing such a scheduling is rather complicated which is known as NP-complete~\cite{DBLP:conf/date/HuangBRBK12,DBLP:conf/rtss/Steiner10}.
+However,
+ synthesizing such a scheduling is rather complicated which is known as NP-complete~\cite{DBLP:conf/date/HuangBRBK12,DBLP:conf/rtss/Steiner10}.
 
-The main contribution of this paper is presenting a static scheduling approach to resolve the TTNoC scheduling problem by the Memetic Algorithm (MA). MA is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for solution search~\cite{DBLP:journals/tec/ChenOLT11}. 
+The main contribution of this paper is presenting a static scheduling approach to resolve the TTNoC scheduling problem by the Memetic Algorithm (MA). 
+MA is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for solution search~\cite{DBLP:journals/tec/ChenOLT11}. 
 
 The rest of this paper is organized as follows. We first review the related work in the TTNoC scheduling in Section~\ref{s:relate}. 
-The system model is given in Section~\ref{s:model}, followed by the schedule constrains in Section~\ref{s:constraint}.
-Next we presents the problem formulation and assumptions in Section~\ref{s:formulation}.
+The system model is given in Section~\ref{s:model}, followed by the schedule constraints in Section~\ref{s:constraint}.
+Next we presents the problem formulation in Section~\ref{s:formulation}.
 Then the memetic algorithm is described in Section~\ref{s:algorithm}.
 The experiments as well as synthesis results are presented in Section~\ref{s:evalu}.
 Finally, we conclude in Section~\ref{s:conclud}.
 
 \section{Related Work	\label{s:relate}}
 
-There are sufficient literatures about the scheduling of time-triggered network, which is similar to the scheduling of TTNoC. 
-\cite{DBLP:conf/rtss/Steiner10} consider the scheduling problem for time-triggered multi-hop networks. A pure satisfiability modulo theories (SMT) formulation is presented followed by an incremental method to improve the scalability.
+There are sufficient literatures about the scheduling of time-triggered network,
+ which is similar to the scheduling of TTNoC. 
+\cite{DBLP:conf/rtss/Steiner10} consider the scheduling of the time-triggered multi-hop networks.
+A pure satisfiability modulo theories (SMT) formulation is presented followed by an incremental method to improve the scalability.
 \cite{DBLP:journals/rts/CraciunasO16,DBLP:conf/rtns/CraciunasO14} formulate the schedule problem using first-order logical constraints and present alternative methods to find a solution based on SMT and mixed integer programming (MIP) solvers.
 In \cite{DBLP:conf/etfa/PozoSRH15} the authors presents a decomposition approach based on SMT solver for extremely large time-triggered network.
 
 The scheduling problem also appear in the various domain.
-\cite{DBLP:conf/isorc/RoRM15} resolve the scheduling problem on the wireless network by SMT solver.
-\cite{DBLP:conf/aspdac/ZhangG0C14} formulate the co-synthesis problem of task and communication schedules as a Mixed Integer Programming (MIP) model taking into account a number of Ethernet-specific timing parameters.
+\cite{DBLP:conf/isorc/RoRM15} resolve the scheduling on the wireless network by SMT solver.
+\cite{DBLP:conf/aspdac/ZhangG0C14} formulates the co-synthesis problem of task and communication schedules as a Mixed Integer Programming (MIP) model taking into account a number of Ethernet-specific timing parameters.
 Holistic Scheduling in Time-Triggered In-Vehicle Networks was studied in~\cite{DBLP:journals/tii/HuLWLZ14}
 
 The scheduling problem of TTNoC has been
-studied firstly in \cite{DBLP:conf/date/HuangBRBK12} which is integrates SMT solver into classical heuristic algorithm. 
+studied firstly in \cite{DBLP:conf/date/HuangBRBK12} which integrates SMT solver into a classical heuristic algorithm. 
 \cite{DBLP:conf/sies/ScholerKMO15} introduces an optimal scheduler based on a Boolean SAT solver for a TTNoC.
 \cite{DBLP:conf/indin/MurshedOAK15} introduces a scheduling model based on Mixed Integer Linear Programming (MILP) combining both time-triggered and event-triggered messages on NoC.
 In~\cite{DBLP:conf/sies/FreierC15},
@@ -588,37 +604,27 @@ The system architecture we adopted is shown in~\cite{DBLP:conf/rtcsa/PaukovitsK0
 
 \subsection{Architecture Model}
 
-TTNoC is a system with a set of real-time tasks/applications mapped on
-a multi-core interconnection platform.  It composes of a set of
-identical processing elements interconnected by physical links and the
-switches on the TTNoC.  The switches are connected by bidirectional
-physical links and each link connects a pair of switches.  The
-topologies of a TTNoC can be either regular or irregular.
+TTNoC is a system with a set of real-time tasks/applications mapped on a multi-core interconnection platform. 
+It composes of a set of identical processing elements(PEs) interconnected by physical links and the switches on the TTNoC.
+The switches are connected by bidirectional physical links and each link connects a pair of switches.  
+The topologies of a TTNoC can be either regular or irregular.
 
-The architecture of a TTNoC is
-modeled by a directed graph $\calG=(\calV,\calL)$. The set of vertexes
-$\mathcal{V}=\{ v_{1},\dots,v_{m}\}$ represents the set of $m$
-\emph{identical} communication nodes (the processing elements and
-switches) while the edges $\mathcal{L}\subseteq \mathcal{V} \times
-\mathcal{V}$ comprises the communication physical links
-\emph{directly} connecting the nodes.  The physical links are
-full-duplex, allowing thus communication in both
-directions. Therefore, given $v_i,v_j\in\calV$, $\langle
-v_i,v_j\rangle \in\calL$ implies $\langle v_j,v_i\rangle\in\calL$,
-where $\langle v_i,v_j\rangle$ is a pair denoting a directed physical
-link connecting two adjacent nodes, from a source node $v_i$ to a sink node $v_j$.
+The architecture of a TTNoC is modeled by a directed graph $\calG=(\calV,\calL)$. 
+The set of vertexes $\mathcal{V}=\{ v_{1},\dots,v_{m}\}$ represents the set of $m$ \emph{identical} communication nodes (the PEs and switches).
+The edges $\mathcal{L}\subseteq \mathcal{V} \times\mathcal{V}$ comprises the communication physical links \emph{directly} connecting the nodes.
+The physical links are full-duplex, allowing communication in both directions. 
+Therefore, given $v_i,v_j\in\calV$, $\langle v_i,v_j\rangle \in\calL$ implies $\langle v_j,v_i\rangle\in\calL$,
+ where $\langle v_i,v_j\rangle$ is a pair denoting a directed physical link connecting two adjacent nodes,
+  from a source node $v_i$ to a sink node $v_j$.
 
- 
-A TTNoC is composed of a set of identical process elements and
-physical links.  Since the width of physical links as well as the
-performance of switches and links is the same, the properties of each
-hop can be regarded as system properties of TTNoC.  Thus a TTNoC
-$\calG$ is equipped with a set of properties.  We use $\width$ to
-denote the width of physical links in the TTNoC, $\SD$ for the
-switching delay in the switches, $\HD$ for the link delay per hop
-which means propagation cost between adjacent nodes, and $\MT$,
-discussed in Section~\ref{ss:schmodel}, for the macrotick of network
-representing the time-line granularity of the physical link.
+Since switches and links are identical on the TTNoC,
+ the width of physical links as well as the performance of switches and links is the same,.
+The properties of each hop can be regarded as system properties of TTNoC.
+Hence a TTNoC $\calG$ is equipped with a set of properties. 
+We use $\width$ to denote the width of physical links in the TTNoC,
+ $\SD$ for the switching delay in the switches,
+  $\HD$ for the link delay per hop which means propagation cost between adjacent nodes,
+   and $\MT$ discussed in Section~\ref{ss:schmodel}, for the macrotick of network representing the time-line granularity of the communication on the TTNoC.
 
 %% A network link $(v_{a},v_{b})$, between the source node
 %% $v_{a}$ and the sink node $v_{b}$, is defined by the tuple $\langle
@@ -632,8 +638,8 @@ representing the time-line granularity of the physical link.
 %% of hops from $v_{a}$ to $v_{b}$ on the link $(v_{a},v_{b})$.
 
 Given two nodes $v,v'\in\calV$, a \emph{route} from $v$ to $v'$,
-denoted by $\route{r}{v}{v'}$, is defined as a sequence of the form
-$\langle v_{k_0},v_{k_1}\rangle\langle
+ denoted by $\route{r}{v}{v'}$, is defined as a sequence of the form 
+ $\langle v_{k_0},v_{k_1}\rangle\langle
 v_{k_1},v_{k_2}\rangle\ldots\langle v_{k_{i-1}},v_{k_i}\rangle\langle
 v_{k_i},v_{k_{i+1}}\rangle\ldots \langle v_{k_{n-1}},v_{k_n}\rangle$
 satisfying $v_{k_0}=v$, $v_{k_n}=v'$ and $(\forall i\in [1,n])\langle
@@ -657,51 +663,50 @@ number of hops along this link.
 
 
 \subsection{Message Model}
-The communication of process elements on the TTNoC is based on
-messages.  A message consists of header and data.  Header includes the
-information for message forwarding on the TTNoC, e.g. the addresses of
-source and destination.  A flit is the unit of a message that can be
-transmitted over the TTNoC.  Only periodic messages are discussed in
-this paper because it is the typical case in real-time embedded
-systems.  But in practice, the fixed time slot can be preserved in
-terms of the route and deadline periodically for sporadic messages.
 
-We denote the set of $n$ time-triggered messages on the TTNoC by
-$\Gamma = \{\tau_{1},\dots,\tau_{n}\}$. Each message $\tau_{i}$ is
-modeled by the tuple $\langle \tau_{i}.H,\tau_{i}.S, \tau_{i}.T,
-\tau_{i}.D\rangle$, 
-where $\tau_{i}.H$ denotes the header of the message in flits,
-$\tau_{i}.S$ denotes the size of the message in flits, 
-$\tau_{i}.T$ and $\tau_{i}.D$ are the period and the relative deadline of the message, respectively.
+The communication on the TTNoC is based on messages.  
+A message consists of header and data.  
+Header includes the information for message forwarding on the TTNoC,
+ e.g. the addresses of source and destination. 
+Flit is the unit of a message that can be transmitted over the TTNoC.  
+Only periodic messages are discussed in this paper because it is the typical case in real-time embedded systems.
+
+We denote the set of $n$ time-triggered messages on the TTNoC by $\Gamma = \{\tau_{1},\dots,\tau_{n}\}$. 
+Each message $\tau_{i}$ is modeled by the tuple $\langle \tau_{i}.H,\tau_{i}.S, \tau_{i}.T,\tau_{i}.D\rangle$, 
+ where $\tau_{i}.H$ denotes the header of the message in flits,
+ $\tau_{i}.S$ denotes the size of the message in flits, 
+ $\tau_{i}.T$ and $\tau_{i}.D$ are the period and the relative deadline of the message, respectively.
  
 \subsection{Scheduling Model}
 \label{ss:schmodel}
 
-When a communication happens on the TTNoC between two nodes, i.e. a
-source node $v_i\in \calV$ sends a message $\tau_{k}$ to a sink node
-$v_j\in \calV$ on the TTNoC, the message $\tau_k$ is transmitted on
-some route $\route{r}{v_i}{v_j}$ and the communication nodes along the
-route $\route{r}{v_i}{v_j}$ forward the message.
+When the communication happens on the TTNoC between two nodes,
+ e.g. a source node $v_i\in \calV$ sends a message $\tau_{k}$ to a sink node $v_j\in \calV$ on the TTNoC,
+  the message $\tau_k$ is transmitted on some route $\route{r}{v_i}{v_j}$. 
+The communication nodes forward the message based on the route $\route{r}{v_i}{v_j}$ .
 
-The TDMA scheme is deployed for the scheduling of communication.  And
-the time granularity is \emph{macrotick} that the periods and the
-phases of messages directly match to this time format.
+The TDMA scheme is deployed for the scheduling of communication .  
+And the time granularity is \emph{macrotick} that the period and relative deadline of message directly match to this time format.
 
-Based on the architecture and message model, we can model the scheduling of communication as a set $\calS=\{s_1,\ldots,s_n\}$, in which each
-$s_{i}$ denotes the communication scheduling of the message
-$\tau_{i}\in\Gamma$. Each communication $s_{i}\in\calS$ is defined
-using a tuple $\langle s_i.R, s_i.\phi, s_i.T, s_i.D, s_i.L\rangle$,
-where $s_i.R$ is the route along which the message $\tau_i$ is
-forwarded, 
-$s_i.\phi$ is the offset of the communication, $s_i.T$ and
-$s_i.D$ denote, 
-respectively, 
-the period and the relative deadline of the communication, and $s_i.L$ is the duration of the communication.
+Based on the architecture and message model,
+ we can model the scheduling of communication as a set $\calS=\{s_1,\ldots,s_n\}$,
+  in which each $s_{i}$ denotes the communication scheduling of the message $\tau_{i}\in\Gamma$. 
+Each scheduling $s_{i}\in\calS$ is defined by a tuple $\langle s_i.R, s_i.\phi, s_i.T, s_i.D, s_i.L\rangle$,
+ where $s_i.R$ is the route along which the message $\tau_i$ is forwarded, 
+ $s_i.\phi$ is the offset of the message,
+  $s_i.T$ and
+   $s_i.D$ denote the period and the relative deadline of the message in macrotick respectively,
+    and $s_i.L$ is the communication delay in macrotick.
 
-For the whole set $\calS$, the sets of the route, the period, the
-relative deadline and the delay of each $s_i\in\calS$ are defined as
-expected, denoted by $\calS.\calR$, $\calS.\Phi$, $\calS.\calT$,
-$\calS.\calD$ and $\calS.\calL$, respectively.
+For the whole scheduling set $\calS$,
+ the sets of the route,
+  the period,
+   the relative deadline and the delay of each $s_i\in\calS$ are defined as expected,
+ denoted by $\calS.\calR$,
+  $\calS.\Phi$,
+   $\calS.\calT$,
+    $\calS.\calD$ and $\calS.\calL$,
+     respectively.
 
 %% Based on the architecture and message model, we can model the set of
 %% message communication $\mathcal{M}=\{ s_{1},\dots,s_{i}\}$, where
@@ -719,8 +724,8 @@ $\calS.\calD$ and $\calS.\calL$, respectively.
 %% network link for communication.
 
 Because of the macrotick as the granularity of communication,
-for each communication $s_{i}$,
-we have the following formulas:
+ for each communication $s_{i}$,
+   we have the following formulas:
 \begin{equation}
 \label{e:eqn1}
   s_i.T = \lceil\frac{\tau_{i}.T}{\MT} \rceil
@@ -734,11 +739,11 @@ we have the following formulas:
   s_i.L = \lceil\frac{|s_i.R| \times (\SD+\HD) \times
     \lceil\frac{\tau_{i}.S + \tau_{i}.H}{\tau_{i}.H  }\rceil}{\MT}\rceil
 %\lceil\frac{\tau_{i}.s\times (v_{a},v_{b}).sc+(v_{a},v_{b}).delay}{ (v_{a},v_{b}).mt}\rceil 
-\end{equation}
+\end{equation}   
 %% where $(v_{a},v_{b}).d = (v_{a},v_{b}).sd+(v_{a},v_{b}).pd $ denotes
 %% the delay of propagating and switching delay per hop.
-where $\MT$ denotes the value of macrotick, and $\SD+\HD$ is the delay
-per hop in the forwarding.
+where $\MT$ denotes the value of macrotick,
+ and $\SD+\HD$ is the delay per hop in the forwarding.
 %% that $\SD$ is the delay on the physical link and $\HD$is the switching delay.
 
 The formula is based on~\cite{DBLP:books/daglib/0087651} with the
@@ -772,10 +777,10 @@ scheduling constraints on TTNoC are similar with those on general
 time-triggered network, while some differences exist in terms of our
 model.
 
+The synthesized scheduling must satisfy the separation
+of the messages in time domain or space domain.
 Scheduling of communication $\calS$ should resolve the constraints on
-the TTNoC. \jx{This statement is unclear:}  The synthesized scheduling must satisfy the separation
-among the set of communication in time domain or space domain, which
-mainly include offset constraints and link constraints.
+the TTNoC, which mainly including offset constraints and link constraints.
 
 In our TTNoC, scheme of bufferless NoCs is adopted that no buffering
 of messages takes place.  It leads to significantly less area and
@@ -784,8 +789,9 @@ The route of each message is located on its header.  The switches
 simply forward the message according to the address of next-hop
 switch, without concerning the communication schedule. Therefore,
 unlike the general time-triggered network, the switch memory
-constraints are not concerned. \jx{Check this sentence:} Moreover for
-the simplicity of evaluation, the simultaneous relay,
+constraints are not concerned. Moreover for
+the simplicity of evaluation,
+the simultaneous relay,
 application-level, protocol-based and domain-specific constraints are neither
 concerned.
 
