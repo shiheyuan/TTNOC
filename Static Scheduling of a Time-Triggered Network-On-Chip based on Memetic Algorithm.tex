@@ -784,11 +784,11 @@ simply forward the message according to the address of next-hop
 switch, without concerning the communication schedule. Therefore,
 unlike the general time-triggered network, the switch memory
 constraints are not concerned. \jx{Check this sentence:} Moreover for
-the simplicity of evaluation, the constraints of simultaneous relay,
-application-level, protocol-based and domain-specific are neither
+the simplicity of evaluation, the simultaneous relay,
+application-level, protocol-based and domain-specific constraints are neither
 concerned.
 
-\subsection{Message Offset Constrains}
+\subsection{Message Offset Constraints}
 
 For a scheduling of message $s_{i}\in\calS$ , the offset $s_i.\phi$  must be positive values and should guarantee that the message transmission is completed before the deadline of the communication. Therefore we have that
 \begin{equation}
@@ -800,7 +800,7 @@ For a scheduling of message $s_{i}\in\calS$ , the offset $s_i.\phi$  must be pos
 	s_i.D)
 \end{equation}
 
-\subsection{Link Contention Constrains}
+\subsection{Link Contention Constraints}
 
 For each communication, the message occupies the link in terms of routing strategy without contention, 
 until all the message is received by sink node.
@@ -880,12 +880,12 @@ The problem we are addressing in this paper can be formulated as follow. Given:
 %(2) the mapping of message to communication node $\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
 %(3) the routing strategy.
 %(4) the set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with  $\langle \tau_{i}.s, \tau_{i}.t, \tau_{i}.d\rangle$ for $\tau_{i}\in \Gamma$.
-We aim to find the offset $\calS.\Phi$ for messages $\Gamma$ on TTNoC $\calG=(\calV,\calL)$ which satisfy the scheduling constrains. 
+We aim to find the offset $\calS.\Phi$ for messages $\Gamma$ on TTNoC $\calG=(\calV,\calL)$ which satisfy the scheduling constraints. 
 
-We introduce the memetic algorithm to synthesize the set of offset $\calS.\Phi$ such that satisfies the scheduling constrains. 
+We introduce the memetic algorithm to synthesize the set of offset $\calS.\Phi$ such that satisfies the scheduling constraints. 
 If it is impossible to synthesize a set of scheduled communication, 
-then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
-% $\mathcal{M} = \{s_{1},\dots,s_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
+then we try to minimize the amount of infeasible messages which violate the scheduling constraints.
+% $\mathcal{M} = \{s_{1},\dots,s_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constraints. 
 
 %Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle s_{i}^{(v_{a},v_{b})}.\phi, s_{i}^{(v_{a},v_{b})}.\mathcal{T}, s_{i}^{(v_{a},v_{b})}.\mathcal{D},s_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $s_{i}\in \mathcal{M}$. The $s_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$s_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $s_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constrains. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
 
@@ -912,7 +912,7 @@ It is noted that the period must be a positive power of two in terms of macrotic
 
 We assume that the relative deadline is equal to period for each message for simplicity.
 The set of possible offset is denoted as $s_i.\Phi$ for $s_i\in\calS$.
-$s_i.\Phi$ is derived by $ 0 \leq s_{i}.\phi \leq s_{i}.T - s_{i}.L $ according to the message offset constrains.
+$s_i.\Phi$ is derived by $ 0 \leq s_{i}.\phi \leq s_{i}.T - s_{i}.L $ according to the message offset constraints.
 The $s_i.\phi$ is generated among the $s_i.\Phi$.
 The set of possible offset $s_i.\Phi$ for the messages on Fig~\ref{f:comm_on_TTNoC} is also shown in TABLE~\ref{t:comm_info}.
 \begin{figure}[!t]
@@ -1020,7 +1020,7 @@ The memetic algorithm begins with an initial population $Pop$. The size of popul
 The initial population is synthesized randomly.
 For a scheduling $s_{i}\in\calS$,
  the offset $s_i.\phi$ in the initial individual is located randomly among the possible offset $s_i.\Phi$.
-Therefore the initial population satisfies the offset constrains.
+Therefore the initial population satisfies the offset constraints.
 The algorithm is iterative executed until a feasible scheduling is found or reaching the given maximum iteration.
 
 When the memetic algorithm get started, firstly the initial population is marked by the fitness function.
@@ -1094,7 +1094,7 @@ The selection function ensure the size of population is equal to the value of $s
 
 To adopt the fitness function to evaluate individuals,
  we firstly transform chromosome to represent the duration of communication in a hyperperiod.
-Next we derive the link contention constrains among the scheduling according to the routing strategy,
+Next we derive the link contention constraints among the scheduling according to the routing strategy,
  as the basis of our fitness function.
 Then the score of each individual is able to employed by fitness function.
 
@@ -1169,7 +1169,7 @@ The scheduling model of messages is shown in TABLE~\ref{t:comm_info}.
 	\end{tabular}
 \end{table}
 
-The link contention constrains should be derived after the transformation of individual.
+The link contention constraints should be derived after the transformation of individual.
 According to the predefined routing strategy,
  e.g. XY routing~\cite{DBLP:books/daglib/0087651},
   the route $s_i.R$ of each scheduling of message $s_i\in \calS$ is derived.
