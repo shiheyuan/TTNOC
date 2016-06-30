@@ -464,18 +464,21 @@ Finally, we conclude in Section~\ref{s:conclud}.
 \section{Related Work	\label{s:relate}}
 
 There are sufficient literatures about the scheduling of time-triggered network, which is similar to the scheduling of TTNoC. 
-\cite{DBLP:conf/rtss/Steiner10} consider the scheduling problem for time-triggered multi-hop networks. 
-A pure satisfiability modulo theories (SMT) formulation is presented, followed by an incremental method to improve the scalability.
+\cite{DBLP:conf/rtss/Steiner10} consider the scheduling problem for time-triggered multi-hop networks. A pure satisfiability modulo theories (SMT) formulation is presented followed by an incremental method to improve the scalability.
 \cite{DBLP:journals/rts/CraciunasO16,DBLP:conf/rtns/CraciunasO14} formulate the schedule problem using first-order logical constraints and present alternative methods to find a solution based on SMT and mixed integer programming (MIP) solvers.
+In \cite{DBLP:conf/etfa/PozoSRH15} the authors presents a decomposition approach based on SMT solver for extremely large time-triggered network.
+
+The scheduling problem also appear in the various domain.
 \cite{DBLP:conf/isorc/RoRM15} resolve the scheduling problem on the wireless network by SMT solver.
+\cite{DBLP:conf/aspdac/ZhangG0C14} formulate the co-synthesis problem of task and communication schedules as a Mixed Integer Programming (MIP) model taking into account a number of Ethernet-specific timing parameters.
+Holistic Scheduling in Time-Triggered In-Vehicle Networks was studied in~\cite{DBLP:journals/tii/HuLWLZ14}
 
 The scheduling problem of TTNoC has been
 studied firstly in \cite{DBLP:conf/date/HuangBRBK12} which is integrates SMT solver into classical heuristic algorithm. 
 \cite{DBLP:conf/sies/ScholerKMO15} introduces an optimal scheduler based on a Boolean SAT solver for a TTNoC.
-In \cite{DBLP:conf/etfa/PozoSRH15} the authors presents a decomposition approach based on SMT solver for extremely large time-triggered network.
 \cite{DBLP:conf/indin/MurshedOAK15} introduces a scheduling model based on Mixed Integer Linear Programming (MILP) combining both time-triggered and event-triggered messages on NoC.
-In~\cite{DBLP:conf/sies/FreierC15}, 
-A heuristic algorithm for scheduling on the scalable communication structure like a NoC is presented. 
+In~\cite{DBLP:conf/sies/FreierC15},
+ A heuristic algorithm for scheduling on the scalable communication structure like a NoC is presented. 
 
 
 % An example of a floating figure using the graphicx package.
@@ -845,6 +848,8 @@ The problem we are addressing in this paper can be formulated as follow. Given:
 		$\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
 		Each message $\tau_{i}\in\Gamma$ is allocated to a specific process element(communication node) $v_{i}\in\mathcal{V}$, 
 		thus the source node $v_{a}$ and sink node $v_{b}$ for each $\tau \in\Gamma$ are determined.
+		It should be noted that the scheduling of mapping can be synthesized by genetic algorithm~\cite{DBLP:conf/recosoc/MesidisI11}.
+		In our experiment the mapping is predefined.
 	\item The set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with 
 	$\langle \tau_{i}.H,\tau_{i}.S, \tau_{i}.T,	\tau_{i}.D\rangle$ for each $\tau \in \Gamma$.
 	\item The route $s_i.R$ for each scheduling $s_i \in \calS$ of message $\tau \in \Gamma$.
@@ -1085,9 +1090,9 @@ We define
  denotes the set of duration for each message scheduling in hyperperiod. 
 Therefore,
  the complete duration in hyperperiod for each scheduling $ \calS.\calH $ is determined.
-Fig~\ref{t:duration} is an example of the complete duration in a hyperperiod,
+TABLE~\ref{t:duration} is an example of the complete duration in a hyperperiod,
  based on two individuals in TABLE~\ref{t:pop}.
-The scheduling information is shown in TABLE~\ref{t:comm_info}.
+The scheduling model of messages is shown in TABLE~\ref{t:comm_info}.
 
 %\begin{figure}[!t]
 %	\centering
@@ -1100,14 +1105,14 @@ The scheduling information is shown in TABLE~\ref{t:comm_info}.
 	\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
-	\caption{An Example of transform of chromosome on 2 individual}
+	\caption{An Example of transform of chromosome to represent duration of messages}
 	\label{t:duration}
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making tables
 	% than the plain LaTeX2e tabular which is used here.
 	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
 		\hline
-		\textbf{macrotick}& 
+		\textbf{Duration}& 
 		\textbf{0} & 
 		\textbf{1} & 
 		\textbf{2} & 
@@ -1118,7 +1123,7 @@ The scheduling information is shown in TABLE~\ref{t:comm_info}.
 		\textbf{7} \\		
 		\hline
 		\hline
-		$D(indi0)$&
+		$indi0$&
 		\tabincell{c}{$m_0$\\$m_1$}&
 		&
 		\tabincell{c}{$m_0$\\$m_2$}&
@@ -1129,7 +1134,7 @@ The scheduling information is shown in TABLE~\ref{t:comm_info}.
 		$m_4$\\		
 		\hline	
 		\hline	
-		$D(indi1)$&
+		$indi1$&
 		$m_0$&
 		$m_1$&
 		$m_0$&
@@ -1363,21 +1368,21 @@ It is noted that the probability of mutation for each individual in our implemen
 
 \subsection{Local search strategy \label{s:loc}}
 
-In the step of local search for each individual,
+Before the local search for each individual,
  the scheduling $s_i\in\calS$ with the maximum value of $times(s_i)$ is selected as local search element.
 If there are two or more individuals with the maximum conflict times,
  the element to be searched is select stochastically among them.
-After determining the element for local searching,
- the offset $s_i.\phi$ of selected $s_i$ is reallocated in its possible offset $s_i.\Phi$,
-  to minimum the score of the individual.
+Then the offset $s_i.\phi$ of selected $s_i$ is reallocated in its possible offset $s_i.\Phi$ .
+Each reallocated individual is a candidate to update the previous individual.
+After marking all of the candidate, the individual with minimum score replaces the previous individual.
 
 TABLE~\ref{t:local} shows an example of local search for $indi0$ in Fig~\ref{t:pop}.
 According to the $T(\calS)$ of individual 0 in TABLE~\ref{t:fitness},
  we random select $s_0$ as the element. 
 Since the possible offset $s_i.\Phi$ of $s_0.\phi$ is 0 and 1 shown in TABLE~\ref{t:comm_info},
-  we locate the $s_0$ on gene 0 and gene 1 respectively.
-After marking two of individual with different offset of $s_0$,
- we select the individual which score is 2 as the updated $indi0$ because the selected individual own minimum score among the candidates which just reallocate the offset of $s_0$.
+  we locate the the scheduling $s_0$ for message $m_0$ on its possible offset, gene 0 and gene 1 respectively.
+After marking two of individual with different offset $s_0.\phi$,
+ we select the individual which score is 2 as the updated $indi0$ because this individual own minimum score among the candidates which just reallocate the offset of $s_0$.
 %\begin{figure}[!t]
 %	\centering
 %	\includegraphics[width=3in]{picture/local.pdf}
@@ -1438,6 +1443,7 @@ After marking two of individual with different offset of $s_0$,
 		\hline
 	\end{tabular}
 \end{table}
+
 In our implement,
  we naively traverse all the possible offset.
 However for improving efficiency,
