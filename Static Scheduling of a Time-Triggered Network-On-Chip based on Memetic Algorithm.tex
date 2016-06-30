@@ -420,7 +420,7 @@ Time-Triggered Network-on-Chip(TTNoC) is a time-triggered system deployed on the
 It ensures the reliable and safety-critical communication for real-time embedded multiprocessor systems. 
 To guarantee the safe-critical requirements for communication, each message is transmitted by a predefined static schedule. 
 However,
- synthesizing the scheduling is a challenging problem because both path contention and the temporal constrains should be considered. 
+ synthesizing the scheduling is a challenging problem because both path contention and the temporal constraints should be considered. 
 This paper introduces a memetic algorithm(MA) integrating local search into the genetic algorithm to resolve this problem. 
 The experimental results show that the better performance of our memetic algorithm in compare with the general genetic algorithm.
 \end{abstract}
@@ -473,7 +473,7 @@ The TTNoC employs the network-based architecture,
  therefore the scheduling of TTNoC is to determine the duration of each message with no contention on the TTNoC . 
 Static scheduling is adopted to synthesize the scheduling which resolves contention,
  avoiding dynamic arbitration of intercommunicate resources distribution. 
-So that the communication on the TTNoC is predefined while satisfying the scheduling constrains.
+So that the communication on the TTNoC is predefined while satisfying the scheduling constraints.
 However,
  synthesizing such a scheduling is rather complicated which is known as NP-complete~\cite{DBLP:conf/date/HuangBRBK12,DBLP:conf/rtss/Steiner10}.
 
@@ -779,7 +779,7 @@ architecture model $\calG$ and the messages model $\Gamma$ with
 \section{Scheduling Constraints\label{s:constraint}}
 
 The scheduling constraints for general time-triggered multi-hop
-network are presented in~\cite{DBLP:conf/rtss/Steiner10}.  The
+network are presented in~\cite{DBLP:conf/rtss/Steiner10}. The
 scheduling constraints on TTNoC are similar with those on general
 time-triggered network, while some differences exist in terms of our
 model.
@@ -790,11 +790,11 @@ Scheduling of communication $\calS$ should resolve the constraints on
 the TTNoC, which mainly including offset constraints and link constraints.
 
 In our TTNoC, scheme of bufferless NoCs is adopted that no buffering
-of messages takes place.  It leads to significantly less area and
+of messages takes place. It leads to significantly less area and
 power consumption for TTNoC~\cite{DBLP:journals/tpds/ShpinerKLCK15}.
-The route of each message is located on its header.  The switches
-simply forward the message according to the address of next-hop
-switch, without concerning the communication schedule. Therefore,
+The route of each message is located on its header.  
+The switches simply forward the message according to the address of next-hop
+switch, without concerning the communication schedule~\cite{DBLP:conf/rtcsa/PaukovitsK08}. Therefore,
 unlike the general time-triggered network, the switch memory
 constraints are not concerned. Moreover for
 the simplicity of evaluation,
@@ -893,7 +893,7 @@ If it is impossible to synthesize a set of scheduled communication,
 then we try to minimize the amount of infeasible messages which violate the scheduling constraints.
 % $\mathcal{M} = \{s_{1},\dots,s_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constraints. 
 
-%Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle s_{i}^{(v_{a},v_{b})}.\phi, s_{i}^{(v_{a},v_{b})}.\mathcal{T}, s_{i}^{(v_{a},v_{b})}.\mathcal{D},s_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $s_{i}\in \mathcal{M}$. The $s_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$s_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $s_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constrains. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constrains.
+%Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle s_{i}^{(v_{a},v_{b})}.\phi, s_{i}^{(v_{a},v_{b})}.\mathcal{T}, s_{i}^{(v_{a},v_{b})}.\mathcal{D},s_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $s_{i}\in \mathcal{M}$. The $s_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$s_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $s_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constraints. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constraints.
 
 
 
