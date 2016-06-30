@@ -305,6 +305,7 @@
 \usepackage{amsmath}
 \usepackage{multirow}
 \usepackage{balance}
+\usepackage{xspace}
 
 % *** Let's defined our own macros here ***
 \newcommand{\calG}{\mathcal{G}}
@@ -320,6 +321,9 @@
 \newcommand{\HD}{\mathit{HD}_\calG}
 \newcommand{\MT}{\mathit{MT}_\calG}
 \newcommand{\route}[3]{#1^{\langle #2,#3\rangle}}
+
+% for comments
+\newcommand{\jx}[1]{\%\% \textbf{Jiaxixang: }#1 \%\%\xspace}
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -455,7 +459,7 @@ However, synthesizing such a scheduling is rather complicated which is known as 
 The main contribution of this paper is presenting a static scheduling approach to resolve the TTNoC scheduling problem by the Memetic Algorithm (MA). MA is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for solution search~\cite{DBLP:journals/tec/ChenOLT11}. 
 
 The rest of this paper is organized as follows. We first review the related work in the TTNoC scheduling in Section~\ref{s:relate}. 
-The system model is given in Section~\ref{s:model}, followed by the schedule constrains in Section~\ref{s:constrain}.
+The system model is given in Section~\ref{s:model}, followed by the schedule constrains in Section~\ref{s:constraint}.
 Next we presents the problem formulation and assumptions in Section~\ref{s:formulation}.
 Then the memetic algorithm is described in Section~\ref{s:algorithm}.
 The experiments as well as synthesis results are presented in Section~\ref{s:evalu}.
@@ -583,10 +587,12 @@ The system architecture we adopted is shown in~\cite{DBLP:conf/rtcsa/PaukovitsK0
 
 \subsection{Architecture Model}
 
-TTNoC is a system with a set of real-time tasks/applications mapped on a multi-core interconnection platform.
-It composes of a set of identical processing elements interconnected by physical links and the switches on the TTNoC. 
-The switches are connected by bidirectional physical links and Each link connect a pair of switches.
-The topologies of a TTNoC can be either regular or irregular.
+TTNoC is a system with a set of real-time tasks/applications mapped on
+a multi-core interconnection platform.  It composes of a set of
+identical processing elements interconnected by physical links and the
+switches on the TTNoC.  The switches are connected by bidirectional
+physical links and each link connects a pair of switches.  The
+topologies of a TTNoC can be either regular or irregular.
 
 The architecture of a TTNoC is
 modeled by a directed graph $\calG=(\calV,\calL)$. The set of vertexes
@@ -602,17 +608,16 @@ where $\langle v_i,v_j\rangle$ is a pair denoting a directed physical
 link connecting two adjacent nodes, from a source node $v_i$ to a sink node $v_j$.
 
  
-The TTNoC composed of a set of identical process elements and physical links.
-Since the width of physical links as well as the performance of switches and links is the same, 
-the properties of each hop can be regarded as system properties of TTNoC.
-Therefore TTNoC $\calG$ is equipped with a set of properties.
-We use $\width$
-to denote the width of physical links in the TTNoC, $\SD$ for the
+A TTNoC is composed of a set of identical process elements and
+physical links.  Since the width of physical links as well as the
+performance of switches and links is the same, the properties of each
+hop can be regarded as system properties of TTNoC.  Thus a TTNoC
+$\calG$ is equipped with a set of properties.  We use $\width$ to
+denote the width of physical links in the TTNoC, $\SD$ for the
 switching delay in the switches, $\HD$ for the link delay per hop
-which means propagation cost between adjacent nodes, and $\MT$, 
-described in the scheduling model, 
-for the macrotick of network representing the time-line granularity of the
-physical link.
+which means propagation cost between adjacent nodes, and $\MT$,
+discussed in Section~\ref{ss:schmodel}, for the macrotick of network
+representing the time-line granularity of the physical link.
 
 %% A network link $(v_{a},v_{b})$, between the source node
 %% $v_{a}$ and the sink node $v_{b}$, is defined by the tuple $\langle
@@ -633,7 +638,7 @@ v_{k_i},v_{k_{i+1}}\rangle\ldots \langle v_{k_{n-1}},v_{k_n}\rangle$
 satisfying $v_{k_0}=v$, $v_{k_n}=v'$ and $(\forall i\in [1,n])\langle
 v_{k_{i-1}},v_{k_i}\rangle \in\calL$. The length $n$ of the route is
 written as $|\route{r}{v}{v'}|$. A route $\route{r}{v_i}{v_j}$
-represents a \emph{possibly undirected} physical link from $v_i$ to
+represents a \emph{possibly indirect} physical link from $v_i$ to
 $v_j$ in the TTNoC, hence its length $|\route{r}{v_i}{v_j}|$ is the
 number of hops along this link.
 
@@ -651,14 +656,14 @@ number of hops along this link.
 
 
 \subsection{Message Model}
-The communication of process elements on the TTNoC is based on messages. 
-A message consists of header and data.
-Header includes the information for message forwarding on the TTNoC, 
-e.g. address of source and destination.
-A flit is the unit of a message that can be transmitted over the TTNoC.
-Only periodic messages are discussed in this paper because it is the typical case in real-time embedded systems. 
-But in practice, the fixed time slot can be preserved in terms of the route and
-deadline periodically for sporadic messages. 
+The communication of process elements on the TTNoC is based on
+messages.  A message consists of header and data.  Header includes the
+information for message forwarding on the TTNoC, e.g. the addresses of
+source and destination.  A flit is the unit of a message that can be
+transmitted over the TTNoC.  Only periodic messages are discussed in
+this paper because it is the typical case in real-time embedded
+systems.  But in practice, the fixed time slot can be preserved in
+terms of the route and deadline periodically for sporadic messages.
 
 We denote the set of $n$ time-triggered messages on the TTNoC by
 $\Gamma = \{\tau_{1},\dots,\tau_{n}\}$. Each message $\tau_{i}$ is
@@ -669,14 +674,17 @@ $\tau_{i}.S$ denotes the size of the message in flits,
 $\tau_{i}.T$ and $\tau_{i}.D$ are the period and the relative deadline of the message, respectively.
  
 \subsection{Scheduling Model}
+\label{ss:schmodel}
 
-When a communication happens on the TTNoC between two nodes, 
-i.e. a source node $v_i\in \calV$ sends a message $\tau_{k}$ to a sink node $v_j\in \calV$ on the TTNoC, the message $\tau_k$ is transmitted on some route
-$\route{r}{v_i}{v_j}$.  
-And the communication nodes along the route $\route{r}{v_i}{v_j}$ to forward the message.
+When a communication happens on the TTNoC between two nodes, i.e. a
+source node $v_i\in \calV$ sends a message $\tau_{k}$ to a sink node
+$v_j\in \calV$ on the TTNoC, the message $\tau_k$ is transmitted on
+some route $\route{r}{v_i}{v_j}$ and the communication nodes along the
+route $\route{r}{v_i}{v_j}$ forward the message.
 
-The TDMA scheme is deployed for the scheduling of communication.
-And the time granularity is \emph{macrotick} that the periods and phases of messages directly match to this time format.
+The TDMA scheme is deployed for the scheduling of communication.  And
+the time granularity is \emph{macrotick} that the periods and the
+phases of messages directly match to this time format.
 
 Based on the architecture and message model, we can model the scheduling of communication as a set $\calS=\{s_1,\ldots,s_n\}$, in which each
 $s_{i}$ denotes the communication scheduling of the message
@@ -728,43 +736,57 @@ we have the following formulas:
 \end{equation}
 %% where $(v_{a},v_{b}).d = (v_{a},v_{b}).sd+(v_{a},v_{b}).pd $ denotes
 %% the delay of propagating and switching delay per hop.
-where $\MT$ denotes the value of macrotick,
-$\SD+\HD$ is the delay per hop in the forwarding,
-that $\SD$ is the delay on the physical link and $\HD$is the switching delay.
+where $\MT$ denotes the value of macrotick, and $\SD+\HD$ is the delay
+per hop in the forwarding.
+%% that $\SD$ is the delay on the physical link and $\HD$is the switching delay.
 
-The formula is based on~\cite{DBLP:books/daglib/0087651} with the transformation of adopting macrotick as the unit.
-Given an $s_{i}\in\calS$ and its route $s_i.R$, $s_i.T$, $s_i.D$ and $s_i.L$ can be derived by formulas~\ref{e:eqn1}, 
-\ref{e:eqn2} and~\ref{e:eqn3}. 
-Formulas~\ref{e:eqn1} and~\ref{e:eqn2} denote, 
-respectively, 
-the period and the deadline of the communication $s_i$ in macrotick.
-Formula~\ref{e:eqn3} computes the time cost in macrotick,
- from the first flit sent by the source node to the last flit received by the sink node, 
- according to store-and-forward (SAF) switching scheme~\cite{DBLP:books/daglib/0087651}. 
-Moreover, other scheme of switching on the NoC can be also deployed in the TTNoC according to the requirements. In this case, the delay formula \ref{e:eqn3} may be changed according to the given switching scheme.
+The formula is based on~\cite{DBLP:books/daglib/0087651} with the
+modification of adopting macrotick as the unit.  Given an
+$s_{i}\in\calS$ and its route $s_i.R$, $s_i.T$, $s_i.D$ and $s_i.L$
+can be derived by formulas~\ref{e:eqn1}, \ref{e:eqn2}
+and~\ref{e:eqn3}.  Formulas~\ref{e:eqn1} and~\ref{e:eqn2} denote,
+respectively, the period and the deadline of the communication $s_i$
+in macrotick.  Formula~\ref{e:eqn3} computes the time cost in
+macrotick, from the first flit sent by the source node to the last
+flit received by the sink node, according to the store-and-forward
+(SAF) switching scheme~\cite{DBLP:books/daglib/0087651}.  Moreover,
+other scheme of switching on the NoC can be also deployed in the TTNoC
+according to the requirements. In this case, the delay formula
+\ref{e:eqn3} should be changed according to the given switching
+scheme.
 
 As a result, to synthesize the set of communication $\calS$ is to
 calculate the offset $s_i.\phi$ for each communication
 $s_i\in\calS$. Therefore, the key to scheduling of TTNoC is to derive
 $\calS.\Phi = \{s_i.\phi\mid s_i\in\calS\}$ based on the given
 architecture model $\calG$ and the messages model $\Gamma$ with
-\emph{scheduling constrains}.
+\emph{scheduling constraints}.
 
 
-\section{SCHEDULING CONSTRAINS\label{s:constrain}}
+\section{Scheduling Constraints\label{s:constraint}}
 
-The scheduling constrains for general time-triggered multi-hop network is presented in ~\cite{DBLP:conf/rtss/Steiner10}. 
-The scheduling constrains on TTNoC is similar with general time-triggered network, 
-while some differences existing in terms of our model.
+The scheduling constraints for general time-triggered multi-hop
+network are presented in~\cite{DBLP:conf/rtss/Steiner10}.  The
+scheduling constraints on TTNoC are similar with those on general
+time-triggered network, while some differences exist in terms of our
+model.
 
-Scheduling of communication $\calS$ should resolve the constrains on the TTNoC. 
-The synthesized scheduling must satisfy the separation among the set of communication in time domain or space domain, which mainly include offset constrains and link constrains.
+Scheduling of communication $\calS$ should resolve the constraints on
+the TTNoC. \jx{This statement is unclear:}  The synthesized scheduling must satisfy the separation
+among the set of communication in time domain or space domain, which
+mainly include offset constraints and link constraints.
 
-In our TTNoC, scheme of bufferless NoCs is adopted that no buffering of messages takes place. 
-It lead to significantly less area and power consumption for TTNoC~\cite{DBLP:journals/tpds/ShpinerKLCK15}.
-The route of each message is located on its header.
-The switches just simply forward the message according to the address of next-hop switch, without concerning the communication schedule. Therefore, unlike the general time-triggered network, the switch memory constrains are not included.
-Moreover for the simplicity of evaluation, the constraints of simultaneous relay, application-level, protocol-based and domain-specific is neither included.
+In our TTNoC, scheme of bufferless NoCs is adopted that no buffering
+of messages takes place.  It leads to significantly less area and
+power consumption for TTNoC~\cite{DBLP:journals/tpds/ShpinerKLCK15}.
+The route of each message is located on its header.  The switches
+simply forward the message according to the address of next-hop
+switch, without concerning the communication schedule. Therefore,
+unlike the general time-triggered network, the switch memory
+constraints are not concerned. \jx{Check this sentence:} Moreover for
+the simplicity of evaluation, the constraints of simultaneous relay,
+application-level, protocol-based and domain-specific are neither
+concerned.
 
 \subsection{Message Offset Constrains}
 
