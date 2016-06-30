@@ -919,14 +919,23 @@ scheduling constraints.
 
 
 \section{MEMETIC ALGORITHM\label{s:algorithm}}
+\emph{Memetic Algorithm (MA)} is a population-based hybrid
+\emph{Genetic Algorithm (GA)} coupled with an individual learning
+procedure capable of performing local
+refinements~\cite{DBLP:journals/cim/OngLC10}.
 
-Memetic algorithm(MA) is a population-based hybrid genetic algorithm(GA) coupled with an individual learning procedure capable of performing local refinements\cite{DBLP:journals/cim/OngLC10}. 
+Our memetic algorithm consists of two parts. We deploy the genetic
+algorithm as global search strategy for the set of communication to be
+scheduled. And the subset of infeasible communications is chosen as
+the element of local search.
 
-Our memetic algorithm consists of two parts. We deploy the genetic algorithm as global searching for the set of communication to be scheduled. And choosing the subset of infeasible communications as the element to local search.
+The MA requires genetic representation, fitness function as well as
+evolution strategy, i.e., crossover, mutation and local search. In
+this section, we firstly give an example of communication scheduling
+to explain the genetic representation. Then the pseudocode is shown,
+followed by discussing the details.
 
-The MA requires genetic representation, fitness function as well as evolution strategy, i.e. crossover, mutation and local search. We firstly give an example of communication scheduling to explain the genetic representation. Next the pseudocode is shown. And then the detail will be discussed.
 \subsection{An Example of Scheduling on TTNoC}
-
 To show our memetic algorithm,
  we firstly give an example of scheduling $\calS$ of messages $\Gamma$ on a $3\times 3$ mesh NoC,
  shown in Fig~\ref{f:comm_on_TTNoC}. 
