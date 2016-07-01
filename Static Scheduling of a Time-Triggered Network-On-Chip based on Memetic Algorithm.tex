@@ -868,49 +868,74 @@ There comes our constraint for link contention:
 %\end{equation}
 
 
-\section{PROBLEM FORMULATION\label{s:formulation}}
-The problem we are addressing in this paper can be formulated as follow. Given:
+\section{Problem Formulation\label{s:formulation}}
+The problem we are addressing in this paper can be formulated as
+following. Given:
 \begin{itemize}
-	\item The architecture of TTNoC $\calG=(\calV,\calL)$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ \langle v_i,v_j  \rangle \mid  v_i,v_j \in \calV\}$.
-	\item The mapping of message to communication node
-		$\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
-		Each message $\tau_{i}\in\Gamma$ is allocated to a specific process element (communication node) $v_{i}\in\mathcal{V}$, 
-		thus the source node $v_{a}$ and sink node $v_{b}$ for each $\tau \in\Gamma$ are determined.
-		It should be noted that the scheduling of mapping can be synthesized by genetic algorithm~\cite{DBLP:conf/recosoc/MesidisI11}.
-		In our experiment the mapping is predefined.
-	\item The set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with 
-	$\langle \tau_{i}.H,\tau_{i}.S, \tau_{i}.T,	\tau_{i}.D\rangle$ for each $\tau \in \Gamma$.
-	\item The route $s_i.R$ for each scheduling $s_i \in \calS$ of message $\tau \in \Gamma$.
+\item the architecture of a TTNoC $\calG=(\calV,\calL)$ consisting of
+  the set of $m$ communicating nodes $\calV=\{v_{1},\dots,v_{m}\}$ and
+  interconnection links $\calL \subseteq \calV \times \calV$;
+\item the set of $n$ time-triggered messages $\Gamma =
+  \{\tau_{1},\dots,\tau_{n} \}$ with $\langle \tau_{i}.H,\tau_{i}.S,
+  \tau_{i}.T, \tau_{i}.D\rangle$ for each $\tau_i \in \Gamma$;
+\item the routes $\calS.\calR$ of the scheduling $\calS$ corresponding
+  to $\Gamma$;
 \end{itemize}
 %(1) the architecture of  network $\mathcal{G}=(\mathcal{V},\mathcal{L})$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ (v_{a},v_{b}) \mid  v_{a},v_{b}\in \mathcal{V}\}$.
 %(2) the mapping of message to communication node $\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
 %(3) the routing strategy.
 %(4) the set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with  $\langle \tau_{i}.s, \tau_{i}.t, \tau_{i}.d\rangle$ for $\tau_{i}\in \Gamma$.
-We aim to find the offset $\calS.\Phi$ for messages $\Gamma$ on TTNoC $\calG=(\calV,\calL)$ which satisfy the scheduling constraints. 
+we aim to decide the offsets $\calS.\Phi$ for messages $\Gamma$ on the
+TTNoC $\calG$, which satisfies Constraints~\ref{c:offset}
+and~\ref{c:link}.
 
-We introduce the memetic algorithm to synthesize the set of offset $\calS.\Phi$ such that satisfies the scheduling constraints. 
-If it is impossible to synthesize a set of scheduled communication, 
-then we try to minimize the amount of infeasible messages which violate the scheduling constraints.
-% $\mathcal{M} = \{s_{1},\dots,s_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constraints. 
+\jx{This paragraph should be polished.}
+Note that in practice, the determination of routes $\calS.\calR$
+comprises two processes: mapping and routing. The mapping process
+allocates each message $\tau_i\in\Gamma$ to some source node
+$v_i\in\calV$ and some sink node $v_j\in\calV$. It can be synthesized
+by genetic algorithm~\cite{DBLP:conf/recosoc/MesidisI11}.  And the
+routing process is to decide a specific route $\route{r}{v_i}{v_j}$ by
+given nodes $v_i$ and $v_j$.
+
+%% The mapping of
+%% message to communication node $\{<\tau_{i},v_{j}>\mid
+%% \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}.  Each message
+%% $\tau_{i}\in\Gamma$ is allocated to a specific process
+%% element(communication node) $v_{i}\in\mathcal{V}$, thus the source
+%% node $v_{a}$ and sink node $v_{b}$ for each $\tau \in\Gamma$ are
+%% determined.  It should be noted that the scheduling of mapping can be
+%% synthesized by genetic algorithm~\cite{DBLP:conf/recosoc/MesidisI11}.
+%% In our experiment the mapping is predefined.
+
+To solve the problem, we introduce the memetic algorithm to synthesize
+$\calS.\Phi$ satisfying the scheduling constraints. If it is
+impossible to synthesize a set of schedulable communication, we try to
+minimize the amount of infeasible messages which violate the
+scheduling constraints.
+% $\mathcal{M} = \{s_{1},\dots,s_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
 
 %Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle s_{i}^{(v_{a},v_{b})}.\phi, s_{i}^{(v_{a},v_{b})}.\mathcal{T}, s_{i}^{(v_{a},v_{b})}.\mathcal{D},s_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $s_{i}\in \mathcal{M}$. The $s_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$s_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $s_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constraints. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constraints.
 
 
-
 \section{MEMETIC ALGORITHM\label{s:algorithm}}
+\emph{Memetic Algorithm (MA)} is a population-based hybrid
+\emph{Genetic Algorithm (GA)} coupled with an individual learning
+procedure capable of performing local
+refinements~\cite{DBLP:journals/cim/OngLC10}.
 
-Memetic algorithm is a population-based hybrid genetic algorithm (GA) coupled with an individual learning procedure capable of performing local refinements\cite{DBLP:journals/cim/OngLC10}. 
-Our memetic algorithm consists of two part. 
-We deploy the genetic algorithm as global searching for the set of communication to be scheduled. 
-And the subset of infeasible communications is chose as the element to local search.
-The MA requires genetic representation,
- fitness function as well as evolution strategy,
-  i.e. crossover, mutation and local search. 
-We firstly give an example of communication scheduling to motivate the genetic representation. 
-Next we presents the algorithm description. 
-And then the detail is discussed.
+Our memetic algorithm consists of two parts. We deploy the genetic
+algorithm as global search strategy for the set of communication to be
+scheduled. And the subset of infeasible communications is chosen as
+the element of local search.
+
+The MA requires genetic representation, fitness function as well as
+evolution strategy, i.e., crossover, mutation and local search. In
+this section, we firstly give an example of communication scheduling
+to explain the genetic representation. Then the pseudocode is shown,
+followed by discussing the details.
+
 \subsection{An Example of Scheduling on TTNoC}
-
 To show our memetic algorithm,
  we firstly give an example of scheduling $\calS$ of messages $\Gamma$ on a $3\times 3$ mesh NoC,
  shown in Fig~\ref{f:comm_on_TTNoC}. 
