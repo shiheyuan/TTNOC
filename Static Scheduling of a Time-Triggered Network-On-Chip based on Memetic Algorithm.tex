@@ -416,12 +416,12 @@
 % in the abstract
 \begin{abstract}
 	
-Time-Triggered Network-on-Chip(TTNoC) is a time-triggered system deployed on the Network-on-Chip(NoC). 
+Time-Triggered Network-on-Chip (TTNoC) is a time-triggered system deployed on the Network-on-Chip (NoC). 
 It ensures the reliable and safety-critical communication for real-time embedded multiprocessor systems. 
 To guarantee the safe-critical requirements for communication, each message is transmitted by a predefined static schedule. 
 However,
  synthesizing the scheduling is a challenging problem because both path contention and the temporal constraints should be considered. 
-This paper introduces a memetic algorithm(MA) integrating local search into the genetic algorithm to resolve this problem. 
+This paper introduces a memetic algorithm (MA) integrating local search into the genetic algorithm to resolve this problem. 
 The experimental results show that the better performance of our memetic algorithm in compare with the general genetic algorithm.
 \end{abstract}
 % no keywords
@@ -612,7 +612,7 @@ The system architecture we adopted is shown in~\cite{DBLP:conf/rtcsa/PaukovitsK0
 \subsection{Architecture Model}
 
 TTNoC is a system with a set of real-time tasks/applications mapped on a multi-core interconnection platform. 
-It composes of a set of identical processing elements(PEs) interconnected by physical links and the switches on the TTNoC.
+It composes of a set of identical processing elements (PEs) interconnected by physical links and the switches on the TTNoC.
 The switches are connected by bidirectional physical links and each link connects a pair of switches.  
 The topologies of a TTNoC can be either regular or irregular.
 
@@ -874,7 +874,7 @@ The problem we are addressing in this paper can be formulated as follow. Given:
 	\item The architecture of TTNoC $\calG=(\calV,\calL)$ consists of the set of communicating nodes $\mathcal{V}=\{\mathit{v}_{1},\dots,\mathit{v}_{m}\}$ and interconnection links $\mathcal{L}=\{ \langle v_i,v_j  \rangle \mid  v_i,v_j \in \calV\}$.
 	\item The mapping of message to communication node
 		$\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
-		Each message $\tau_{i}\in\Gamma$ is allocated to a specific process element(communication node) $v_{i}\in\mathcal{V}$, 
+		Each message $\tau_{i}\in\Gamma$ is allocated to a specific process element (communication node) $v_{i}\in\mathcal{V}$, 
 		thus the source node $v_{a}$ and sink node $v_{b}$ for each $\tau \in\Gamma$ are determined.
 		It should be noted that the scheduling of mapping can be synthesized by genetic algorithm~\cite{DBLP:conf/recosoc/MesidisI11}.
 		In our experiment the mapping is predefined.
@@ -899,11 +899,16 @@ then we try to minimize the amount of infeasible messages which violate the sche
 
 \section{MEMETIC ALGORITHM\label{s:algorithm}}
 
-Memetic algorithm(MA) is a population-based hybrid genetic algorithm(GA) coupled with an individual learning procedure capable of performing local refinements\cite{DBLP:journals/cim/OngLC10}. 
-
-Our memetic algorithm consists of two parts. We deploy the genetic algorithm as global searching for the set of communication to be scheduled. And choosing the subset of infeasible communications as the element to local search.
-
-The MA requires genetic representation, fitness function as well as evolution strategy, i.e. crossover, mutation and local search. We firstly give an example of communication scheduling to explain the genetic representation. Next the pseudocode is shown. And then the detail will be discussed.
+Memetic algorithm is a population-based hybrid genetic algorithm (GA) coupled with an individual learning procedure capable of performing local refinements\cite{DBLP:journals/cim/OngLC10}. 
+Our memetic algorithm consists of two part. 
+We deploy the genetic algorithm as global searching for the set of communication to be scheduled. 
+And the subset of infeasible communications is chose as the element to local search.
+The MA requires genetic representation,
+ fitness function as well as evolution strategy,
+  i.e. crossover, mutation and local search. 
+We firstly give an example of communication scheduling to motivate the genetic representation. 
+Next we presents the algorithm description. 
+And then the detail is discussed.
 \subsection{An Example of Scheduling on TTNoC}
 
 To show our memetic algorithm,
