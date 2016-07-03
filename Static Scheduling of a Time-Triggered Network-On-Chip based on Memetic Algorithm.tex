@@ -345,7 +345,7 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Static Scheduling of a Time-Triggered Network-On-Chip based on Memetic Algorithm}
+\title{Effective Static Scheduling of a Time-Triggered Network-on-Chip with Memetic Algorithm}
 
 
 % author names and affiliations
@@ -421,7 +421,9 @@ It ensures the reliable and safety-critical communication for real-time embedded
 To guarantee the safe-critical requirements for communication, each message is transmitted by a predefined static schedule. 
 However,
  synthesizing the scheduling is a challenging problem because both path contention and the temporal constraints should be considered. 
-This paper introduces a memetic algorithm (MA) integrating local search into the genetic algorithm to resolve this problem. 
+To resolve this problem, this paper presents a novel memetic algorithm (MA) which incorporates local search in the genetic algorithm. 
+For given architecture of TTNoC and messages for communication,
+The scheduling of offset for messages is synthesized by MA, ensuring no contention with the communications on the TTNoC.
 The experimental results show that the better performance of our memetic algorithm in compare with the general genetic algorithm.
 \end{abstract}
 % no keywords
@@ -440,28 +442,28 @@ The experimental results show that the better performance of our memetic algorit
 
 \section{Introduction}
 
-Time-triggered systems is one of the real-time systems with high throughput and temporal predictability for multiprocessor systems.
-Since isolating the inherent faults as well as satisfying the temporal predictability of communication, time-triggered systems is widely deployed in various field, e.g.
-TTEthernet integrates time-triggered concept into the general Ethernet~\cite{DBLP:conf/nca/SteinerBHPV09}, which is adopted as a new standard of the avionic network~\cite{DBLP:conf/dsrt/BejiHGM14}. TTP and FlexRay adopted in aerospace industry~\cite{DBLP:journals/taes/HuLWV15}.
+Time-triggered systems is one of the real-time systems with high throughput and temporal predictability for multiprocessor systems~\cite{DBLP:journals/rts/CraciunasO16}.
+Time-triggered systems isolating the inherent faults as well as satisfying the temporal predictability of communication and widely deployed in various field, e.g.
+TTEthernet integrates time-triggered concept into the general Ethernet~\cite{DBLP:conf/nca/SteinerBHPV09}, which is adopted as a new standard of the avionic network~\cite{DBLP:conf/dsrt/BejiHGM14}. TTP and FlexRay are adopted in aerospace industry~\cite{DBLP:journals/taes/HuLWV15}.
 
-TTNoC integrates the time-triggered concepts into the Network-on-Chip (NoC) for safety-critical real-time embedded systems, which desire the tight and predictable communication latency.
-In practical,
+TTNoC integrates the time-triggered concepts into the Network-on-Chip (NoC) for safety-critical real-time embedded systems, which requires the tight and predictable communication latency.
+In practice,
  GENESYS is proposed as a cross-domain embedded system architecture,
   which influenced by the concepts of and the experience with the time-triggered architecture~\cite{DBLP:conf/ladc/Kopetz11}.
 
-There are two main architectures of time-triggered system,
+There are two main architectures of a time-triggered system,
  bus-based and network-based architecture~\cite{DBLP:conf/date/HuangBRBK12}.
-There is only one message transmitted on the system at the same time in the Bus-based architecture. 
-Therefore each message own its unique duration to communicate through the physical link.
+There is only one message transmitted on the system at the same time in the bus-based architecture. 
+Therefore, each message owns its unique duration to communicate through the physical link.
 Unlike the bus-based architecture,
- The network-based architecture allows a set of messages to be transmitted at the same time,
-  on condition that the physical links for the transmission of the messages are non-overlapping.
+ the network-based architecture allows a set of messages to be transmitted at the same time,
+  provided that the physical links used by the messages are non-overlapping.
 It entails messages sharing the time domain to communicate.
-Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architecture.
-In bus-based architecture,
- all the messages ($m_0$,$m_1$,$m_2$) achieve temporal separation. 
-In network-based architecture,
- the set of messages ($m_0$,$m_1$,$m_2$) is able to share the time domain if there is no spacing conflict among the transmission of them.
+Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architectures.
+In a bus-based architecture,
+ all the messages ($\tau_0$,$\tau_1$,$\tau_2$) achieve temporal separation. 
+In a network-based architecture,
+ the set of messages ($\tau_0$,$\tau_1$,$\tau_2$) can share the time domain if there is no spatial conflict among the transmission of them.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/difference.pdf}
@@ -469,23 +471,25 @@ In network-based architecture,
 	\label{f:diff}
 \end{figure}
 
-The TTNoC employs the network-based architecture,
- therefore the scheduling of TTNoC is to determine the duration of each message with no contention on the TTNoC . 
+A TTNoC employs the network-based architecture.
+The scheduling of TTNoC is to determine the duration of each message and ensure that there is no contentions on the TTNoC. 
 Static scheduling is adopted to synthesize the scheduling which resolves contention,
- avoiding dynamic arbitration of intercommunicate resources distribution. 
-So that the communication on the TTNoC is predefined while satisfying the scheduling constraints.
+thus avoiding dynamic arbitration of intercommunicate resources distribution. 
+Hence, the communication on the TTNoC is predefined while satisfying the scheduling constraints.
 However,
- synthesizing such a scheduling is rather complicated which is known as NP-complete~\cite{DBLP:conf/date/HuangBRBK12,DBLP:conf/rtss/Steiner10}.
+ synthesizing such a scheduling is rather complicated which is known as NP-complete problem~\cite{DBLP:conf/date/HuangBRBK12,DBLP:conf/rtss/Steiner10}.
 
-The main contribution of this paper is presenting a static scheduling approach to resolve the TTNoC scheduling problem by the Memetic Algorithm (MA). 
+The main contribution of this paper is a static scheduling approach to resolve the TTNoC scheduling problem by a memetic algorithm. 
 MA is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for solution search~\cite{DBLP:journals/tec/ChenOLT11}. 
 
-The rest of this paper is organized as follows. We first review the related work in the TTNoC scheduling in Section~\ref{s:relate}. 
-The system model is given in Section~\ref{s:model}, followed by the schedule constraints in Section~\ref{s:constraint}.
-Next we presents the problem formulation in Section~\ref{s:formulation}.
-Then the memetic algorithm is described in Section~\ref{s:algorithm}.
-The experiments as well as synthesis results are presented in Section~\ref{s:evalu}.
-Finally, we conclude in Section~\ref{s:conclud}.
+The rest of this paper is organized as follows. 
+We first review the related work in the TTNoC scheduling in Section~\ref{s:relate}. 
+The system model is given in Section~\ref{s:model},
+ followed by the schedule constraints in Section~\ref{s:constraint}.
+We presents the problem formulation in Section~\ref{s:formulation}.
+A new memetic algorithm is proposed in Section~\ref{s:algorithm}.
+The experiments with synthesis results are presented in Section~\ref{s:evalu}.
+Finally, we conclude this paper in Section~\ref{s:conclud}.
 
 \section{Related Work	\label{s:relate}}
 
@@ -617,7 +621,7 @@ The switches are connected by bidirectional physical links and each link connect
 The topologies of a TTNoC can be either regular or irregular.
 
 The architecture of a TTNoC is modeled by a directed graph $\calG=(\calV,\calL)$. 
-The set of vertexes $\mathcal{V}=\{ v_{1},\dots,v_{m}\}$ represents the set of $m$ \emph{identical} communication nodes (the PEs and switches).
+The set of vertexes $\mathcal{V}=\{ v_{0},\dots,v_{m-1}\}$ represents the set of $m$ \emph{identical} communication nodes (the PEs and switches).
 The edges $\mathcal{L}\subseteq \mathcal{V} \times\mathcal{V}$ comprises the communication physical links \emph{directly} connecting the nodes.
 The physical links are full-duplex, allowing communication in both directions. 
 Therefore, given $v_i,v_j\in\calV$, $\langle v_i,v_j\rangle \in\calL$ implies $\langle v_j,v_i\rangle\in\calL$,
@@ -678,7 +682,7 @@ Header includes the information for message forwarding on the TTNoC,
 Flit is the unit of a message that can be transmitted over the TTNoC.  
 Only periodic messages are discussed in this paper because it is the typical case in real-time embedded systems.
 
-We denote the set of $n$ time-triggered messages on the TTNoC by $\Gamma = \{\tau_{1},\dots,\tau_{n}\}$. 
+We denote the set of $n$ time-triggered messages on the TTNoC by $\Gamma = \{\tau_{0},\dots,\tau_{n-1}\}$. 
 Each message $\tau_{i}$ is modeled by the tuple $\langle \tau_{i}.H,\tau_{i}.S, \tau_{i}.T,\tau_{i}.D\rangle$, 
  where $\tau_{i}.H$ denotes the header of the message in flits,
  $\tau_{i}.S$ denotes the size of the message in flits, 
@@ -891,10 +895,13 @@ and~\ref{c:link}.
 
 \jx{This paragraph should be polished.}
 Note that in practice, the determination of routes $\calS.\calR$
-comprises two processes: mapping and routing. The mapping process
+comprises two processes: mapping and routing. 
+The mapping process
 allocates each message $\tau_i\in\Gamma$ to some source node
-$v_i\in\calV$ and some sink node $v_j\in\calV$. It can be synthesized
-by genetic algorithm~\cite{DBLP:conf/recosoc/MesidisI11}.  And the
+$v_i\in\calV$ and some sink node $v_j\in\calV$. 
+It can be synthesized
+by genetic algorithm~\cite{DBLP:conf/recosoc/MesidisI11}.  
+And the
 routing process is to decide a specific route $\route{r}{v_i}{v_j}$ by
 given nodes $v_i$ and $v_j$.
 
@@ -956,9 +963,11 @@ The set of possible offset $s_i.\Phi$ for the messages on Fig~\ref{f:comm_on_TTN
 	\includegraphics[width=2.5in]{picture/scheduling_example.pdf}
 	\caption{An example of communication on the TTNoC}
 	\label{f:comm_on_TTNoC}
+	
 \end{figure}
 \begin{table}[!t]
 	\renewcommand{\arraystretch}{1.3}
+		\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
 	\caption{An Example of scheduling of messages on the TTNoC}
@@ -1023,6 +1032,7 @@ And the example of chromosome and gene is also depicted.
 %\end{figure}
 \begin{table}[!t]
 	\renewcommand{\arraystretch}{1.3}
+		\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
 	\caption{An Example of population with 2 individual}
@@ -1042,9 +1052,16 @@ And the example of chromosome and gene is also depicted.
 		\textbf{6} & 
 		\textbf{7} \\		
 	\hline
-		$indi0$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\		
+		$indi0$	&
+		\tabincell{c}{ $s_0.\phi$\\$s_1.\phi$}& 
+		&
+		$s_2.\phi$&
+		&
+		$s_3.\phi$& 
+		& 
+		&$s_4.\phi$\\		
 	\hline		
-		$indi1$	&$m_0$&$m_1$&	&$m_2$&$m_3$& &$m_4$&	\\		
+		$indi1$	&$s_0.\phi$&$s_1.\phi$&	&$s_2.\phi$&$s_3.\phi$& &$s_4.\phi$&	\\		
 	\hline
 	\end{tabular}
 \end{table}
@@ -1056,13 +1073,13 @@ The memetic algorithm begins with an initial population $Pop$. The size of popul
 The initial population is synthesized randomly.
 For a scheduling $s_{i}\in\calS$,
  the offset $s_i.\phi$ in the initial individual is located randomly among the possible offset $s_i.\Phi$.
-Therefore the initial population satisfies the offset constraints.
+Hence the initial population satisfies the offset constraints.
 The algorithm is iterative executed until a feasible scheduling is found or reaching the given maximum iteration.
 
 When the memetic algorithm get started, firstly the initial population is marked by the fitness function.
 The score evaluating chromosome of the individual is assigned to individual.
 The less the number of score, the better the individual.
-Therefore the individual with score equals zero represents a feasible scheduling is synthesized.
+Hence the individual with score equals zero represents a feasible scheduling is synthesized.
 The detail of fitness function is discussed in subsection \ref{s:fit}.
 
 Next, the operation of genetic algorithm,
@@ -1182,25 +1199,25 @@ The scheduling model of messages is shown in TABLE~\ref{t:comm_info}.
 		\hline
 		\hline
 		$indi0$&
-		\tabincell{c}{$m_0$\\$m_1$}&
+		\tabincell{c}{$\tau_0$\\$\tau_1$}&
 		&
-		\tabincell{c}{$m_0$\\$m_2$}&
+		\tabincell{c}{$\tau_0$\\$\tau_2$}&
 		&
-		\tabincell{c}{$m_0$\\$m_1$\\$m_3$}&
-		$m_3$&
-		\tabincell{c}{$m_0$\\$m_2$}&
-		$m_4$\\		
+		\tabincell{c}{$\tau_0$\\$\tau_1$\\$\tau_3$}&
+		$\tau_3$&
+		\tabincell{c}{$\tau_0$\\$\tau_2$}&
+		$\tau_4$\\		
 		\hline	
 		\hline	
 		$indi1$&
-		$m_0$&
-		$m_1$&
-		$m_0$&
-		$m_2$&
-		\tabincell{c}{$m_0$\\$m_3$}&
-		\tabincell{c}{$m_1$\\$m_3$}&
-		\tabincell{c}{$m_0$\\$m_4$}&
-		$m_2$\\
+		$\tau_0$&
+		$\tau_1$&
+		$\tau_0$&
+		$\tau_2$&
+		\tabincell{c}{$\tau_0$\\$\tau_3$}&
+		\tabincell{c}{$\tau_1$\\$\tau_3$}&
+		\tabincell{c}{$\tau_0$\\$\tau_4$}&
+		$\tau_2$\\
 		\hline
 	\end{tabular}
 \end{table}
@@ -1232,7 +1249,7 @@ Since the $overlap(s_{0},s_{1})=0$, $overlap(s_{0},s_{2})=1$, $overlap(s_{0},s_{
 	% than the plain LaTeX2e tabular which is used here.
 	\begin{tabular}{|c||c||c|}
 		\hline
-		\textbf{Communication} & \textbf{Routing Link}& \textbf{Overlap Set}\\
+		\textbf{Scheduling} & \textbf{Routing Link}& \textbf{Overlap Set}\\
 		\hline
 		$s_{0}$ & $ \langle 0,1\rangle\langle 1,4\rangle$ 		& $s_{2},s_{4}$ \\
 		\hline
@@ -1251,7 +1268,7 @@ For $s_{i},s_{j}\in \calS, s_{i}\neq s_{j}$,
 if $s_i$ and $s_j$ are overlapped,
 the conflict times between them in chromosome are derived to evaluate the individual.
 For each $s_{i}\in \calS\}$,
- we define $C(s_{i})$ to derive the set of scheduling conflicted with $s_{i}$. Therefore we have that
+ we define $C(s_{i})$ to derive the set of scheduling conflicted with $s_{i}$. So we have that
 \begin{equation}
 	C(s_i) = \{ s_j \mid s_i.H \cap s_j.H \neq \emptyset  ,s_j\in O(s_i) \}
 %C(s_{i}) = \{(s_{i},s_{j})\rightarrow n_{ij}\mid m_j\in O(s_{i}),s_{i},s_{j}\in \mathcal{M}\}
@@ -1264,7 +1281,7 @@ We have that
 \end{equation}
 %We define the mapping $(s_{i},s_{j})\rightarrow n_{ij}$, where $(s_{i},s_{j})$ is the conflict communication and $n_{ij}$ is the number of gene which $s_{i}$ coexist with $s_{j}$ on a chromosome is $n_{ij}$, which denotes the conflict times between $s_{i}$ and $s_{j}$.
 
-We define the total conflict times to $s_{i}$ as $C(s_i).value$. And we have that
+We define the total conflict times to $s_{i}$ as $times(s_i)$. And we have that
 \begin{equation}
 	times(s_i)=\sum_{ s_j \in C(s_i) } conflict(s_i,s_j)
 \end{equation}
@@ -1275,7 +1292,7 @@ We define $T(\calS) = \{ s_i \mid C(s_i) \notin \emptyset \} $ to denote the set
 According to $T(\calS)$ the conflict times among any two of scheduling of message on the chromosome is determined.
 The fitness function defined to give each individual a score when executing $mark(Pop)$ in line 5, 12, 24 of the memetic algorithm.
 The output of fitness function is total conflict times in $T(\calS)$.
-Therefore for a individual $indi$, we have that
+Thus for a individual $indi$, we have that
 \begin{equation}
 	fitness(indi)=\sum_{s_i \in T(\calS)} {times(s_i)}
 \end{equation}
@@ -1296,9 +1313,9 @@ e.g. The the score of two individual in Fig~\ref{t:pop} is shown in TABLE~\ref{t
 		\hline
 		\textbf{Individual} & \textbf{Conflict} &\textbf{Conflict Times} &\textbf{Score}\\
 		\hline 
-		individual 0 &$s_0,s_2$ & $times(s_0)=2,times(2)=2$ &4\\
+		$indi0$ &$s_0,s_2$ & $times(s_0)=2,times(2)=2$ &4\\
 		\hline
-		individual 1 & $s_0,s_4$& $times(s_0)=1,times(4)=1$ &2\\
+		$indi1$ & $s_0,s_4$& $times(s_0)=1,times(4)=1$ &2\\
 		\hline
 		\end{tabular}	
 \end{table}
@@ -1532,7 +1549,7 @@ The number of scheduling of messages in our evaluation is from 5 to 50.
 Each scheduling of message owns its period and delay which is random generated.
 We test 15 cases in each scale of architecture with different number of messages.
 The size of population we configure is 100.
-Therefore there is 100 initial individual.
+So there is 100 initial individual.
 And the maximum iterate times we set is 100.
 The memetic algorithm will finish if there is a feasible scheduling,
  otherwise the algorithm will execute until the iterate 100 times.
@@ -1620,7 +1637,7 @@ It is hard for memetic algorithm to synthesize a feasible scheduling when the se
 However,
  except two reason above,
   the mapping between a message and a communication node and routing strategy of communications also affect generating a feasible solution.
-Therefore the designer can manually change the map allocation or the routing strategy to the failed scheduling,
+The designer can manually change the map allocation or the routing strategy to the failed scheduling,
  and even design a larger network architecture if needed.
 After these change,
    the feasible scheduling can be generated by the memetic algorithm iteratively. 
