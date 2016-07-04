@@ -827,7 +827,7 @@ two messages are never transmitted on the identical link at the same
 time. The synthesized scheduling must guarantee that the links on
 TTNoC are contention-free.
 
-Given two schedulings of messages $s_i,s_j\in\calS$,
+Given two scheduling of messages $s_i,s_j\in\calS$,
 %$s_{i},s_{j}\in\mathcal{M}, s_{i}\neq s_{j}$,
 we define $overlap(s_i,s_j)$ to indicate whether there are any common
 physical links between the routes of $s_i$ and $s_j$ or not.
@@ -918,7 +918,7 @@ given nodes $v_i$ and $v_j$.
 
 To solve the problem, we introduce the memetic algorithm to synthesize
 $\calS.\Phi$ satisfying the scheduling constraints. If it is
-impossible to synthesize a set of schedulable communication, we try to
+impossible to synthesize a set of scheduled communication, we try to
 minimize the amount of infeasible messages which violate the
 scheduling constraints.
 % $\mathcal{M} = \{s_{1},\dots,s_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
@@ -937,9 +937,8 @@ algorithm as global search strategy for the set of communication to be
 scheduled. And the subset of infeasible communications is chosen as
 the element of local search.
 
-The MA requires genetic representation, fitness function as well as
-evolution strategy, i.e., crossover, mutation and local search. In
-this section, we firstly give an example of communication scheduling
+The MA requires genetic representation, fitness function, global search such as crossover, mutate, and local search. 
+In this section, we firstly give an example of communication scheduling
 to explain the genetic representation. Then the pseudocode is shown,
 followed by discussing the details.
 
@@ -947,7 +946,7 @@ followed by discussing the details.
 To show our memetic algorithm,
  we firstly give an example of scheduling $\calS$ of messages $\Gamma$ on a $3\times 3$ mesh NoC,
  shown in Fig~\ref{f:comm_on_TTNoC}. 
-There are a set of message to be scheduled on the TTNoC,
+There are a set of messages to be scheduled on the TTNoC,
  we derive the scheduling model employing the architecture and message model,
  shown in TABLE~\ref{t:comm_info}.
 %$\mathcal{\calS = \{s_{0},s_{1},s_{2},s_{3},s_{4}\}$ to be scheduled. 
@@ -955,10 +954,10 @@ Each scheduling $s_i\in\calS$ owns its period, duration and the given route.
 It should be noted that the period must be a positive power of two in terms of macrotick according to the timing specification of TTNoC~\cite{DBLP:conf/date/HuangBRBK12}.
 
 We assume that the relative deadline is equal to period for each message for simplicity.
-The possible offset is denoted as $s_i.\Phi$ for $s_i\in\calS$.
-$s_i.\Phi$ is derived by $ 0 \leq s_{i}.\phi \leq s_{i}.T - s_{i}.L $ according to the message offset constraints.
-The $s_i.\phi$ is generated among the $s_i.\Phi$.
-The set of possible offset $s_i.\Phi$ for the messages on Fig~\ref{f:comm_on_TTNoC} is also shown in TABLE~\ref{t:comm_info}.
+The set of possible offset is denoted as $s_i.P_\phi$ for $s_i\in\calS$.
+$s_i.P_\phi$ is derived by $ [0,s_{i}.T - s_{i}.L] $ according to the message offset constraints.
+The $s_i.\phi$ is generated among the $s_i.P_\phi$.
+The set of possible offset $s_i.P_\phi$ for the messages on Fig~\ref{f:comm_on_TTNoC} is also shown in TABLE~\ref{t:comm_info}.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=2.5in]{picture/scheduling_example.pdf}
@@ -976,13 +975,13 @@ The set of possible offset $s_i.\Phi$ for the messages on Fig~\ref{f:comm_on_TTN
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making tables
 	% than the plain LaTeX2e tabular which is used here.
-	\begin{tabular}{|c||c||c||c||c|}
+	\begin{tabular}{|c|c|c|c|c|}
 		\hline
-			\textbf{Scheduling } & 
-			\textbf{Route } & 
-			\textbf{Period} & 
-			\textbf{Delay } & 
-			\textbf{Possible Offset}\\
+			\tabincell{c}{\textbf{Scheduling}\\\textbf{$s_i\in\calS$}}& 
+			\tabincell{c}{\textbf{Route}\\ \textbf{$s_i.R$}}& 
+			\tabincell{c}{\textbf{Period}\\ \textbf{$s_i.T$}}  & 
+			\tabincell{c}{\textbf{Delay }\\ \textbf{$s_i.L$} } & 
+			\tabincell{c}{\textbf{Possible Offset}\\ \textbf{$s_i.P_\phi$}} \\
 		\hline
 		$s_{0}$ & $ r^{(0,4)} $ & 2 & 1 & $\{0,1\}$\\
 		\hline
@@ -998,7 +997,7 @@ The set of possible offset $s_i.\Phi$ for the messages on Fig~\ref{f:comm_on_TTN
 \end{table}
 \subsection{Genetic Representation}
 
-The genetic algorithm employs global search consists of gene, chromosome,
+The genetic algorithm employed in global search, which consists of concepts about gene, chromosome,
  individual and population. 
 A population consists of a set of individual. 
 A individual contains a chromosome which represents a solution to the given question and the score of its chromosome. 
@@ -1007,18 +1006,18 @@ A chromosome composes of several gene,
 We define them on the scheduling on the TTNoC.
 
 In our memetic algorithm,
- we adopt hyperperiod  $H(\calS) = LCM\{\calS.\calT\}$
+ we adopt hyperperiod  $Hp(\calS) = LCM\{\calS.\calT\}$
  as the chromosome definition.
 Hyperperiod is the least common multiple of the offset among scheduling for messages. 
 And the macrotick is defined as the unit of hyperperiod which is called gene.
-The length of chromosome equals the value of $H(\calS)$,
+The length of chromosome equals the value of $Hp(\calS)$,
  e.g. the hyperperiod is 8 for the scheduling set on TABLE~\ref{t:comm_info}. 
 
 The location of a gene on a chromosome denotes the offset $ s_i.\phi $ of a message $\tau_i\in\Gamma$.
 The offset of scheduling is distributed on a gene.
 Hence each chromosome on different individual represents a possible allocation for the offset set $\calS.\Phi$.
 It should be noted that a single gene may consists multiple offset of messages,
- since several messages without contention is able to transmitted at same time on the network-based TTNoC.
+ since several messages without contention can be transmitted at same time on the network-based TTNoC.
 
 A set of individual with respective chromosome composes a population.
 The size of population equals the number of individual in the population.
@@ -1040,7 +1039,7 @@ The chromosome and gene of individuals are also depicted.
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making tables
 	% than the plain LaTeX2e tabular which is used here.
-	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 	\hline
 		\textbf{Pop.}& 
 		\textbf{0} & 
@@ -1052,7 +1051,7 @@ The chromosome and gene of individuals are also depicted.
 		\textbf{6} & 
 		\textbf{7} \\		
 	\hline
-		$indi0$	&
+		$in_0$	&
 		\tabincell{c}{ $s_0.\phi$\\$s_1.\phi$}& 
 		&
 		$s_2.\phi$&
@@ -1061,7 +1060,7 @@ The chromosome and gene of individuals are also depicted.
 		& 
 		&$s_4.\phi$\\		
 	\hline		
-		$indi1$	&$s_0.\phi$&$s_1.\phi$&	&$s_2.\phi$&$s_3.\phi$& &$s_4.\phi$&	\\		
+		$in_1$	&$s_0.\phi$&$s_1.\phi$&	&$s_2.\phi$&$s_3.\phi$& &$s_4.\phi$&	\\		
 	\hline
 	\end{tabular}
 \end{table}
@@ -1069,31 +1068,34 @@ The chromosome and gene of individuals are also depicted.
 
 According to the genetic representation, we formal give the algorithm process. The pseudocode is given as follow.
 
-The memetic algorithm begins with an initial population $Pop$. The size of population $scale$ as well as the maximum iterations $maxIteration$ is predefined.
+The memetic algorithm begins with an initial population $initPop$. 
+The size of population $scale$ as well as the maximum iterations $N$ is predefined.
 The initial population is synthesized before the iteration of our algorithm.
 For a scheduling $s_{i}\in\calS$,
- the offset $s_i.\phi$ in the initial individual is located randomly among the possible offset $s_i.\Phi$.
-Hence the initial population satisfies the offset constraints.
+ the offset $s_i.\phi$ in the initial individual is located randomly among the possible offset $s_i.P_\phi$.
+Hence the initial population satisfies the constraints~\ref{c:offset}.
 The algorithm is iterative executed until deriving a feasible scheduling or reaching the given maximum iteration.
 
 When the memetic algorithm get started,
  firstly the initial population is marked by the fitness function.
-The score evaluating chromosome of the individual is assigned to individual.
-The less the number of score, the better the individual.
+The score evaluating chromosome is assigned to its individual.
+The less the number of score, the better the chromosome.
 Hence the individual with score equals zero represents a feasible scheduling is synthesized.
-The detail of fitness function is discussed in subsection \ref{s:fit}.
+The detail of fitness function is discussed in section~\ref{s:fit}.
 
 Next, the operation of genetic algorithm,
  i.e. \emph{crossover} and \emph{mutate},
   is deployed as global search.
-Then the \emph{local search} is adopted to the population if there are no feasible scheduling(individual with score of 0).
-The detail of search strategy deployed in global as well as local search, is discussed in~\ref{s:glo} and~\ref{s:loc}, respectively.
+Then the \emph{local search} is adopted to the population if there are no feasible scheduling (individual with score of 0).
+The detail of search strategy deployed in global as well as local search, is discussed in section~\ref{s:glo} and~\ref{s:loc}, respectively.
 
 After the global and local search,
  each individual in the population is evaluated by fitness function again.
-And the new population for the next iteration is generated by selection according to the score of each individual.
+The best individual with least score in the population is selected as the current best one $best'$, by $selectBest(pop)$.
+And $best'$ compares with previous optimal individual $best$ to derive the individual with less score.
+The new population for the next iteration is generated by selection $select(pop,scale)$ according to the score of each individual.
 The individual with less score own more possibility to reserve for the next population.
-The \emph{select function} ensures the size of population equals the value of $scale$ in each iteration.
+The select function ensures the size of population equals the value of $scale$ in each iteration.
 
 %% \begin{algorithm}[tb]
 %% 	\caption{Memetic Algorithm}
@@ -1185,9 +1187,8 @@ The fitness function is employed to evaluate the individual in the population.
 To adopt the fitness function, 
 the scenario of overlap among messages should be determined.
 And we transform chromosome to represent the duration of message in a hyperperiod.
-Then the score of each individual can be acquired by the fitness function.
+Then the score of each individual can be acquired by the fitness function to evaluate the chromosome in constraint~\ref{c:link}.
 
-The link contention constraints presents the scenario of overlap among messages.
 According to the predefined routing strategy,
 e.g. XY routing~\cite{DBLP:books/daglib/0087651},
 the route $s_i.R$ of each scheduling $s_i\in \calS$ for message $\tau_i\in\Gamma$ is derived.
@@ -1204,6 +1205,7 @@ E.g. since the $overlap(s_{0},s_{1})=0$, $overlap(s_{0},s_{2})=1$, $overlap(s_{0
 
 \begin{table}[!t]
 	\renewcommand{\arraystretch}{1.3}
+	\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
 	\caption{An Example of a routing and overlap set}
@@ -1213,7 +1215,7 @@ E.g. since the $overlap(s_{0},s_{1})=0$, $overlap(s_{0},s_{2})=1$, $overlap(s_{0
 	% than the plain LaTeX2e tabular which is used here.
 	\begin{tabular}{|c||c||c|}
 		\hline
-		\textbf{Scheduling} & \textbf{Routing Link}& \textbf{Overlap Set}\\
+		\tabincell{c}{\textbf{Scheduling}\\$s_i\in\calS$} & \tabincell{c}{\textbf{Routing Per Hop}\\$s_i.R$}& \tabincell{c}{\textbf{Overlapped Set}\\ $O(s_i)$}\\
 		\hline
 		$s_{0}$ & $ \langle 0,1\rangle\langle 1,4\rangle$ 		& $s_{2},s_{4}$ \\
 		\hline
@@ -1221,7 +1223,7 @@ E.g. since the $overlap(s_{0},s_{1})=0$, $overlap(s_{0},s_{2})=1$, $overlap(s_{0
 		\hline
 		$s_{2}$ & $ \langle 2,1\rangle\langle 1,4\rangle\langle 4,7\rangle$ 	& $s_{0},s_{4}$ \\
 		\hline		
-		$s_{3}$ & $ \langle 5,4\rangle\langle 4,3\rangle\langle 3,6\rangle$ 	& \\
+		$s_{3}$ & $ \langle 5,4\rangle\langle 4,3\rangle\langle 3,6\rangle$ 	&$\emptyset$  \\
 		\hline
 		$s_{4}$ & $ \langle 1,4\rangle\langle 4,5\rangle$ 		& $s_{0},s_{1},s_{2}$ \\
 		\hline		
@@ -1231,15 +1233,15 @@ E.g. since the $overlap(s_{0},s_{1})=0$, $overlap(s_{0},s_{2})=1$, $overlap(s_{0
 The delay of scheduling $s_i$ in $k$th period $s_i(k)$, is defined by formula~\ref{e:duration}.
 And we have that
 \begin{equation}
-	s_i.H = \{ s_i(k) \mid k \in [ 0, H(\calS)/s_i.T - 1 ] \}
+	D^{Hp}(s_i) = \{ s_i(k) \mid k \in [ 0, Hp(\calS)/s_i.T - 1 ] \}
 %s_{i}.\mathcal{H} = \{ {s_{i}^{(v_{a},v_{b})}}(k) \mid k \in [0, \mathcal{M.H} / s_{i}.\mathcal{T} - 1] \}
 \end{equation}
-where $s_i.H$ denotes the duration of a scheduling in a hyperperiod.
+where $D^{Hp}(s_i)$ denotes the duration of a scheduling in a hyperperiod.
 We define 
- $ \calS.\calH = \{ s_i.H \mid s_i \in \calS \}$
+ $ D^{Hp}(\calS) = \{ D^{Hp}(s_i) \mid s_i \in \calS \}$
 %$\mathcal{M.H}=\{ s_{i}.\mathcal{H} \mid s_{i}\in \mathcal{M} \}$,
  denotes the set of duration for each message in a hyperperiod. 
-Therefore the complete duration in a hyperperiod for each scheduling $ \calS.\calH $ is determined.
+Therefore the complete duration in a hyperperiod for each scheduling of message is determined.
 TABLE~\ref{t:duration} is an example of the complete duration in a hyperperiod,
  based on two individuals in TABLE~\ref{t:pop}.
 The scheduling model of messages is shown in TABLE~\ref{t:comm_info}.
@@ -1260,9 +1262,9 @@ The scheduling model of messages is shown in TABLE~\ref{t:comm_info}.
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making tables
 	% than the plain LaTeX2e tabular which is used here.
-	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 		\hline
-		\textbf{Duration}& 
+		\textbf{Individual}& 
 		\textbf{0} & 
 		\textbf{1} & 
 		\textbf{2} & 
@@ -1272,8 +1274,7 @@ The scheduling model of messages is shown in TABLE~\ref{t:comm_info}.
 		\textbf{6} & 
 		\textbf{7} \\		
 		\hline
-		\hline
-		$indi0$&
+		$in_0$&
 		\tabincell{c}{$\tau_0$\\$\tau_1$}&
 		&
 		\tabincell{c}{$\tau_0$\\$\tau_2$}&
@@ -1283,8 +1284,7 @@ The scheduling model of messages is shown in TABLE~\ref{t:comm_info}.
 		\tabincell{c}{$\tau_0$\\$\tau_2$}&
 		$\tau_4$\\		
 		\hline	
-		\hline	
-		$indi1$&
+		$in_1$&
 		$\tau_0$&
 		$\tau_1$&
 		$\tau_0$&
@@ -1304,14 +1304,15 @@ For each $s_{i}\in \calS\}$,
  we define $C(s_{i})$ to derive the set of scheduling conflicted with $s_{i}$. 
 So we have that
 \begin{equation}
-	C(s_i) = \{ s_j \mid s_i.H \cap s_j.H \neq \emptyset  ,s_j\in O(s_i) \}
+	C(s_i) = \{ s_j \mid D^{Hp}(s_i) \cap D^{Hp}(s_j) \neq \emptyset  ,s_j\in O(s_i) \}
 %C(s_{i}) = \{(s_{i},s_{j})\rightarrow n_{ij}\mid m_j\in O(s_{i}),s_{i},s_{j}\in \mathcal{M}\}
 \end{equation}
-   
+If there is no conflict scheduling with $s_i$ on the its duration,
+$C(s_i)\in \emptyset$.   
 A conflict function is defined to count the conflict times between $s_i$ and $s_j$.
 We have that
 \begin{equation}
-	conflict(s_i,s_j) = sizeof \{s_i.H \cap s_j.H\}
+	conflict(s_i,s_j) = sizeof \{D^{Hp}(s_i) \cap D^{Hp}(s_j)\}
 \end{equation}
 %We define the mapping $(s_{i},s_{j})\rightarrow n_{ij}$, where $(s_{i},s_{j})$ is the conflict communication and $n_{ij}$ is the number of gene which $s_{i}$ coexist with $s_{j}$ on a chromosome is $n_{ij}$, which denotes the conflict times between $s_{i}$ and $s_{j}$.
 
@@ -1319,16 +1320,15 @@ We define the total conflict times to $s_{i}$ as $times(s_i)$. And we have that
 \begin{equation}
 	times(s_i)=\sum_{ s_j \in C(s_i) } conflict(s_i,s_j)
 \end{equation}
-If there is no conflict scheduling with $s_i$ on the its duration,
- $C(s_i)\in \emptyset$.
-We define $T(\calS) = \{ s_i \mid C(s_i) \notin \emptyset \} $ to denote the set of conflict scheduling in a chromosome.
 
-According to $T(\calS)$ the conflict times among any two of scheduling of message on the chromosome is determined.
+We define $C(\calS) = \{ s_i \mid C(s_i) \notin \emptyset \} $ to denote the set of conflictive scheduling in a chromosome.
+
+According to $C(\calS)$ the conflict times among any two of scheduling of message on the chromosome is determined.
 The fitness function assigns a score to each individual.
-The output of fitness function is total conflict times in $T(\calS)$.
-Thus for a individual $indi$, we have that
+The output of fitness function is total number of conflicts in $C(\calS)$.
+Thus for a individual $in$, we have that
 \begin{equation}
-	fitness(indi)=\sum_{s_i \in T(\calS)} {times(s_i)}
+	fit(in)=\sum_{s_i \in C(\calS)} {times(s_i)}
 \end{equation}
 
 Since the score represents the conflict times, the less the score the better the individual.
@@ -1336,20 +1336,21 @@ E.g. the score of two individual in Fig~\ref{t:pop} is shown in TABLE~\ref{t:fit
 
 \begin{table}[!t]
 	\renewcommand{\arraystretch}{1.3}
+	\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
-	\caption{An Example of marking two individual by fitness function}
+	\caption{An Example of marking two individuals by fitness function}
 	\label{t:fitness}
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making TABLEs
 	% than the plain LaTeX2e tabular which is used here.
 	\begin{tabular}{|c||c||c||c|}
 		\hline
-		\textbf{Individual} & \textbf{Conflict} &\textbf{Conflict Times} &\textbf{Score}\\
+		\tabincell{c}{\textbf{Individual}\\$in$}&\tabincell{c}{\textbf{Conflict}\\$C(s_i)$} &\tabincell{c}{\textbf{Conflict Times}\\$times(s_i)$} &\tabincell{c}{\textbf{Score}\\$fit(in)$}\\
 		\hline 
-		$indi0$ &$s_0,s_2$ & $times(s_0)=2,times(2)=2$ &4\\
+		$in_0$ &$s_0,s_2$ & \tabincell{c}{$times(s_0)=2$\\$times(s_2)=2$} &4\\
 		\hline
-		$indi1$ & $s_0,s_4$& $times(s_0)=1,times(4)=1$ &2\\
+		$in_1$ & $s_0,s_4$& \tabincell{c}{$times(s_0)=1$\\$times(s_4)=1$} &2\\
 		\hline
 		\end{tabular}	
 \end{table}
@@ -1361,21 +1362,21 @@ The general operation in genetic algorithm,
   is used in the step of global search. 
 
 For operation of crossover,
- we employ two of individual $indi_i,indi_j\in Pop$ among the population as parents to join the crossover in terms of the score.
+ we employ two of the individuals $in_i,in_j$ among the population as parents to join the crossover in terms of the score.
 The lower score of the individual,
- the higher possibility to be selected as parent.
+ the higher possibility for this individual to be selected as parent.
 The crossover generates a new individual called child, and its chromosome depends on the parents.
 The individual of parents with lower score own the higher possibility to determine the offset location on the chromosome.
-For parents individual $indi_i$ and $indi_j$, we have the function
+For parent individuals $in_i$ and $in_j$, we have the function
 \begin{equation}
-	possibility(indi_i)=1-\frac{indi_i}{indi_i+indi_j}
+	possibility(in_i)=1-\frac{in_i}{in_i+in_j}
 \end{equation}
 to represent the possibility for each individual to determine each scheduling in the chromosome of child.
 Table~\ref{t:crossover} shows an process of crossover.
-The $indi2$ is generated by crossover based on the two individuals in Fig~\ref{t:pop} as parents.
-Because the score of $indi0$ is 4 while $indi1$ is 2,
- $indi0$ owns 67\% while $indi0 $ have 33\% of possibility to decide the offset when locating each scheduling $s_i\in\calS$.
-The chromosome of $indi2$ consists of the offset of $m_0,m_2,m_3$ from $indi1$ and $m_1,m_4$ from $indi0$.
+The $in_2$ is generated by crossover based on the two individuals in Fig~\ref{t:pop} as parents.
+Because the score of $in_0$ is 4 while $in_1$ is 2,
+ $in_0$ owns 67\% while $in_0 $ have 33\% of possibility to decide the offset when locating each scheduling $s_i\in\calS$.
+The chromosome of $in_2$ consists of the offset of $m_0,m_2,m_3$ from $in_1$ and $m_1,m_4$ from $in_0$.
 %\begin{figure}[!t]
 %	\centering
 %	\includegraphics[width=3in]{picture/crossover.pdf}
@@ -1392,9 +1393,9 @@ The chromosome of $indi2$ consists of the offset of $m_0,m_2,m_3$ from $indi1$ a
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making tables
 	% than the plain LaTeX2e tabular which is used here.
-	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 		\hline
-		\textbf{Parents}& 
+		\textbf{Parent}& 
 		\textbf{0} & 
 		\textbf{1} & 
 		\textbf{2} & 
@@ -1404,9 +1405,9 @@ The chromosome of $indi2$ consists of the offset of $m_0,m_2,m_3$ from $indi1$ a
 		\textbf{6} & 
 		\textbf{7} \\		
 		\hline
-		$indi0$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\		
+		$in_0$	&\tabincell{c}{$s_0.\phi$\\$s_1.\phi$}&	&$s_2.\phi$&	&$s_3.\phi$& & &$s_4.\phi$\\		
 		\hline		
-		$indi1$	&$m_0$&$m_1$&	&$m_2$&$m_3$& &$m_4$&	\\		
+		$in_1$	&$s_0.\phi$&$s_1.\phi$&	&$s_2.\phi$&$s_3.\phi$& &$s_4.\phi$&	\\		
 		\hline
 		\hline
 			\textbf{Child}& 
@@ -1419,7 +1420,7 @@ The chromosome of $indi2$ consists of the offset of $m_0,m_2,m_3$ from $indi1$ a
 			\textbf{6} & 
 			\textbf{7} \\		
 			\hline
-			$indi2$	&$m_0,m_1$&	& &$m_2$&$m_3$& & &$m_4$\\			
+			$in_2$	&\tabincell{c}{$s_0.\phi$\\$s_1.\phi$}&	& &$s_2.\phi$&$s_3.\phi$& & &$s_4.\phi$\\			
 		\hline
 	\end{tabular}
 \end{table}
@@ -1439,12 +1440,12 @@ It is noted that the probability of mutate for each individual in our implement 
 	\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
-	\caption{An example of mutation}
+	\caption{An example of mutate}
 	\label{t:mutation}
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making tables
 	% than the plain LaTeX2e tabular which is used here.
-	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 		\hline
 		\textbf{Before}& 
 		\textbf{0} & 
@@ -1456,7 +1457,7 @@ It is noted that the probability of mutate for each individual in our implement 
 		\textbf{6} & 
 		\textbf{7} \\		
 		\hline
-		$indi0$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\		
+		$in_0$	&\tabincell{c}{$s_0.\phi$\\$s_1.\phi$}&	&$s_2.\phi$&	&$s_3.\phi$& & &$s_4.\phi$\\		
 		\hline
 		\hline
 		\textbf{After}& 
@@ -1469,7 +1470,7 @@ It is noted that the probability of mutate for each individual in our implement 
 		\textbf{6} & 
 		\textbf{7} \\		
 		\hline
-		$indi3$	&$m_0,m_1$&$m_4$&$m_2$&	&$m_3$& & &\\			
+		$in_0$	&\tabincell{c}{$s_0.\phi$\\$s_1.\phi$}&$s_4.\phi$&$s_2.\phi$&	&$s_3.\phi$& & &\\			
 		\hline
 	\end{tabular}
 \end{table}
@@ -1481,17 +1482,17 @@ Before the local search for each individual,
  the scheduling $s_i\in\calS$ with the maximum value of $times(s_i)$ is selected as local search element.
 If there are two or more individuals with the maximum conflict times,
  the element to be searched is select stochastically among them.
-Then the offset $s_i.\phi$ of selected $s_i$ is reallocated in its possible offset $s_i.\Phi$ .
+Then the offset $s_i.\phi$ of selected $s_i$ is reallocated in its possible offset $s_i.P_\phi$ .
 Each reallocated individual is a candidate to update the previous individual.
 After marking all of the candidate, the individual with minimum score replaces the previous individual.
 
-TABLE~\ref{t:local} shows an example of local search for $indi0$ in Fig~\ref{t:pop}.
+TABLE~\ref{t:local} shows an example of local search for $in_0$ in Fig~\ref{t:pop}.
 According to the $T(\calS)$ of individual 0 in TABLE~\ref{t:fitness},
  we random select $s_0$ as the element. 
-Since the possible offset $s_i.\Phi$ of $s_0.\phi$ is 0 and 1 shown in TABLE~\ref{t:comm_info},
+Since the possible offset $s_i.P_\phi$ of $s_0.\phi$ is 0 and 1 shown in TABLE~\ref{t:comm_info},
   we locate the the scheduling $s_0$ for message $m_0$ on its possible offset, gene 0 and gene 1 respectively.
 After marking two of individual with different offset $s_0.\phi$,
- we select the individual which score is 2 as the updated $indi0$ because this individual own minimum score among the candidates which just reallocate the offset of $s_0$.
+ we select the individual which score is 2 as the updated $in_0$ because this individual own minimum score among the candidates which just reallocate the offset of $s_0$.
 %\begin{figure}[!t]
 %	\centering
 %	\includegraphics[width=3in]{picture/local.pdf}
@@ -1503,11 +1504,12 @@ After marking two of individual with different offset $s_0.\phi$,
 	\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
 	%if using array.sty, it might be a good idea to tweak the value of
 	% \extrarowheight as needed to properly center the text within the cells
-	\caption{An example of local search of $m_0$ as element}
+	\caption{An example of local search of $s_0$ as element}
 	\label{t:local}
 	\centering
 	% Some packages, such as MDW tools, offer better commands for making tables
 	% than the plain LaTeX2e tabular which is used here.
+	%\tabincell{c}
 	\begin{tabular}{|c||c||c||c||c||c||c||c||c|}
 		\hline
 		\textbf{Before}& 
@@ -1520,7 +1522,7 @@ After marking two of individual with different offset $s_0.\phi$,
 		\textbf{6} & 
 		\textbf{7} \\		
 		\hline
-		$indi0$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\		
+		$in_0$	&\tabincell{c}{$s_0.\phi$\\$s_1.\phi$}&	&$s_2.\phi$&	&$s_3.\phi$& & &$s_4.\phi$\\		
 		\hline
 		\hline
 		\textbf{Score}& 
@@ -1533,9 +1535,9 @@ After marking two of individual with different offset $s_0.\phi$,
 		\textbf{6} & 
 		\textbf{7} \\		
 		\hline
-		$4$	&$m_0,m_1$&	&$m_2$&	&$m_3$& & &$m_4$\\
+		$4$	&\tabincell{c}{$s_0.\phi$\\$s_1.\phi$}&	&$s_2.\phi$&	&$s_3.\phi$& & &$s_4.\phi$\\
 		\hline
-		$2$	&$m_1$&$m_0$&$m_2$&	&$m_3$& & &$m_4$\\		
+		$2$	&$s_1.\phi$&$s_0.\phi$&$s_2.\phi$&	&$s_3.\phi$& & &$s_4.\phi$\\		
 		\hline
 		\hline		
 		\textbf{After}& 
@@ -1548,7 +1550,7 @@ After marking two of individual with different offset $s_0.\phi$,
 		\textbf{6} & 
 		\textbf{7} \\		
 		\hline
-		$indi0$&$m_1$&$m_0$&$m_2$&	&$m_3$& & &$m_4$\\		
+		$in_0$&$s_1.\phi$&$s_0.\phi$&$s_2.\phi$&	&$s_3.\phi$& & &$s_4.\phi$\\		
 		\hline
 	\end{tabular}
 \end{table}
@@ -1576,8 +1578,8 @@ And different local search strategy may increase the performance of the memetic 
 
 The network architecture we employed is 2D mesh network which scale is $3\times 3$, $5\times 5$ and $7\times 7$,
  with 9, 25 and 49 switching nodes respectively.
-The program of our algorithm is implement in JAVA and is running on a Windows with 4GHz CPU and 12GB memory.
-We compare the memetic algorithm with general genetic algorithm without local search. 
+Our algorithm is implement in JAVA and is running on a Windows with 4GHz CPU and 12GB memory.
+We compare the memetic algorithm with the general genetic algorithm without local search. 
 
 The number of scheduling of messages in our evaluation is from 5 to 50.
 Each scheduling of message owns its period and delay which is random generated.
