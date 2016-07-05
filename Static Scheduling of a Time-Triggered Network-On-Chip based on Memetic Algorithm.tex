@@ -417,8 +417,8 @@
 % in the abstract
 \begin{abstract}
 	
-Time-Triggered Network-on-Chip (TTNoC) is a time-triggered system deployed on the Network-on-Chip (NoC). 
-It ensures the reliable and safety-critical communication for real-time embedded multiprocessor systems. 
+Time-Triggered Network-on-Chip (TTNoC) is a time-triggered embedded system deployed on the Network-on-Chip (NoC). 
+It ensures the reliable and safety-critical industrial communication for real-time embedded multiprocessor systems. 
 To guarantee the safe-critical requirements for communication, each message is transmitted by a predefined static schedule. 
 However,
  synthesizing the scheduling is a challenging problem because both path contention and the temporal constraints should be considered. 
@@ -427,8 +427,8 @@ For given architecture of TTNoC and messages for communication,
 the offset for messages is synthesized by MA, ensuring no contention with the communications on the TTNoC.
 We compare our memetic algorithm with the general genetic algorithm.
 The experimental results show that
-the failed scheduling of MA is about 30\% in compare with the general genetic algorithm.
-
+the failed scheduling of MA is 
+only about 30\% percent in average of that of the conventional genetic algorithm.
 \end{abstract}
 % no keywords
 
@@ -446,7 +446,7 @@ the failed scheduling of MA is about 30\% in compare with the general genetic al
 
 \section{Introduction}
 
-Time-triggered systems is one of the real-time systems with high throughput and temporal predictability for multiprocessor systems~\cite{DBLP:journals/rts/CraciunasO16}.
+Time-triggered systems is one of the real-time systems with high throughput and temporal predictability for industrial multiprocessor systems~\cite{DBLP:journals/rts/CraciunasO16}.
 Time-triggered systems isolating the inherent faults as well as satisfying the temporal predictability of communication and widely deployed in various field, e.g.
 TTEthernet integrates time-triggered concept into the general Ethernet~\cite{DBLP:conf/nca/SteinerBHPV09}, which is adopted as a new standard of the avionic network~\cite{DBLP:conf/dsrt/BejiHGM14}. TTP and FlexRay are adopted in aerospace industry~\cite{DBLP:journals/taes/HuLWV15}.
 
@@ -900,7 +900,7 @@ and~\ref{c:link}.
 Note that in practice, the determination of routes $\calS.\calR$
 comprises two processes: mapping and routing. 
 The mapping process
-allocates different IP blocks in the application onto different routers in the mesh network~\cite{DBLP:journals/tjs/WangLY16}.
+allocates different IP blocks in the application onto varying routers in the mesh network~\cite{DBLP:journals/tjs/WangLY16}.
 Thus each message $\tau_i\in\Gamma$ determines its source node
 $v_i\in\calV$ and sink node $v_j\in\calV$. 
 The mapping can be synthesized
@@ -1489,7 +1489,7 @@ According to the $T(\calS)$ of individual 0 in TABLE~\ref{t:fitness},
  we random select $s_0$ as the element. 
 Since the possible offset $s_i.P_\phi$ of $s_0.\phi$ is 0 and 1 shown in TABLE~\ref{t:comm_info},
   we locate the the scheduling $s_0$ for message $m_0$ on its possible offset, gene 0 and gene 1 respectively.
-After marking two of individual with different offset $s_0.\phi$,
+After marking two of individual with varying offset $s_0.\phi$,
  we select the individual which score is 2 as the updated $in_0$ because this individual owns minimum score among the candidates which reallocate the $s_0,\phi$.
 %\begin{figure}[!t]
 %	\centering
@@ -1558,7 +1558,7 @@ In our implement,
 However for improving efficiency,
  many other algorithms in local search can be applied,
   i.e. tabu search, simulated annealing.
-And different local search strategy may increase the performance of the memetic algorithm.
+And a varying local search strategy may increase the performance of the memetic algorithm.
 
 \section{Evaluations \label{s:evalu}}
 
@@ -1601,7 +1601,7 @@ We define the rate of failed scheduling as
 \end{equation}
 
 Fig.~\ref{f:fail} shows the $R_{fail}$ for variable type of test cases by MA and GA, denoted as $R_{fail}({MA})$ and $R_{fail}(GA)$  respectively. 
-It should be noted that the rate is the average result of the 15 test cases for the same architecture and the number of messages but different generated messages.
+It should be noted that the rate is the average result of the 15 test cases for the same architecture and the number of messages but varying generated messages.
 
 As can be seen,
   the rate of failed scheduled messages by the GA is much more than the MA, especially when the scale of messages is relatively large.
@@ -1688,7 +1688,7 @@ After these changes,
 \section{Conclusions \label{s:conclud}}
 
 This paper introduces a memetic algorithm to resolve the scheduling problem of messages on the TTNoC.
-We present our memetic algorithm and evaluate with various random generated messages on different scales of mesh-based TTNoC.
+We present our memetic algorithm and evaluate with various random generated messages on varying scales of mesh-based TTNoC.
 The results of simulation shows that our memetic algorithm is efficient to synthesize a scheduling with less rate of failed scheduling messages, which is about 30\% compared with the synthesis of GA.
 
 In our future work,
