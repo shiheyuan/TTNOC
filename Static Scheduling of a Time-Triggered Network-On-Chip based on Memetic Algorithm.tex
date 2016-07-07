@@ -321,7 +321,7 @@
 \newcommand{\calH}{\mathcal{H}}
 \newcommand{\width}{\mathit{W}_\calG}
 \newcommand{\SD}{\mathit{SD}_\calG}
-\newcommand{\HD}{\mathit{LD}_\calG}
+\newcommand{\HD}{\mathit{PD}_\calG}
 \newcommand{\MT}{\mathit{MT}_\calG}
 \newcommand{\route}[3]{#1^{\langle #2,#3\rangle}}
 
@@ -346,9 +346,9 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Effective Static Scheduling of a Time-Triggered Network-on-Chip with Memetic Algorithm}
-
-
+\title{A Memetic Algorithm for Static Scheduling of Time-Triggered Embedded System Implementation}
+% A Memetic Algorithm for Static Scheduling of Time-Triggered Embedded System Implementation
+% Effective Static Scheduling of a Time-Triggered Network-on-Chip with Memetic Algorithm
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
@@ -416,8 +416,8 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-	
-Time-Triggered Network-on-Chip (TTNoC) is a time-triggered embedded system deployed on the Network-on-Chip (NoC). 
+Time-Triggered Systems play an important role in industrial embedded systems.	
+A Time-Triggered Network is a time-triggered system deployed on the Time-Triggered Network-on-Chip (TTNoC) implementation. 
 It ensures the reliable and safety-critical industrial communication for real-time embedded multiprocessor systems. 
 To guarantee the safe-critical requirements for communication, each message is transmitted by a predefined static schedule. 
 However,
@@ -447,27 +447,30 @@ only about 30\% percent in average of that of the conventional genetic algorithm
 \section{Introduction}
 
 Time-triggered systems is one of the real-time systems with high throughput and temporal predictability for industrial multiprocessor systems~\cite{DBLP:journals/rts/CraciunasO16}.
-Time-triggered systems isolating the inherent faults as well as satisfying the temporal predictability of communication and widely deployed in various field, e.g.
-TTEthernet integrates time-triggered concept into the general Ethernet~\cite{DBLP:conf/nca/SteinerBHPV09}, which is adopted as a new standard of the avionic network~\cite{DBLP:conf/dsrt/BejiHGM14}. TTP and FlexRay are adopted in aerospace industry~\cite{DBLP:journals/taes/HuLWV15}.
+Time-triggered systems isolate the inherent faults as well as satisfy the temporal predictability of communication.
+At present, time-triggered systems are widely deployed in various field.
+TTEthernet integrates time-triggered concept into the general Ethernet~\cite{DBLP:conf/nca/SteinerBHPV09}, which is adopted as a new standard of the avionic network~\cite{DBLP:conf/dsrt/BejiHGM14}. 
+TTP and FlexRay are adopted in aerospace industry~\cite{DBLP:journals/taes/HuLWV15}.
 
 TTNoC integrates the time-triggered concepts into the Network-on-Chip (NoC) for safety-critical real-time embedded systems, which requires the tight and predictable communication latency.
 In practice,
  GENESYS is proposed as a cross-domain embedded system architecture,
-  which influenced by the concepts of and the experience with the time-triggered architecture~\cite{DBLP:conf/ladc/Kopetz11}.
+  which is influenced by the concepts of and the experience with the time-triggered architecture~\cite{DBLP:conf/ladc/Kopetz11}.
 
 There are two main architectures of a time-triggered system,
  bus-based and network-based architecture~\cite{DBLP:conf/date/HuangBRBK12}.
 There is only one message transmitted on the system at the same time in the bus-based architecture. 
-Therefore, each message owns its unique duration to communicate through the physical link.
+Therefore,
+ each message owns its unique duration to communicate through the physical link.
 Unlike the bus-based architecture,
  the network-based architecture allows a set of messages to be transmitted at the same time,
-  provided that the physical links used by the messages are non-overlapping.
+ provided that the physical links used by the messages are non-overlapping.
 It entails messages sharing the time domain to communicate.
 Fig.~\ref{f:diff} shows the differences between bus-based and network-based time-triggered architectures.
 In a bus-based architecture,
- all the messages ($\tau_0$,$\tau_1$,$\tau_2$) achieve temporal separation. 
+ all the messages ($\tau_0$, $\tau_1$, $\tau_2$ in Fig.~\ref{f:diff}) sent by process elements (PEs) achieve temporal separation. 
 In a network-based architecture,
- the set of messages ($\tau_0$,$\tau_1$,$\tau_2$) can share the time domain if there is no spatial conflict among the transmission of them.
+ the set of messages can share the time domain if there is no spatial conflict among the transmission of them.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3in]{picture/difference.pdf}
@@ -476,38 +479,39 @@ In a network-based architecture,
 \end{figure}
 
 A TTNoC employs the network-based architecture.
-The scheduling of TTNoC is to determine the duration of each message and ensure that there is no contentions on the TTNoC. 
+The scheduling of TTNoC is to determine the duration of each message and ensure that there is no contention on the TTNoC. 
 Static scheduling is adopted to synthesize the scheduling which resolves contention,
 thus avoiding dynamic arbitration of intercommunicate resources distribution. 
-Hence, the communication on the TTNoC is predefined while satisfying the scheduling constraints.
+Hence, the communication predefined to satisfy the scheduling constraints for messages on the TTNoC.
 However,
  synthesizing such a scheduling is rather complicated which is known as NP-complete problem~\cite{DBLP:conf/date/HuangBRBK12,DBLP:conf/rtss/Steiner10}.
 
-The main contribution of this paper is a static scheduling approach to resolve the TTNoC scheduling problem by a memetic algorithm. 
+The main contribution of this paper is a static scheduling approach to resolve the TTNoC scheduling problem by a memetic algorithm (MA). 
 MA is widely used as a synergy of evolutionary or any population-based approach with separate individual learning or local improvement procedures for solution search~\cite{DBLP:journals/tec/ChenOLT11}. 
 
 The rest of this paper is organized as follows. 
 We first review the related work in the TTNoC scheduling in Section~\ref{s:relate}. 
 The system model is given in Section~\ref{s:model},
  followed by the schedule constraints in Section~\ref{s:constraint}.
-We presents the problem formulation in Section~\ref{s:formulation}.
+We present the problem formulation in Section~\ref{s:formulation}.
 A new memetic algorithm is proposed in Section~\ref{s:algorithm}.
 The experiments with synthesis results are presented in Section~\ref{s:evalu}.
 Finally, we conclude this paper in Section~\ref{s:conclud}.
 
 \section{Related Work	\label{s:relate}}
 
-There are sufficient literatures about the scheduling of time-triggered network,
- which is similar to the scheduling of TTNoC. 
-\cite{DBLP:conf/rtss/Steiner10} considers the scheduling of the time-triggered multi-hop networks.
-A pure satisfiability modulo theories (SMT) formulation is presented followed by an incremental method to improve the scalability.
+There are sufficient literatures about the scheduling of time-triggered network.
+The scheduling of the time-triggered multi-hop networks is considered in~\cite{DBLP:conf/rtss/Steiner10}.
+A pure satisfiability modulo theories (SMT) formulation and an incremental method to improve the scalability are presented.
 \cite{DBLP:journals/rts/CraciunasO16,DBLP:conf/rtns/CraciunasO14} formulate the schedule problem using first-order logical constraints and present alternative methods to find a solution based on SMT and mixed integer programming (MIP) solvers.
-In \cite{DBLP:conf/etfa/PozoSRH15} the authors presents a decomposition approach based on SMT solver for extremely large time-triggered network.
+Because it is unrealistic for pure SMT approach to tackle the scheduling of time-triggered network with large scale,
+ In \cite{DBLP:conf/etfa/PozoSRH15},
+  the authors present a decomposition approach based on SMT solver for extremely large time-triggered networks.
 
-The scheduling problem also appear in the various domain.
+The scheduling problem also appears in the various domain.
 \cite{DBLP:conf/isorc/RoRM15} resolves the scheduling on the wireless network by SMT solver.
 \cite{DBLP:conf/aspdac/ZhangG0C14} formulates the co-synthesis problem of task and communication schedules as a Mixed Integer Programming (MIP) model taking into account a number of Ethernet-specific timing parameters.
-Holistic Scheduling in Time-Triggered In-Vehicle Networks was studied in~\cite{DBLP:journals/tii/HuLWLZ14}
+Holistic scheduling in time-triggered in-Vehicle networks was studied in~\cite{DBLP:journals/tii/HuLWLZ14}
 
 The scheduling problem of TTNoC has been
 studied firstly in \cite{DBLP:conf/date/HuangBRBK12} which integrates SMT solver into a classical heuristic algorithm. 
@@ -614,13 +618,14 @@ In~\cite{DBLP:conf/sies/FreierC15},
 \section{System Model}
 \label{s:model}
 
-In this section we presents the basis and model of TTNoC.
+In this section we present the basic notions and model of TTNoC.
 The system architecture we adopted is shown in~\cite{DBLP:conf/rtcsa/PaukovitsK08}. 
 
 \subsection{Architecture Model}
 
 TTNoC is a system with a set of real-time tasks/applications mapped on a multi-core interconnection platform. 
-It composes of a set of identical processing elements (PEs) interconnected by physical links and the switches on the TTNoC.
+It consists of processing elements (PEs), switches and physical links.
+PEs are interconnected by physical links and the switches on the TTNoC.
 The switches are connected by bidirectional physical links and each link connects a pair of switches.  
 The topologies of a TTNoC can be either regular or irregular.
 
@@ -633,13 +638,12 @@ Therefore, given $v_i,v_j\in\calV$, $\langle v_i,v_j\rangle \in\calL$ implies $\
   from a source node $v_i$ to a sink node $v_j$.
 
 Since switches and links are identical on the TTNoC,
- the width of physical links as well as the performance of switches and links is the same,.
+ the width of physical links as well as the performance of switches and links are the same,.
 The properties of each hop can be regarded as system properties of TTNoC.
 Hence a TTNoC $\calG$ is equipped with a set of properties. 
-We use $\width$ to denote the width of physical links in the TTNoC,
- $\SD$ for the switching delay in the switches,
-  $\HD$ for the link delay per hop which means propagation cost between adjacent nodes,
-   and $\MT$ discussed in Section~\ref{ss:schmodel}, for the macrotick of network representing the time-line granularity of the communication on the TTNoC.
+Let $\width$ denote the width of physical links in the TTNoC.
+$\SD$ and $\HD$ represent, respectively, the switching delay in the switches and the propagation delay between adjacent nodes.
+$\MT$ is the macrotick of network denoting the time-line granularity of the communication on the TTNoC.
 
 %% A network link $(v_{a},v_{b})$, between the source node
 %% $v_{a}$ and the sink node $v_{b}$, is defined by the tuple $\langle
@@ -684,7 +688,7 @@ A message consists of header and data.
 Header includes the information for message forwarding on the TTNoC,
  e.g. the addresses of source and destination. 
 Flit is the unit of a message that can be transmitted over the TTNoC.  
-Only periodic messages are discussed in this paper because it is the typical case in real-time embedded systems.
+Only periodic messages are discussed in this paper because periodic messages are typical and major in communication on real-time embedded systems.
 
 We denote the set of $n$ time-triggered messages on the TTNoC by $\Gamma = \{\tau_{0},\dots,\tau_{n-1}\}$. 
 Each message $\tau_{i}$ is modeled by the tuple $\langle \tau_{i}.H,\tau_{i}.S, \tau_{i}.T,\tau_{i}.D\rangle$, 
@@ -695,12 +699,12 @@ Each message $\tau_{i}$ is modeled by the tuple $\langle \tau_{i}.H,\tau_{i}.S, 
 \subsection{Scheduling Model}
 \label{ss:schmodel}
 
-When the communication happens on the TTNoC between two nodes,
+When the communication occurs on the TTNoC between two nodes,
  e.g. a source node $v_i\in \calV$ sends a message $\tau_{k}$ to a sink node $v_j\in \calV$ on the TTNoC,
   the message $\tau_k$ is transmitted on some route $\route{r_k}{v_i}{v_j}$. 
 The communication nodes forward the message based on the route $\route{r_k}{v_i}{v_j}$ .
 
-The TDMA scheme is deployed for the scheduling of communication .  
+The TDMA scheme is deployed for the scheduling of communication.  
 And the time granularity is \emph{macrotick} that the period and relative deadline of message directly match to this time format.
 
 Based on the architecture and message model,
@@ -716,8 +720,7 @@ Each scheduling $s_{i}\in\calS$ is defined by a tuple $\langle s_i.R, s_i.\phi, 
 For the whole scheduling set $\calS$,
  the sets of the route,
   the period,
-   the relative deadline and the delay of each $s_i\in\calS$ are defined as expected,
- denoted by $\calS.\calR$,
+   the relative deadline and the delay of each $s_i\in\calS$ are denoted by $\calS.\calR$,
   $\calS.\Phi$,
    $\calS.\calT$,
     $\calS.\calD$ and $\calS.\calL$,
@@ -760,23 +763,21 @@ Because of the macrotick as the granularity of communication,
 where $\MT$ denotes the value of macrotick,
  and $\SD+\HD$ is the delay per hop in the forwarding.
 %% that $\SD$ is the delay on the physical link and $\HD$is the switching delay.
-
-The formula is based on~\cite{DBLP:books/daglib/0087651} with the
-modification of adopting macrotick as the unit.  Given an
-$s_{i}\in\calS$ and its route $s_i.R$, $s_i.T$, $s_i.D$ and $s_i.L$
-can be derived by formulas~\ref{e:eqn1}, \ref{e:eqn2}
-and~\ref{e:eqn3}.  Formulas~\ref{e:eqn1} and~\ref{e:eqn2} denote,
-respectively, the period and the deadline of the communication $s_i$
-in macrotick.  Formula~\ref{e:eqn3} computes the time cost in
+The formula is based on~\cite{DBLP:books/daglib/0087651} with the modification of adopting macrotick as the unit.  
+Given an $s_{i}\in\calS$ and its route $s_i.R$,
+ $s_i.T$,
+  $s_i.D$ and $s_i.L$ can be derived by formulas~\ref{e:eqn1},
+   \ref{e:eqn2} and~\ref{e:eqn3}.
+Formulas~\ref{e:eqn1} and~\ref{e:eqn2} denote the period and the deadline of the communication $s_i$ in macrotick respectively. 
+Formula~\ref{e:eqn3} computes the time cost in
 macrotick, from the first flit sent by the source node to the last
 flit received by the sink node, according to the store-and-forward
-(SAF) switching scheme~\cite{DBLP:books/daglib/0087651}.  Moreover,
-other scheme of switching on the NoC can be also deployed in the TTNoC
-according to the requirements. In this case, the delay Formula
-\ref{e:eqn3} should be changed according to the given switching
-scheme.
+(SAF) switching scheme~\cite{DBLP:books/daglib/0087651}.  
+Moreover, other schemes of switching in~  \cite{DBLP:books/daglib/0087651} on the NoC can be also deployed in the TTNoC
+according to the requirements. 
+In this case, the delay Formula \ref{e:eqn3} should be changed according to the given switching scheme.
 
-As a result, to synthesize the set of communication $\calS$ is to
+As a result, we synthesize the set of communication $\calS$ is to
 calculate the offset $s_i.\phi$ for each communication
 $s_i\in\calS$. Therefore, the key to scheduling of TTNoC is to derive
 $\calS.\Phi = \{s_i.\phi\mid s_i\in\calS\}$ based on the given
@@ -795,20 +796,14 @@ model.
 The synthesized scheduling must satisfy the separation
 of the messages in time domain or space domain.
 Scheduling of communication $\calS$ should resolve the constraints on
-the TTNoC, which mainly including offset constraints and link constraints.
+the TTNoC, which mainly include offset constraints and link constraints.
 
-In our TTNoC, scheme of bufferless NoCs is adopted that no buffering
-of messages takes place. It leads to significantly less area and
-power consumption for TTNoC~\cite{DBLP:journals/tpds/ShpinerKLCK15}.
+In our TTNoC, a scheme of bufferless NoCs is adopted such that no buffering of messages takes place. 
+It leads to significantly less area and power consumption for TTNoC~\cite{DBLP:journals/tpds/ShpinerKLCK15}.
 The route of each message is located on its header.  
 The switches simply forward the message according to the address of next-hop
-switch, without concerning the communication schedule~\cite{DBLP:conf/rtcsa/PaukovitsK08}. Therefore,
-unlike the general time-triggered network, the switch memory
-constraints are not concerned. Moreover for
-the simplicity of evaluation,
-the simultaneous relay,
-application-level, protocol-based and domain-specific constraints are neither
-concerned.
+switch, without concerning the communication schedule~\cite{DBLP:conf/rtcsa/PaukovitsK08}. 
+Therefore, the switches memory constraints in time-triggered multi-hop networks~\cite{DBLP:conf/rtss/2010} are not include in our scheduling constrains. 
 
 \subsection{Message Offset Constraints}
 For each scheduling of message $s_{i}\in\calS$ , the offset $s_i.\phi$
@@ -818,47 +813,49 @@ communication. Therefore we have that
 %\begin{equation}
 \begin{constraint}
 \label{c:offset}
-$(s_i.\phi \geq 0) \cap (s_i.\phi + s_i.L \leq s_i.D)$.
+$(s_i.\phi \geq 0) \wedge (s_i.\phi + s_i.L \leq s_i.D)$.
 %\end{equation}
 \end{constraint}
 
 \subsection{Link Contention Constraints}
-For each communication, the message occupies the link in terms of
-routing strategy without contention, until the whole message is
-received by the sink node. The scheduling $\calS$ should ensure that
-two messages are never transmitted on the identical link at the same
-time. The synthesized scheduling must guarantee that the links on
-TTNoC are contention-free.
+For each communication, the message occupies the link in terms of routing strategy without contention,
+until the whole message is received by the sink node. 
+The messages which share the overlapped routing path are conflicted with each other if they are forwarded  simultaneously.
+It lead to the link contention which breaks real-time requirements. 
 
-Given two scheduling of messages $s_i,s_j\in\calS$,
-%$s_{i},s_{j}\in\mathcal{M}, s_{i}\neq s_{j}$,
-we define $overlap(s_i,s_j)$ to indicate whether there are any common
-physical links between the routes of $s_i$ and $s_j$ or not.
+We firstly give the definition of overlap.
+Given two scheduling of messages $s_i,s_j\in\calS$, %$s_{i},s_{j}\in\mathcal{M}, s_{i}\neq s_{j}$,
+ we define $overlap(s_i,s_j)$ to indicate if there are any common physical links between the routes of $s_i$ and $s_j$.
 $overlap(s_i,s_j)$ is $true$ if the routes of $s_i$ and $s_j$ share
 physical links for at least one hop, or $false$ otherwise:
 \begin{equation}
 \label{e:overlap}
 overlap(s_i,s_j)= 
 \begin{cases}
-  true &\mbox{if } s_i.R \cap s_j.R \neq \emptyset \; ,\\
+  true &\mbox{if } s_i.R \wedge s_j.R \neq \emptyset \; ,\\
   false & \mbox{otherwise}\; ,
 \end{cases}
 \end{equation}
-where we treat $s_i.R$ and $s_j.R$ as sets without ambiguity.
+where we use $s_i.R$ and $s_j.R$ as sets without ambiguity.
 
-The duration of scheduling $s_i$ for message $\tau_i$ in its $k$th
-period is defined by an interval $s_i(k)$:
+We define the duration of scheduling $s_i$ for message $\tau_i$ in its $k$th
+period as an interval $s_i(k)$:
 \begin{equation}
 \label{e:duration}
 s_i(k) = [k\times s_i.T+s_i.\phi \; , k\times s_i.T+s_i.\phi+s_i.L)
 %{s_{i}^{(v_{a},v_{b})}}.\mathcal{T}+{s_{i}^{(v_{a},v_{b})}}.\phi+{s_{i}^{(v_{a},v_{b})}}.\mathcal{L}			
-\end{equation}
-
+\end{equation}  
+The scheduling $\calS$ should ensure that two messages are never transmitted on the identical link at the same
+time. 
+The synthesized scheduling must guarantee that the links on TTNoC are contention-free.
 There comes our constraint for link contention:
 \begin{constraint}
 \label{c:link}
   Given any $p,q\in\mathbb{N}, s_i,s_j \in \calS$ such that $i\neq j$, 
-  $overlap(s_i,s_j) \implies s_i(p) \cap s_j(q) = \emptyset$.
+  $overlap(s_i,s_j) \implies s_i(p) \wedge s_j(q) = \emptyset$.
+
+
+  
 \end{constraint}
 %$ {s_{i}^{(v_{a},v_{b})}}\in\mathcal{M}, {s_{j}^{(v_{c},v_{d})}}\in\mathcal{M}$,
 %\begin{equation}
@@ -878,7 +875,8 @@ There comes our constraint for link contention:
 
 \section{Problem Formulation\label{s:formulation}}
 The problem we are addressing in this paper can be formulated as
-following. Given:
+follow. 
+Given:
 \begin{itemize}
 \item the architecture of a TTNoC $\calG=(\calV,\calL)$ consisting of
   the set of $m$ communicating nodes $\calV=\{v_{1},\dots,v_{m}\}$ and
@@ -893,21 +891,14 @@ following. Given:
 %(2) the mapping of message to communication node $\{<\tau_{i},v_{j}>\mid \tau_{i}\in\Gamma,v_{j}\in\mathcal{V}$\}. 
 %(3) the routing strategy.
 %(4) the set of tt-messages $ \Gamma = \{\tau_{1},\dots,\tau_{n} \}$ with  $\langle \tau_{i}.s, \tau_{i}.t, \tau_{i}.d\rangle$ for $\tau_{i}\in \Gamma$.
-we aim to decide the offsets $\calS.\Phi$ for messages $\Gamma$ on the
-TTNoC $\calG$, which satisfies Constraints~\ref{c:offset}
-and~\ref{c:link}.
+we determine the offsets $\calS.\Phi$ for messages $\Gamma$ in TTNoC $\calG$,
+ which satisfies Constraints~\ref{c:offset} and~\ref{c:link}.
 
-Note that in practice, the determination of routes $\calS.\calR$
-comprises two processes: mapping and routing. 
-The mapping process
-allocates different IP blocks in the application onto varying routers in the mesh network~\cite{DBLP:journals/tjs/WangLY16}.
-Thus each message $\tau_i\in\Gamma$ determines its source node
-$v_i\in\calV$ and sink node $v_j\in\calV$. 
-The mapping can be synthesized
-by various approach, e.g.~\cite{DBLP:conf/recosoc/MesidisI11,DBLP:journals/ieiceee/WangLYS16}.  
-And the
-routing process is to decide a specific route $\route{r}{v_i}{v_j}$ by
-given nodes $v_i$ and $v_j$.
+In practice, the determination of routes $\calS.\calR$ comprises two processes: mapping and routing. 
+The mapping process allocates different IP blocks in the application onto varying routers in the mesh network~\cite{DBLP:journals/tjs/WangLY16}.
+Thus, each message $\tau_i\in\Gamma$ determines its source node $v_i\in\calV$ and sink node $v_j\in\calV$. 
+The mapping can be synthesized by various approaches, e.g.~\cite{DBLP:conf/recosoc/MesidisI11,DBLP:journals/ieiceee/WangLYS16}.  
+And the routing process decides a specific route $\route{r}{v_i}{v_j}$ by given nodes $v_i$ and $v_j$.
 
 %% The mapping of
 %% message to communication node $\{<\tau_{i},v_{j}>\mid
@@ -919,11 +910,10 @@ given nodes $v_i$ and $v_j$.
 %% synthesized by genetic algorithm~\cite{DBLP:conf/recosoc/MesidisI11}.
 %% In our experiment the mapping is predefined.
 
-To solve the problem, we introduce the memetic algorithm to synthesize
-$\calS.\Phi$ satisfying the scheduling constraints. If it is
-impossible to synthesize a set of scheduled communication, we try to
-minimize the amount of infeasible messages which violate the
-scheduling constraints.
+To solve the problem, we present memetic algorithm to synthesize
+$\calS.\Phi$ satisfying the scheduling constraints. 
+To find a feasible solution,
+ we minimize the amount of infeasible messages which violate the scheduling constraints.
 % $\mathcal{M} = \{s_{1},\dots,s_{i}\}$ for each $\tau_{i}\in \Gamma $ to satisfy the set of given scheduling constrains. 
 
 %Deriving the set of communication scheduling $\mathcal{M}$ means determine $\langle s_{i}^{(v_{a},v_{b})}.\phi, s_{i}^{(v_{a},v_{b})}.\mathcal{T}, s_{i}^{(v_{a},v_{b})}.\mathcal{D},s_{i}^{(v_{a},v_{b})}.\mathcal{L} \rangle$ for each $s_{i}\in \mathcal{M}$. The $s_{i}^{(v_{a},v_{b})}.\mathcal{T}$,$s_{i}^{(v_{a},v_{b})}.\mathcal{D}$ and $s_{i}^{(v_{a},v_{b})}.\mathcal{L}$ can be derived easily through formula (1),(2) and (3), respectively. Nevertheless, our goal is to find the set of offset $\mathcal{M}.\Phi$ such that satisfies the offset and link constraints. If it is impossible to synthesize a set of scheduled communication, then we try to minimize the amount of infeasible messages which violate the scheduling constraints.
@@ -932,33 +922,33 @@ scheduling constraints.
 \section{Memetic Algorithm \label{s:algorithm}}
 \emph{Memetic Algorithm (MA)} is a population-based hybrid
 \emph{Genetic Algorithm (GA)} coupled with an individual learning
-procedure capable of performing local
-refinements~\cite{DBLP:journals/cim/OngLC10}.
+procedure capable of performing local refinements~\cite{DBLP:journals/cim/OngLC10}.
 
 Our memetic algorithm consists of two parts. We deploy the GA as the global search strategy.
-And the subset of infeasible scheduling of messages is chosen as
-the element to join the local search.
+And the subset of infeasible scheduling of messages is chosen as the element to join the local search.
 
-The MA requires genetic representation, fitness function, global search such as crossover, mutate, and local search. 
-In this section, we firstly give an motivation of messages scheduling
-to explain the genetic representation. Then the pseudocode is shown,
+The MA requires genetic representation,
+ fitness function,
+  global search such as crossover, mutate,
+   and local search. 
+In this section, we first give an motivation of messages scheduling to explain the genetic representation.
 followed by discussion about the details.
 
   \subsection{An Example of Scheduling on TTNoC}
 To show our memetic algorithm,
- we firstly give an example of scheduling $\calS$ of messages $\Gamma$ on a $3\times 3$ mesh NoC,
+ we give an example of scheduling $\calS$ of messages $\Gamma$ on a $3\times 3$ mesh NoC,
  shown in Fig.~\ref{f:comm_on_TTNoC}. 
-There are a set of messages to be scheduled on the TTNoC,
- we derive the scheduling model based on the architecture and message models,
+There are a set of messages to be scheduled on the TTNoC.
+We derive the scheduling model based on the architecture and message models,
  shown in TABLE~\ref{t:comm_info}.
 %$\mathcal{\calS = \{s_{0},s_{1},s_{2},s_{3},s_{4}\}$ to be scheduled. 
 Each scheduling $s_i\in\calS$ owns its period, duration and the given route.
 It should be noticed that the period must be a positive power of two in terms of macrotick according to the timing specification of TTNoC~\cite{DBLP:conf/date/HuangBRBK12}.
 
-We assumed that the relative deadline is equal to its period for each message for simplicity.
-The set of possible offset for $s_i\in\calS$ is denoted as $s_i.P_\phi$, which is derived by $ [0,s_{i}.T - s_{i}.L] $ according to Constraint~\ref{c:offset}.
-The $s_i.\phi$ is generated among the $s_i.P_\phi$.
-The $s_i.P_\phi$ for the messages on Fig.~\ref{f:comm_on_TTNoC} is also shown in TABLE~\ref{t:comm_info}.
+We assume that the relative deadline is equal to its period for each message for simplicity.
+The set of possible offsets for $s_i\in\calS$ is denoted as $s_i.P_\phi$, which is derived by $ [0,s_{i}.T - s_{i}.L] $ according to Constraint~\ref{c:offset}.
+The $s_i.\phi$ is generated from the $s_i.P_\phi$.
+$s_i.P_\phi$ for the messages on Fig.~\ref{f:comm_on_TTNoC} is also shown in TABLE~\ref{t:comm_info}.
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=2.5in]{picture/scheduling_example.pdf}
@@ -1001,27 +991,26 @@ The $s_i.P_\phi$ for the messages on Fig.~\ref{f:comm_on_TTNoC} is also shown in
 The genetic algorithm employed in global search, which consists of concepts about gene, chromosome,
  individual and population. 
 A population consists of a set of individuals. 
-Each individual contains a chromosome and its score respectively.
-A chromosome represents a solution to the given question and composes of several genes.
-And a gene the unit of chromosome.
+Each individual contains a chromosome and its score, respectively.
+A chromosome represents a solution to the given question and consists of several genes which is the unit of a chromosome.
 
 In our memetic algorithm,
-we adopt the hyperperiod  $Hp(\calS) = LCM\{\calS.\calT\}$
- as the definition of chromosome.
-The value of hyperperiod is the least common multiple of the offset among scheduling for messages. 
+ we adopt the hyperperiod $Hp(\calS)$ as the definition of chromosome.
+The value of hyperperiod is the least common multiple of the period $\calS.T$ among scheduling $\calS$ for messages $\Gamma$.
+So we have $Hp(\calS) = LCM\{\calS.T\}$.
 E.g. the hyperperiod is 8 for the scheduling set on TABLE~\ref{t:comm_info}. 
 And a macrotick is defined as the unit of hyperperiod which represents gene.
 
 
 The location of a gene on a chromosome denotes the offset $ s_i.\phi $ of a message $\tau_i\in\Gamma$.
-The $s_i.\phi$ is distributed on a gene.
-Hence each chromosome represents a possible allocation for the offset of messages $\calS.\Phi$.
-It should be noted that a single gene may consists multiple offset of messages,
- since several messages without contention can be transmitted at same time on the network-based TTNoC.
+The offset $s_i.\phi$ is distributed on a gene.
+Hence, each chromosome represents a possible allocation for the offset of messages $\calS.\Phi$.
+It should be noted that a single gene may consists of multiple offsets of messages,
+ since several messages without contention can be transmitted at the same time on the network-based TTNoC.
 
 A set of individuals with respective chromosome composes a population.
-The size of population equals the number of individual in the population.
-An example of population with two individuals based on TABLE~\ref{t:comm_info} is shown in TABLE~\ref{t:pop}.
+The size of population equals the number of individuals in the population.
+An example of population with two individuals from TABLE~\ref{t:comm_info} is shown in TABLE~\ref{t:pop}.
 The chromosome and gene of individuals are also depicted.
 %\begin{figure}[!t]
 %	\centering
@@ -1066,35 +1055,34 @@ The chromosome and gene of individuals are also depicted.
 \end{table}
 \subsection{Algorithm Description}
 
-According to the genetic representation, we formal give the algorithm process. The pseudocode is given as follow.
+According to the genetic representation, we formally give the algorithm. 
 
-The population $pop$ is synthesized with initialization by $initPop(scale)$.
-The size of population $scale$ as well as the maximum iterations $N$ is predefined.
+The population $pop$ is initialized by $initPop(scale)$.
+The size of population $scale$ and the maximum iterations $N$ are predefined.
 For a scheduling $s_{i}\in\calS$ in the chromosome of a individual,
  the offset $s_i.\phi$ is located randomly among the possible offset $s_i.P_\phi$.
 Hence the initial population satisfies the constraints~\ref{c:offset}.
-The algorithm is iterative executed until deriving a feasible scheduling or reaching the iteration $N$.
+The algorithm is iterative executed until we derive a feasible scheduling or an upperbound of the iteration number $N$ is reached.
 
 Each individual $in_i$ in $pop$ is marked by the fitness function $fit(in)$. 
 The score evaluating chromosome is assigned to its individual.
-The less the number of score, the better the chromosome.
-Hence the individual with score equals zero represents a feasible scheduling is synthesized.
-The detail of fitness function is discussed in Section~\ref{s:fit}.
+The smaller the number of score, the better the chromosome.
+Hence,
+ the individual with score zero represents a feasible scheduling.
+The fitness function is discussed in Section~\ref{s:fit}.
 After evaluating $pop$, the best individual $best$ among the population is selected by $selectBest(pop)$.
 
-Next, the operation of genetic algorithm,
- i.e. $crossover(pop)$ and $mutate(pop)$,
-  is deployed as global search.
-Then the local search $localSearch(pop)$ is employed if there is no feasible scheduling (individual with score 0) in the $pop$.
-The detail of global as well as local search, is discussed in Sections~\ref{s:glo} and~\ref{s:loc}, respectively.
+Next, the operation of $crossover(pop)$ and $mutate(pop)$ are employed as global search strategies.
+Then the local search $localSearch(pop)$ is employed if there is no individual with score 0 (feasible scheduling) in the $pop$.
+The operation of global and local search are discussed in Sections~\ref{s:glo} and~\ref{s:loc}, respectively.
 
 After the global and local search,
- each individual in the $pop$ is evaluated by fitness function again.
-And individual with least score in $pop$ is selected as the best one after search $best'$ by $selectBest(pop)$.
-The $best$ is compared with $best'$ and select the individual with less score as the new $best$.
- $best'$ compares with previous optimal individual $best$ to derive the individual with less score.
+ each individual in $pop$ is evaluated by the fitness function again.
+And the individual with least score in $pop$ is selected as the best one $best'$ by function $selectBest(pop)$.
+The historical optimal individual $best$ is compared with current optimal individual $best'$,
+ and the new $best$ is the individual with smaller score among these two individuals .
 The new population for the next iteration is generated by selection $select(pop,scale)$ according to the score of each individual.
-The individual with less score owns more possibility to reserve for the next iteration.
+The individual with smaller score owns more possibility to reserve for the next iteration.
 The $select(pop,scale)$ ensures the size of population equals the value of $scale$ in each iteration.
 
 %% \begin{algorithm}[tb]
@@ -1330,7 +1318,7 @@ Thus for a individual $in$, we have that
 	fit(in)=\sum_{s_i \in C(\calS)} {times(s_i)}
 \end{equation}
 
-Since the score represents the conflict times, the less the score the better the individual.
+Since the score represents the conflict times, the smaller of the score the better of the individual.
 E.g. the score of two individual in Fig.~\ref{t:pop} is shown in TABLE~\ref{t:fitness}. 
 
 \begin{table}[!t]
